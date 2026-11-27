@@ -706,3 +706,12 @@ TEST_CASE("bbinom: zero atoms and exact constant-sample size ties") {
   CHECK(cppunivariate::outcome(singleton).unique);
   CHECK(singleton.size == 1);
 }
+
+TEST_CASE("bbinom fixed size certifies the binomial face at exact equality") {
+  const auto result = fit(std::vector<int>{0, 1, 2}, 3, kNaN, kNaN);
+  CHECK(result.status == cppunivariate::BbinomStatus::BinomialLimit);
+  CHECK(result.iterations == 0);
+  CHECK(cppunivariate::outcome(result).certified);
+  REQUIRE(result.stop_detail.limit_coef.size() == 2);
+  CHECK(result.stop_detail.limit_coef[1] == doctest::Approx(1.0 / 3));
+}

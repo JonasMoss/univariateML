@@ -56,7 +56,7 @@ limits:
   - model: binom
     firmness: proved
     when: '$\alpha + \beta \to \infty$ with $\alpha/(\alpha + \beta)$ fixed'
-    detect: signed uniform near-face exclusion and strict tangent/chord bounds exclude every finite shape pair
+    detect: 'With size $m$ held, both shapes free, and an interior count, $mn\sum_i x_i(x_i-1) \le (m-1)(\sum_i x_i)^2$, where $n$ is the sample length.'
     status: BinomialLimit
     detect_firmness: proved
     proof: ["UnivariateML.BetaBinomial.logLik_tendsto"]
@@ -121,9 +121,7 @@ existence:
     Take $n \ge 2$ known and both shapes free. If every count is 0 or $n$, no MLE
     exists: the likelihood is maximised in the limit by a two-point law on 0
     and $n$ when both values occur, and by a point mass when only one does.
-    Otherwise the only possible escape is to the binomial, and an MLE exists
-    exactly when some beta-binomial fits at least as well as the best
-    binomial. Overdispersion, $S^2 > n\hat p(1-\hat p)$ with
+    Otherwise the binomial is the only possible escape. Strict overdispersion, $S^2 > n\hat p(1-\hat p)$ with
     $\hat p = \bar x/n$ and $S^2$ the sample variance with the number of
     observations as divisor, is necessary and sufficient for $n \ge 2$
     when at least one count is interior. Holding one shape leaves only the

@@ -141,7 +141,10 @@ coefficients, including designs; a one-coordinate fit has one degree of
 freedom and a fully specified fit has zero. The reference receives
 `n = N - m`, which is not a separate coefficient.
 
-One-coordinate fits return the smaller count for adjacent ties.
+One-coordinate fits return the smaller count for adjacent ties. A tie is
+certified when the product of the adjacent likelihood ratios is exactly one
+after bounded integer cancellation. An overlap without this identity leaves
+cardinality unresolved.
 For a flat count range, the fit returns its lower endpoint and records the range.
 Joint grids resolve numerical ties as described below, but the outcome is
 flagged not unique where an exact tie is proved: the likelihood is symmetric

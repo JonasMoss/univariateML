@@ -3,6 +3,7 @@
 #include "tbinom_face_certificate.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../pois/tpois_profile.hpp"
+#include "../pois/ztpois_mle.hpp"
 #include "../binom/dpqr.hpp"
 #include "../binom/mle.hpp"
 #include "../binom/truncation.hpp"
@@ -541,6 +542,23 @@ inline TbinomDesignResult design_mle_impl(ispan x,double a,double b,double size,
     if(status==TbinomStatus::LowerPointMass || status==TbinomStatus::UpperPointMass)out.stop_detail=discrete_point(x[0]);
     return out;
   }
+  int moment = 0;
+  if (std::isnan(size) && std::isnan(prob) && b == INFINITY && !x.empty()) {
+    const double lower = std::isnan(a) ? double(*std::min_element(x.begin(), x.end())) - 1 : a;
+    if (std::floor(lower) == 0) {
+      moment = binomial_certificate_detail::positive_poisson_moment_sign(x);
+      if (moment > 0) {
+        const auto face = ztpois_mle(x, NAN, tol, maxit);
+        if (face.status == ZtpoisStatus::Ok) {
+          TbinomDesignResult out{0, lower, b, INFINITY, face.logLik, face.iterations,
+              TbinomStatus::TpoisLimit};
+          out.stop_detail = binomial_certificate_detail::moment_face(StopModel::Tpois,
+              {face.lambda, lower, b}, face.logLik);
+          return out;
+        }
+      }
+    }
+  }
   bool candidate_ready=false,margin_face=false;
   auto checked = [&]() -> TbinomDesignResult {
   auto best=tbinom_detail::tbinom_design_proposal(x,a,b,size,prob,tol,maxit,legacy_default);
@@ -550,6 +568,38 @@ inline TbinomDesignResult design_mle_impl(ispan x,double a,double b,double size,
   if(xmin==mx || U-lo==1 || (mx-lo==1 && best.status==TbinomStatus::Ok && best.size==mx) || (lo==0 && U==INFINITY))return best;
   candidate_ready=(best.status==TbinomStatus::Ok || best.status==TbinomStatus::TpoisLimit) && std::isfinite(best.logLik);
   margin_face=best.status==TbinomStatus::TpoisLimit && !best.certified;
+  if (moment < 0 && best.status == TbinomStatus::TpoisLimit) {
+    best.status = candidate_ready ? TbinomStatus::Ok : TbinomStatus::NumericalFailure;
+    best.certified = false;
+    margin_face = false;
+  }
+  if (best.status == TbinomStatus::Ok && candidate_ready && U == INFINITY &&
+      lo >= 1 && mx - lo >= 2 &&
+      binomial_certificate_detail::small_lower_only_rate(x, static_cast<int>(lo), maxit)) {
+    const double local_tol = std::min(tol, 1e-10);
+    const auto peak = binomial_certificate_detail::strict_small_rate_peak(mx, best.size,
+        [&](double N) -> binomial_certificate_detail::SmallRateProfile {
+          auto fit = profile(x, lo, U, N, local_tol, maxit);
+          if (fit.status != truncated_detail::Status::Ok ||
+              !fallback_accuracy(x, N, best.a, best.b, fit.parameter, local_tol, maxit))
+            return {};
+          const double p = fit.parameter, eta = std::log(N) + std::log(p) - std::log1p(-p);
+          const auto norm = mass(eta, lo, N, N, maxit);
+          if (!norm.ok) return {};
+          const double ll = binomial_certificate_detail::small_rate_loglik(x,
+              [&](int v) { return anchored_kernel(v, eta, N, norm.anchor, maxit) - norm.logz; });
+          return binomial_certificate_detail::small_rate_profile(p, ll, N - lo,
+              x.size(), local_tol);
+        });
+    if (std::isfinite(peak.loglik)) {
+      best.prob = peak.probability;
+      best.logLik = peak.loglik;
+      best.stop_detail = {};
+      best.certified = true;
+      best.singleton_proved = true;
+      return best;
+    }
+  }
   binomial_certificate_detail::Work work{0,0,maxit};
   if(lo==0 && std::isfinite(U) && U<=std::numeric_limits<int>::max() &&
      tbinom_detail::compact_boundary_certificate(x,static_cast<int>(U),best,work))return best;
@@ -691,7 +741,7 @@ inline TbinomDesignResult tbinom_identification(TbinomDesignResult r,double size
   if(r.status==TbinomStatus::Ok) {
     const double lo=std::max(0.,std::floor(r.a)+1),hi=std::min(r.size,std::floor(r.b));
     if((std::isnan(prob) && lo==hi) || (std::isnan(size) && lo==std::floor(r.b)))r.unique=false;
-    r.singleton_proved=std::isfinite(size);
+    r.singleton_proved=std::isfinite(size) || r.singleton_proved;
   }
   return r;
 }

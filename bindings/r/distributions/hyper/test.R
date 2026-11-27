@@ -232,12 +232,12 @@ test_that("holding the largest urn count makes the zero maximizer unique", {
   }
 })
 
-test_that("overlapping adjacent likelihoods preserve comparison evidence", {
+test_that("exact adjacent product equality returns both compositions", {
   f <- mlhyper(c(0, 2), N = 5, k = 2, m = NULL)
-  expect_identical(attr(f, "unique"), NA)
-  expect_false(attr(f, "certified"))
-  expect_null(attr(f, "maximizer_set"))
-  expect_equal(attr(f, "candidates")$m, c(2, 3))
+  expect_false(attr(f, "unique"))
+  expect_true(attr(f, "certified"))
+  expect_length(attr(f, "maximizer_set")$pieces, 1L)
+  expect_equal(attr(f, "maximizers")$m, c(2, 3))
 })
 
 test_that("the held-population comparison sees other orbits even on the diagonal", {

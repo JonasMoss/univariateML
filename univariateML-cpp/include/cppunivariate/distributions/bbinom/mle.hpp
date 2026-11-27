@@ -47,6 +47,7 @@
 #include <string>
 #include <cmath>
 #include <cstddef>
+#include <cstdint>
 #include <limits>
 #include <vector>
 
@@ -121,6 +122,28 @@ struct Data {
   double log_choose = 0;  // sum_i log C(N, x_i)
   std::vector<double> A, C;  // length N
 };
+
+// Compare m*n*sum(x*(x-1)) with (m-1)*sum(x)^2.
+// If any intermediate overflows, leave the decision to the existing search.
+inline bool exact_binomial_face(ispan x, int size) {
+#if defined(__SIZEOF_INT128__)
+  typedef unsigned __int128 Integer;
+#else
+  typedef std::uint64_t Integer;
+#endif
+  constexpr Integer limit = ~Integer{0};
+  const Integer n = x.size(), m = size;
+  if (n > limit / m / m) return false;
+  Integer sum = 0, falling = 0;
+  for (int v : x) {
+    const Integer value = v;
+    sum += value;
+    if (v > 1) falling += value * (value - 1);
+  }
+  if (falling > limit / (n * m) ||
+      (sum != 0 && sum > limit / (m - 1) / sum)) return false;
+  return n * m * falling <= (m - 1) * sum * sum;
+}
 
 // l(p, s) without the binomial coefficients; q = 1 - p passed separately.
 inline double loglik(const Data &d, double p, double q, double s) {
@@ -765,6 +788,11 @@ inline BbinomResult bbinom_mle_work(ispan x, double size, double tol, int maxit,
     // Endpoint-only: l increases strictly in s; supremum at the two-point law.
     out.logLik = d.tops * std::log(d.tops / d.n) + d.zeros * std::log(d.zeros / d.n);
     out.status = BbinomStatus::TwoPointLimit;
+    return out;
+  }
+  if (bbinom_detail::exact_binomial_face(x, N)) {
+    out.logLik = face + d.log_choose;
+    out.status = BbinomStatus::BinomialLimit;
     return out;
   }
   // N=2 has two independent cell probabilities. When overdispersed,

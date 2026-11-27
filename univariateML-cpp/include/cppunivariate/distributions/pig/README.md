@@ -31,11 +31,11 @@ limits:
   - model: pois
     firmness: proved
     when: 'The concentration $\lambda$ tends to infinity with $\mu>0$ fixed.'
-    detect: 'For a sample containing a positive count, $v+(\bar x-\mu)^2\le\bar x$, with $v=n^{-1}\sum_i(x_i-\bar x)^2$ and $\mu$ the held mean or $\bar x$ when free. Equality selects the Poisson supremum; an unresolved floating-point sign returns an uncertified Poisson limit.'
+    detect: 'For a sample containing a positive count, $v+(\bar x-\mu)^2\le\bar x$, with $v=n^{-1}\sum_i(x_i-\bar x)^2$ and $\mu$ the held mean or $\bar x$ when free. Equality selects the Poisson supremum. The detector compares integer moments and the exact dyadic held mean within checked arithmetic range, with a padded comparison when that range is exceeded. An unresolved sign returns an uncertified Poisson limit.'
     status: PoissonLimit
     detect_firmness: proved
     proof: ["dev/research/evaluations/2026-11-25-pig-math-report.md#joint-paths-to-the-boundary"]
-    detect_proof: ["dev/research/evaluations/2026-11-25-pig-math-report.md#existence-and-uniqueness-by-held-mask"]
+    detect_proof: ["UnivariateML.Discrete3PIG.held_mean_profile", "UnivariateML.Discrete3PIG.all_free_positive"]
   - model: pois
     firmness: proved
     when: 'The mean $\mu$ tends to zero with positive concentration $\lambda$ held.'

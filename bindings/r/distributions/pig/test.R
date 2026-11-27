@@ -198,16 +198,16 @@ test_that("held-mean binary-count shape uses its closed-form certificate", {
   expect_s3_class(mlpig(x,mean=4/3+.Machine$double.eps,iterlim=1),"univariateML")
 })
 
-test_that("general shape certificates transport limit, tie and budget details", {
+test_that("general shape certificates transport limit and budget details", {
   e <- tryCatch(mlpig(c(0,1,2,3),mean=2),error=identity)
   expect_s3_class(e,"univariateML_limit")
   expect_equal(fit_payload(e)$model,"pois")
   expect_equal(e$estimates,c(lambda=2))
   e <- tryCatch(mlpig(c(0,1,2),mean=1+sqrt(1/3)),error=identity)
   expect_s3_class(e,"univariateML_limit")
-  expect_false(e$certified)
+  expect_true(e$certified)
   expect_equal(fit_payload(e)$candidates$model,"pois")
-  expect_equal(fit_payload(e)$loglik_upper,Inf)
+  expect_true(is.finite(fit_payload(e)$loglik_upper))
   e <- tryCatch(mlpig(c(0,0,.Machine$integer.max),iterlim=1),error=identity)
   expect_s3_class(e,"univariateML_budget")
   expect_equal(fit_payload(e)$kind,"budget")

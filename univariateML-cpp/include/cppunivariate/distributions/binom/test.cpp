@@ -823,3 +823,48 @@ TEST_CASE("binom: held probability checks both neighbors by exact ratios") {
   check_single({0, 6}, std::nextafter(.5, 1.), 7, -7.758150378783921470825106807034254);
   check_single({0, 1, 6}, 1. / 3., 9, -9.171546806660522314667972576844090);
 }
+
+TEST_CASE("positive binomial moment escape needs no finite size scan") {
+  const std::vector<int> values{1, 1, 1, 6};
+  const cppunivariate::ispan x{values.data(), values.size()};
+  const auto face = cppunivariate::ztpois_mle(x);
+  REQUIRE(face.status == cppunivariate::ZtpoisStatus::Ok);
+  REQUIRE(cppunivariate::binomial_certificate_detail::positive_poisson_moment_sign(x) == 1);
+
+  const auto zero = cppunivariate::ztbinom_mle(x);
+  REQUIRE(zero.status == cppunivariate::ZtbinomStatus::PoissonLimit);
+  CHECK(cppunivariate::outcome(zero).certified);
+  CHECK(zero.iterations == face.iterations);
+  CHECK(zero.stop_detail.limit_coef == std::vector<double>{face.lambda});
+  CHECK(zero.stop_detail.limit_loglik == face.logLik);
+  REQUIRE(zero.stop_detail.candidates.size() == 2);
+  CHECK(zero.stop_detail.candidates.front().model == cppunivariate::StopModel::Ztpois);
+  CHECK(zero.stop_detail.candidates.back().coef.front() == 6);
+
+  const auto window = cppunivariate::tbinom_design_mle(x, 0.5, INFINITY, NAN);
+  REQUIRE(window.status == cppunivariate::TbinomStatus::TpoisLimit);
+  CHECK(cppunivariate::outcome(window).certified);
+  CHECK(window.stop_detail.limit_coef == std::vector<double>{face.lambda, .5, INFINITY});
+  CHECK(window.stop_detail.limit_loglik == face.logLik);
+  REQUIRE(window.stop_detail.candidates.size() == 1);
+}
+
+TEST_CASE("lower-only binomial small-rate adjacent steps certify a unique size") {
+  const std::vector<int> values{1, 1, 1, 1, 1, 1, 2, 2, 2, 3};
+  const cppunivariate::ispan x{values.data(), values.size()};
+  REQUIRE(cppunivariate::binomial_certificate_detail::positive_poisson_moment_sign(x) == -1);
+  const auto zero = cppunivariate::ztbinom_mle(x);
+  REQUIRE(zero.status == cppunivariate::ZtbinomStatus::Ok);
+  CHECK(cppunivariate::outcome(zero).unique);
+  CHECK(cppunivariate::outcome(zero).certified);
+  CHECK(zero.size == 3);
+
+  std::vector<int> shifted(28, 2);
+  shifted.insert(shifted.end(), {3, 3, 3, 3, 3, 3, 4});
+  const cppunivariate::ispan y{shifted.data(), shifted.size()};
+  const auto window = cppunivariate::tbinom_design_mle(y, 1, INFINITY, NAN);
+  REQUIRE(window.status == cppunivariate::TbinomStatus::Ok);
+  CHECK(cppunivariate::outcome(window).unique);
+  CHECK(cppunivariate::outcome(window).certified);
+  CHECK(window.size == 6);
+}
