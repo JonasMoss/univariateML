@@ -2,6 +2,8 @@
 
 TASK-264, base 7ed10c9454505bf40f55c93e0118871bff64804a.
 
+> **Correction (2026-11-27).** The held-subset map in section 4 lists "unique scale from the power loss profile" for SGED with mean, shape and skew held. That holds for held shape at least 1, but not below: at shape 1/2, held mean 0 and the one-observation sample (-1), a valid held skew gives two distinct global scale maximisers, because with the mean held the mode moves with the scale. Lean proof and dossier check: [lean-twopiece report](2026-11-27-lean-twopiece-report.md#heldmeanskew_subunittie) · [coverage review](2026-11-27-atlas-coverage4b-report.md#sged-held-mean-counterexample).
+
 - **Proved.** Critical Student multiplicity gives a sharp collapse value. Fixed-df symmetric fits select collapse. Asymmetric fits can select collapse, have a strictly better finite maximum, or attain the collapse value at a finite maximum. All three occur with mean, df and skew held.
 - **Proved.** SGED with held sd and free mean has a count-dependent limiting penalty when the uniform width equals the observed range. Holding skew changes that penalty. The contact face can win or lose. Positive binary64 inputs cannot be at exact contact.
 - **Proved previously.** TASK-150.9 already implemented the closed two-point location solution for held sd, shape above one and held skew. Shape one and subunit shapes have exact endpoint and tie rules.

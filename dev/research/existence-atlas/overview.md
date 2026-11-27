@@ -47,7 +47,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 
 87 families, 520 regimes.
 
-### All three questions proved (377)
+### All three questions proved (376)
 
 | Family | Held coefficients | Criterion | Failure modes | Cardinality |
 | --- | --- | --- | --- | --- |
@@ -372,7 +372,6 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | rayleigh | all free | lean (iff) | lean (exact) | lean (exact) |
 | rayleigh | sigma | lean (iff) | lean (exact) | lean (exact) |
 | sged | mean+nu+sd+xi | lean (iff) | lean (exact) | lean (exact) |
-| sged | mean+nu+xi | lean (iff) | lean (exact) | written (exact) · partial Lean |
 | sged | nu+sd+xi | lean (iff) | lean (exact) | written (exact) · partial Lean |
 | sged | nu+xi | lean (iff) | lean (exact) | written (exact) · partial Lean |
 | sgomp | b | lean (iff) | lean (exact) | lean (exact) |
@@ -429,7 +428,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | zeta | all free | lean (iff) | lean (exact) | lean (exact) |
 | zeta | s | lean (iff) | lean (exact) | lean (exact) |
 
-### Criterion proved, uniqueness open (143)
+### Criterion proved, uniqueness open (144)
 
 | Family | Held coefficients | Criterion | Failure modes | Cardinality |
 | --- | --- | --- | --- | --- |
@@ -527,6 +526,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | sged | mean | written (iff) | written (exact) | written (one-sided) |
 | sged | mean+nu | written (iff) | written (exact) | written (one-sided) |
 | sged | mean+nu+sd | written (iff) | written (exact) | written (one-sided) |
+| sged | mean+nu+xi | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | sged | mean+sd | written (iff) | written (exact) | written (one-sided) |
 | sged | mean+sd+xi | written (iff) | written (exact) | written (one-sided) |
 | sged | mean+xi | written (iff) | written (exact) | written (one-sided) |
