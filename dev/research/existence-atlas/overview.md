@@ -435,58 +435,58 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | bbinom | all free | written (iff) | written (exact) | written (one-sided) |
 | bbinom | alpha | written (iff) | written (exact) | written (one-sided) |
 | bbinom | size | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| betapr | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| betapr | shape1 | written (iff) · partial Lean | lean (exact) | written (one-sided) |
-| betapr | shape2 | written (iff) · partial Lean | lean (exact) | written (one-sided) |
+| betapr | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| betapr | shape1 | written (iff) · partial Lean | lean (exact) | written (one-sided) · partial Lean |
+| betapr | shape2 | written (iff) · partial Lean | lean (exact) | written (one-sided) · partial Lean |
 | bhatt | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
 | bhatt | mu | written (iff) | written (exact) | written (one-sided) |
-| bhatt | mu+sigma | lean (iff) | lean (exact) | written (one-sided) |
+| bhatt | mu+sigma | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | bhatt | sigma | lean (iff) | lean (exact) | written (one-sided) |
 | bnbinom | all free | written (iff) · partial Lean | written (exact) · partial Lean | lean (one-sided) |
 | bnbinom | alpha | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | bnbinom | beta | written (iff) | written (exact) | written (one-sided) |
 | bnbinom | size | written (iff) | written (exact) | written (one-sided) |
-| burr | all free | lean (iff) | lean (exact) | written (one-sided) |
+| burr | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | burr | shape2 | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | cauchy | scale | lean (iff) | lean (exact) | lean (one-sided) |
 | cmb | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | cmb | nu | lean (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | dgamma | all free | lean (iff) | lean (exact) | written (one-sided) |
 | emg | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
-| emg | lambda | lean (iff) | written (exact) · partial Lean | written (one-sided) |
-| emg | lambda+mu | lean (iff) | lean (exact) | written (one-sided) |
-| emg | mu | lean (iff) | written (exact) · partial Lean | written (one-sided) |
-| emg | mu+sigma | lean (iff) | lean (exact) | written (one-sided) |
-| emg | sigma | lean (iff) | lean (exact) | written (one-sided) |
-| expweibull | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
+| emg | lambda | lean (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| emg | lambda+mu | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| emg | mu | lean (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| emg | mu+sigma | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| emg | sigma | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| expweibull | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | expweibull | scale | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
-| fatigue | alpha | lean (iff) | lean (exact) | written (one-sided) |
+| fatigue | alpha | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | fatigue | alpha+beta | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | fatigue | alpha+mu | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
-| fatigue | beta | written (iff) | written (exact) | written (one-sided) |
+| fatigue | beta | written (iff) | written (exact) | written (one-sided) · partial Lean |
 | foldnorm | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | fpareto | min | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | fpareto | min+shape1 | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | fpareto | min+shape3 | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | fpareto | scale+shape2+shape3 | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
-| frechet | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
+| frechet | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | frechet | sigma | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
-| gb2 | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| gb2 | shape1 | written (iff) | written (exact) · partial Lean | written (one-sided) |
-| gb2 | shape3 | written (iff) | written (exact) · partial Lean | written (one-sided) |
-| ged | all free | lean (iff) | lean (exact) | written (one-sided) |
-| ged | mean | lean (iff) | lean (exact) | written (one-sided) |
-| ged | mean+sd | written (iff) | written (exact) · partial Lean | written (one-sided) |
-| ged | sd | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| genbeta | scale | written (iff) | written (exact) · partial Lean | written (one-sided) |
+| gb2 | all free | written (iff) · partial Lean | written (exact) · partial Lean | lean (one-sided) |
+| gb2 | shape1 | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| gb2 | shape3 | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| ged | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| ged | mean | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| ged | mean+sd | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| ged | sd | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| genbeta | scale | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | genbeta | scale+shape2 | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | genbeta | shape2 | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | gengamma | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | gengamma | mu | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | gengamma | mu+sigma | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | gengamma | sigma | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
-| gev | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| gev | mu | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
+| gev | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| gev | mu | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | gev | sigma | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | gpd | mu | lean (iff) | written (exact) · partial Lean | lean (one-sided) |
 | ht | mu | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
@@ -517,44 +517,44 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | paralogis | all free | lean (iff) | lean (exact) | lean (one-sided) |
 | paralogis | scale | lean (iff) | lean (exact) | lean (one-sided) |
 | pareto2 | min | lean (iff) | lean (one-sided) | written (one-sided) · partial Lean |
-| pareto4 | min | lean (iff) | lean (exact) | written (one-sided) |
+| pareto4 | min | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | pareto4 | min+shape2 | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | pareto4 | scale+shape2 | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
-| pgw | scale | lean (iff) | lean (exact) | written (one-sided) |
+| pgw | scale | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | pgw | shape | written (iff) · partial Lean | lean (exact) | written (one-sided) · partial Lean |
-| sged | all free | written (iff) | written (exact) | written (one-sided) |
-| sged | mean | written (iff) | written (exact) | written (one-sided) |
-| sged | mean+nu | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
+| sged | all free | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| sged | mean | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| sged | mean+nu | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | sged | mean+nu+sd | written (iff) | written (exact) | written (one-sided) |
 | sged | mean+nu+xi | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
-| sged | mean+sd | written (iff) | written (exact) | written (one-sided) |
-| sged | mean+sd+xi | written (iff) | written (exact) | written (one-sided) |
-| sged | mean+xi | written (iff) | written (exact) | written (one-sided) |
-| sged | nu | written (iff) | written (exact) | written (one-sided) |
-| sged | nu+sd | written (iff) | written (exact) | written (one-sided) |
-| sged | sd | written (iff) | written (exact) | written (one-sided) |
-| sged | sd+xi | written (iff) | written (exact) | written (one-sided) |
-| sged | xi | lean (iff) | lean (exact) | written (one-sided) |
+| sged | mean+sd | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| sged | mean+sd+xi | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| sged | mean+xi | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| sged | nu | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| sged | nu+sd | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| sged | sd | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| sged | sd+xi | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| sged | xi | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | sgomp | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | skellam | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | slash | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | slash | sigma | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | sn | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
-| sn | omega | written (iff) | written (exact) · partial Lean | written (one-sided) |
-| sstd | all free | written (iff) | written (exact) | written (one-sided) |
-| sstd | mean | written (iff) | written (exact) | written (one-sided) |
-| sstd | mean+nu | written (iff) | written (exact) | written (one-sided) |
-| sstd | mean+nu+sd | written (iff) | written (exact) | written (one-sided) |
+| sn | omega | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| sstd | all free | written (iff) · partial Lean | written (exact) | written (one-sided) · partial Lean |
+| sstd | mean | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| sstd | mean+nu | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| sstd | mean+nu+sd | written (iff) | written (exact) | written (one-sided) · partial Lean |
 | sstd | mean+nu+xi | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
-| sstd | mean+sd | written (iff) | written (exact) | written (one-sided) |
-| sstd | mean+sd+xi | written (iff) | written (exact) | written (one-sided) |
-| sstd | mean+xi | written (iff) | written (exact) | written (one-sided) |
-| sstd | nu | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| sstd | nu+sd | written (iff) | written (exact) | written (one-sided) |
-| sstd | nu+xi | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| sstd | sd | written (iff) | written (exact) | written (one-sided) |
-| sstd | sd+xi | written (iff) | written (exact) | written (one-sided) |
-| sstd | xi | written (iff) | written (exact) | written (one-sided) |
+| sstd | mean+sd | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| sstd | mean+sd+xi | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| sstd | mean+xi | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| sstd | nu | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| sstd | nu+sd | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| sstd | nu+xi | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| sstd | sd | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| sstd | sd+xi | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| sstd | xi | written (iff) | written (exact) | lean (one-sided) |
 | st | all free | written (iff) · partial Lean | lean (exact) | written (one-sided) · partial Lean |
 | st | alpha | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | st | alpha+nu | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
@@ -571,7 +571,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | std | sd | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | tlambda | all free | written (iff) | written (exact) | written (one-sided) |
 | tlambda | lambda | written (iff) | written (exact) | written (one-sided) |
-| tlambda | lambda+sigma | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
+| tlambda | lambda+sigma | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | tlambda | mu | written (iff) | written (exact) | written (one-sided) |
 | tlambda | sigma | written (iff) | written (exact) | written (one-sided) |
 | trgamma | all free | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
