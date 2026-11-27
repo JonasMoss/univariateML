@@ -1,0 +1,3 @@
+80 decimal digits: 245 elasticity identity and order checks
+80 decimal digits: 150 critical collapse collar checks
+Held location transition: likelihood at (shape, scale)=(-2, 2^-20) is 20.726893420706564387 > 1/4
