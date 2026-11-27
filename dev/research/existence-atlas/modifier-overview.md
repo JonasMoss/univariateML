@@ -8,10 +8,10 @@ complete or one-sided. The remaining regimes for each question are open.
 
 | Modifier | Eligible | Implemented | Criterion complete / one-sided | Failure complete / one-sided | Uniqueness complete / one-sided |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| truncate:known | 520 | 15 | 0 / 0 | 0 / 0 | 0 / 0 |
+| truncate:known | 520 | 15 | 30 / 0 | 30 / 0 | 30 / 0 |
 | truncate:lower-estimated | 520 | 15 | 0 / 0 | 0 / 0 | 0 / 0 |
 | truncate:upper-estimated | 520 | 15 | 0 / 0 | 0 / 0 | 0 / 0 |
 | truncate:both-estimated | 520 | 15 | 0 / 0 | 0 / 0 | 0 / 0 |
-| zero:truncated | 52 | 12 | 0 / 0 | 0 / 0 | 0 / 0 |
-| zero:modified | 104 | 28 | 0 / 0 | 0 / 0 | 0 / 0 |
-| zero:inflated | 104 | 24 | 0 / 0 | 0 / 0 | 0 / 0 |
+| zero:truncated | 52 | 12 | 46 / 0 | 40 / 6 | 7 / 5 |
+| zero:modified | 104 | 28 | 46 / 0 | 40 / 6 | 6 / 2 |
+| zero:inflated | 104 | 24 | 44 / 0 | 40 / 4 | 5 / 1 |
