@@ -139,3 +139,11 @@ public import UnivariateML.Family.Discrete4NBinom
 public import UnivariateML.Family.Discrete4NHyper
 public import UnivariateML.Family.Discrete4PIG
 public import UnivariateML.Family.Discrete4Skellam
+public import UnivariateML.Family.StudentCauchy
+public import UnivariateML.Family.StudentFaces
+public import UnivariateML.Family.StudentGeodesic
+public import UnivariateML.Family.StudentHalf
+public import UnivariateML.Family.StudentHeldShape
+public import UnivariateML.Family.StudentLocation
+public import UnivariateML.Family.StudentSkew
+public import UnivariateML.Family.StudentSlash
