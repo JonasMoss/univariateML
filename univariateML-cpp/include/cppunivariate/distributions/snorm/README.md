@@ -51,14 +51,16 @@ limits:
     firmness: proved
     when: 'As $\xi\to\infty$, the distribution tends to a translated right half-normal with the limiting mean and standard deviation.'
     status: 'RightHalfNormalBoundary'
-    detect_firmness: numerical
+    detect: The sharp constant-sample bound or the strict small-spread bound with only sd held certifies the selected face. A face selected by the generic stationary-mode comparison carries a numerical grade.
+    detect_firmness: proved
     proof: ["univariateML-cpp/include/cppunivariate/distributions/snorm/README.md#details"]
     detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/snorm/README.md#details"]
   - name: 'reflected translated half-normal'
     firmness: proved
     when: 'As $\xi\to0$, the distribution tends to a reflected translated half-normal with the limiting mean and standard deviation.'
     status: 'LeftHalfNormalBoundary'
-    detect_firmness: numerical
+    detect: The sharp constant-sample bound or the strict small-spread bound with only sd held certifies the selected face. A face selected by the generic stationary-mode comparison carries a numerical grade.
+    detect_firmness: proved
     proof: ["univariateML-cpp/include/cppunivariate/distributions/snorm/README.md#details"]
     detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/snorm/README.md#details"]
 references:
@@ -110,7 +112,10 @@ existence:
     finite maximum unless free scale collapses on constant data at the fitted
     or held mean. With skewness free under moment holds, attainment is decided
     by comparing the finite stationary candidates and constrained half-normal
-    limits. Neither attainment nor uniqueness holds for every sample.
+    limits. Sharp constant-sample and held-scale small-spread bounds
+    certify faces on their applicable subsets. Generic face selections
+    carry a numerical grade. Neither attainment nor uniqueness holds for
+    every sample.
   reason: >-
     For a proposed mode $c$, let $A(c)=\sum_{x_i<c}(x_i-c)^2$ and
     $B(c)=\sum_{x_i\ge c}(x_i-c)^2$. Profiling the two side scales
@@ -137,7 +142,7 @@ Fully free constant finite samples, including a singleton, report unbounded like
 
 The coefficients $\mu$ and $\sigma$ are the distribution's mean and standard deviation. The positive coefficient $\xi$ controls the side-scale ratio, and $\xi=1$ gives a normal distribution. The [family analysis](../../../../../dev/research/evaluations/2026-10-29-p0-skewreal.md) describes the limiting paths and boundary comparisons.
 
-With all coefficients free, the fitter profiles the two side scales analytically and searches the mode between the sample extremes. Between consecutive observations the stationary candidates satisfy a polynomial equation of degree at most seven. Comparing these candidates and the endpoints gives a global comparison in exact arithmetic, conditional on the computed root comparisons. It does not imply that a finite maximizer is unique. The right and left half-normal limits have their endpoints at the sample minimum and maximum respectively.
+With all coefficients free, the fitter profiles the two side scales analytically and searches the mode between the sample extremes. Between consecutive observations the stationary candidates satisfy a polynomial equation of degree at most seven. Comparing these candidates and the endpoints gives a global comparison in exact arithmetic, conditional on the computed root comparisons. A named face selected by this root comparison carries a numerical grade. The right and left half-normal limits have their endpoints at the sample minimum and maximum respectively.
 
 The mode profile can use a half-range when the full data range exceeds
 binary64. The physical half-normal scale can still be representable.
@@ -253,8 +258,8 @@ likelihood must agree with the side-scale evaluation within
 $10^{-10}(1+|\ell|)$. The root-width choice also closes the likelihood
 enclosures for strongly skewed held-mean samples, which a parameter-width
 check alone does not ([golden hold sweep counterexample](../../../../../dev/research/evaluations/2026-11-07-snorm-held-data/initial-conformance-failure.txt)). Distinct finite or opposite-face candidates within
-$10^{-9}(n+|\ell|)$ are reported as a comparison tie. Face decisions use
-a $10^{-8}n$ allowance. The public density's moment normalizer is also checked for finiteness.
+$10^{-9}(n+|\ell|)$ are reported as a comparison tie. Generic face decisions use
+a $10^{-8}n$ allowance and carry a numerical grade. The public density's moment normalizer is also checked for finiteness.
 For its standardized residual $z=L+M$, the recovery check propagates
 $16\epsilon_{\mathrm{double}}(1+|L|+|M|)$ through the Gaussian quadratic.
 If this can cross the join, the shorter side controls the error bound.

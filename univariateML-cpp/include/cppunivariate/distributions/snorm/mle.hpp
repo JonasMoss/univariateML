@@ -35,6 +35,7 @@ struct SnormResult {
   SnormStatus status;
   StopDetail stop_detail{};
   MaximizerSet maximizers{};
+  bool limit_proved = false;
 };
 
 #include "certificate.hpp"
@@ -270,15 +271,6 @@ inline bool family_point(const SnormResult&, const FitCandidate& c) {
 // Certificate ties list padded search witnesses and finite roots with
 // likelihood bounds against half-normal faces; no family point is checked.
 inline bool accurate_point(const SnormResult&, const FitCandidate&) { return false; }
-// Constant data with sd held and mean free: both half-normal faces attain the
-// sharp density bound, recorded as a finite global upper bound (every other
-// comparison leaves it infinite). Equal limiting suprema, proved.
-inline bool snorm_equal_faces(const SnormResult& r) {
-  if (!std::isfinite(r.stop_detail.loglik_upper) || r.stop_detail.candidates.size() < 2) return false;
-  for (const auto& c : r.stop_detail.candidates) if (!face_candidate(c)) return false;
-  return true;
-}
-
 inline FitOutcome outcome(const SnormResult& r) {
   if (r.stop_detail.accuracy_stop==AccuracyStop::Tolerance)
     return FitOutcome::failure(OutcomeReason::Tolerance);
@@ -301,15 +293,15 @@ inline FitOutcome outcome(const SnormResult& r) {
     }
   }
   if (r.status != SnormStatus::Unbounded && r.stop_detail.budget_exhausted) return FitOutcome::budget();
-  if (r.status != SnormStatus::Unbounded && r.stop_detail.comparison_tie) return snorm_equal_faces(r) ? FitOutcome::limit(true) : comparison_outcome_of(r);
+  if (r.status != SnormStatus::Unbounded && r.stop_detail.comparison_tie) return r.limit_proved ? FitOutcome::limit(true) : comparison_outcome_of(r);
   switch (r.status) {
     case SnormStatus::Ok: return FitOutcome::estimate(true, r.maximizers.size == 0);
     case SnormStatus::NumericalFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case SnormStatus::BfgsFailure: return FitOutcome::failure(OutcomeReason::Evaluation);
     case SnormStatus::InvalidStart: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case SnormStatus::Unbounded: return FitOutcome::nonexistence(OutcomeReason::Unbounded);
-    case SnormStatus::RightHalfNormalBoundary: return FitOutcome::limit();
-    case SnormStatus::LeftHalfNormalBoundary: return FitOutcome::limit();
+    case SnormStatus::RightHalfNormalBoundary: return FitOutcome::limit(r.limit_proved);
+    case SnormStatus::LeftHalfNormalBoundary: return FitOutcome::limit(r.limit_proved);
   }
   return {};
 }

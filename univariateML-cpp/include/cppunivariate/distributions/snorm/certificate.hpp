@@ -354,6 +354,7 @@ inline SnormResult fit(span x,double tol,int maxit,double mean,double sd,double 
       auto r=out;
       r.status=face.model==StopModel::Hnorm?SnormStatus::RightHalfNormalBoundary:SnormStatus::LeftHalfNormalBoundary;
       r.logLik=face.loglik_lower;
+      r.limit_proved=true;
       r.stop_detail=limit_detail(face.coef,r.logLik,face.model);
       return r;
     }
@@ -362,6 +363,7 @@ inline SnormResult fit(span x,double tol,int maxit,double mean,double sd,double 
   // a+b >= sd/h gives the sharp density bound m*h/sd on both faces.
   if(hs && !hm && raw.front()==raw.back() && candidates.size()==2) {
     auto r=stopped(false);r.stop_detail=comparison_detail(candidates[0],candidates[1]);
+    r.limit_proved=true;
     r.stop_detail.loglik_upper=std::max(candidates[0].loglik_upper,candidates[1].loglik_upper);return r;
   }
   // With a held mean away from a constant sample, f(x)<=m^2/|x-mean|.
@@ -371,6 +373,7 @@ inline SnormResult fit(span x,double tol,int maxit,double mean,double sd,double 
     const auto target=n*(2*std::log(m)-std::log(std::abs(y.front()))-std::log(unit));
     for(const auto& face:candidates)if(face.model==model && std::abs(face.loglik_lower-target)<=1e-10*(n+std::abs(target))) {
       auto r=out;r.status=model==StopModel::Hnorm?SnormStatus::RightHalfNormalBoundary:SnormStatus::LeftHalfNormalBoundary;
+      r.limit_proved=true;
       r.logLik=face.loglik_lower;r.stop_detail=limit_detail(face.coef,face.loglik_lower,model);
       r.stop_detail.loglik_lower=face.loglik_lower;r.stop_detail.loglik_upper=upper_double(target+1e-9*(n+std::abs(target)));return r;
     }

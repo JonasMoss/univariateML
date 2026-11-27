@@ -168,38 +168,38 @@ modifiers:
       firmness: proved
       when: As $\sigma\to\infty$ and $\mu/\sigma^2\to-1/(\bar x-a)$ with $a$ finite and $b=\infty$, the distribution
         tends to $a+Y$, where $Y$ is exponential.
-      detect: The sample is nonconstant, both parent coefficients are free, $a$ is finite, $b=\infty$, and the empirical
-        variance is at least $(\bar x-a)^2$.
+      detect: Both parent coefficients are free, only the lower bound $a$ is finite, and the empirical variance strictly exceeds $(\bar x-a)^2$ by the moment margin. An unseparated direct comparison carries a numerical grade.
       status: ExponentialBoundary
-      detect_firmness: numerical
+      detect_firmness: proved
+      detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/norm/README.md#truncated-normal-face-comparisons"]
       proof: ["dev/research/evaluations/2026-11-21-tnorm-limit-report.md#coefficient-rule-and-comparison"]
     - model: exp
       firmness: proved
       when: As $\sigma\to\infty$ and $\mu/\sigma^2\to1/(b-\bar x)$ with $a=-\infty$ and $b$ finite, the distribution
         tends to $b-Y$, where $Y$ is exponential.
-      detect: The sample is nonconstant, both parent coefficients are free, $a=-\infty$, $b$ is finite, and the
-        empirical variance is at least $(b-\bar x)^2$.
+      detect: Both parent coefficients are free, only the upper bound $b$ is finite, and the empirical variance strictly exceeds $(b-\bar x)^2$ by the moment margin. An unseparated direct comparison carries a numerical grade.
       status: ReflectedExponentialBoundary
-      detect_firmness: numerical
+      detect_firmness: proved
+      detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/norm/README.md#truncated-normal-face-comparisons"]
       proof: ["dev/research/evaluations/2026-11-21-tnorm-limit-report.md#coefficient-rule-and-comparison"]
     - name: truncated exponential
       firmness: proved
       when: As $\sigma\to\infty$ and $\mu/\sigma^2\to r$ with both bounds finite, the distribution tends to the
         law with density proportional to $e^{rx}$ on $[a,b]$. It is uniform when $r=0$.
-      detect: The sample is nonconstant, both parent coefficients are free, both bounds are finite, and the empirical
-        variance is at least that of the exponential tilt with the same empirical mean.
+      detect: Both parent coefficients are free, both bounds are finite, and the empirical variance strictly exceeds the matched tilt variance throughout its checked bracket. An unseparated direct comparison carries a numerical grade.
       status: TruncatedExponentialBoundary
-      detect_firmness: numerical
+      detect_firmness: proved
+      detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/norm/README.md#truncated-normal-face-comparisons"]
       proof: ["dev/research/evaluations/2026-11-21-tnorm-limit-report.md#coefficient-rule-and-comparison"]
     - name: uniform
       firmness: proved
       fixed:
       - mean
       when: With $\mu$ held and both bounds finite, $\sigma\to\infty$ gives the uniform distribution on $[a,b]$.
-      detect: The parent mean $\mu$ is held, scale is free, both bounds are finite, and the empirical squared distance
-        from $\mu$ is at least $((b-\mu)^3-(a-\mu)^3)/(3(b-a))$.
+      detect: The parent mean $\mu$ is held, scale is free, both bounds are finite, and the empirical squared distance from $\mu$ strictly exceeds $((b-\mu)^3-(a-\mu)^3)/(3(b-a))$ by the moment margin. An unseparated direct comparison carries a numerical grade.
       status: UniformBoundary
-      detect_firmness: numerical
+      detect_firmness: proved
+      detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/norm/README.md#truncated-normal-face-comparisons"]
 ---
 
 The normal (Gaussian) distribution is a symmetric distribution on the real line, used to model continuous measurements and errors.
@@ -228,3 +228,23 @@ On a one-sided window, the exponential face rate is the reciprocal of the mean
 distance from the finite endpoint. On a finite window, the signed rate is
 enclosed using the monotone score in endpoint-relative, width-scaled
 coordinates, with the likelihood evaluated in the same coordinates.
+
+
+### Truncated normal face comparisons
+
+The log likelihood is concave in its natural linear and quadratic
+coefficients. With both parent coefficients free, the matched exponential
+tilt sets the linear score to zero. If its variance is strictly below the
+empirical variance, the supporting plane strictly excludes every negative
+quadratic coefficient. At held mean the linear coefficient relative to
+that mean is zero, and the same argument compares the empirical squared
+distance with the uniform second moment.
+
+On a finite window, an enclosed tilt within $\delta$ of the evaluation
+tilt in unit-window coordinates changes the normalized density ratio by at
+most $e^\delta$. This bounds the variance by $e^\delta$ times its evaluated
+value. For a positive tilt bracket separated from zero, the variance is
+also at most the reciprocal square of the lower tilt, from the truncated
+exponential variance formula. The moment comparison uses a 128-epsilon
+binary64 margin. A close comparison with an evaluated finite fit retains
+both witnesses.

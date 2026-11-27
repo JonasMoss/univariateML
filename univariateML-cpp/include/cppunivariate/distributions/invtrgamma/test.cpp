@@ -306,3 +306,35 @@ TEST_CASE("invtrgamma: public Pareto candidate at class near-constant") {
   for(double v:x)gaps+=std::log1p((v-c->coef[1])/c->coef[1]);
   CHECK(c->coef[0] == doctest::Approx(x.size()/gaps).epsilon(1e-12));
 }
+
+TEST_CASE("invtrgamma: held scale transports the reachable Pareto trace") {
+  const std::vector<double> x{1., 2.};
+  const double nan = std::numeric_limits<double>::quiet_NaN();
+  const auto fit = cppunivariate::invtrgamma_mle_fixed_scale(mltest::as_span(x), 1., nan, nan, 1e-10, 1);
+  const auto& detail = fit.stop_detail;
+  REQUIRE(detail.limit_model == cppunivariate::StopModel::Pareto);
+  REQUIRE(detail.limit_coef.size() == 2);
+  const double rate = 2. / std::log(2.);
+  CHECK(detail.limit_coef[0] == doctest::Approx(rate));
+  CHECK(detail.limit_coef[1] == 1.);
+  CHECK(detail.limit_loglik == doctest::Approx(2. * std::log(rate) - 3. - std::log(2.)));
+}
+
+TEST_CASE("invtrgamma: all-free face comparisons retain their numerical grade") {
+  const int n = 400;
+  std::vector<double> lognormal, pareto;
+  for (int i = 0; i < n; ++i) {
+    const double p = (i + 0.5) / n;
+    const double z = cppunivariate::special::qnorm(p, 0, 1, true, false);
+    // Left-skewed log data: reciprocal of the trgamma lognormal-face sample.
+    lognormal.push_back(std::exp(-(z + 0.05 * (z * z - 1))));
+    pareto.push_back(2 * std::pow(1 - p, -1 / 1.7));
+  }
+  const auto l = cppunivariate::invtrgamma_mle(mltest::as_span(lognormal));
+  REQUIRE(l.status == cppunivariate::InvTrGammaStatus::LognormalBoundary);
+  CHECK_FALSE(cppunivariate::outcome(l).certified);
+
+  const auto p = cppunivariate::invtrgamma_mle(mltest::as_span(pareto));
+  REQUIRE(p.status == cppunivariate::InvTrGammaStatus::ParetoBoundary);
+  CHECK_FALSE(cppunivariate::outcome(p).certified);
+}

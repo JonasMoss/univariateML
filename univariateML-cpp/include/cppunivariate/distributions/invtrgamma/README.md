@@ -59,12 +59,14 @@ limits:
     firmness: proved
     when: 'The gamma shape $k$ tends to infinity with $p\sqrt{k}\to1/\sigma$ and $\log a - \log(k)/p\to\mu$, for fixed $\sigma>0$ and $\mu$.'
     status: LognormalBoundary
+    detect: The all-free profile cover selects this face within the transformed-gamma floating-point margin.
     detect_firmness: numerical
     proof: ["dev/research/evaluations/2026-11-25-trgamma-math-report.md#free-scale-and-both-shapes-free"]
   - model: pareto
     firmness: proved
     when: 'The power $p$ tends to infinity with $kp\to d>0$ and $a$ converging to a positive endpoint.'
     status: ParetoBoundary
+    detect: The all-free profile cover selects this face within the transformed-gamma floating-point margin.
     detect_firmness: numerical
     proof: ["dev/research/evaluations/2026-11-25-trgamma-math-report.md#free-scale-and-both-shapes-free"]
 references:
@@ -120,7 +122,8 @@ existence:
   statement: >-
     With all coefficients free, constant positive samples have unbounded
     likelihood. For nonconstant samples, the lognormal or Pareto limit
-    can prevent a finite MLE. General uniqueness of an interior maximum
+    can prevent a finite MLE. The all-free fitter selects either face by
+    a numerical comparison. General uniqueness of an interior maximum
     is not established. With scale free and either shape held, a unique
     finite MLE exists for nonconstant samples. With both shapes held,
     the scale MLE is unique even for constant samples. With scale and
@@ -191,9 +194,9 @@ likelihood estimate; the unrestricted fit fails to have a finite MLE with positi
 inward likelihood slope from the lognormal face has the same sign as the
 sample skewness of the logarithms. A positive finite improvement within $10^{-8}$ per observation of a face
 stops as an unresolved comparison with both witnesses. Face selection uses
-the transformed-gamma floating-point comparison margin. Fits very close to that limit can have a scale outside the numerical representation range.
+the transformed-gamma floating-point comparison margin and carries the same uncertified grade. Fits very close to that limit can have a scale outside the numerical representation range.
 
-Held-scale fits use the reciprocal transformed gamma profile. With $a,p$ held, the score for $k$ has one root. With $a,k$ held, the likelihood in $p$ is strictly concave and has a finite maximum unless every observation equals $a$. With only $a$ held, the bounded profile strictly beats the reachable Pareto trace. The numerical comparison can still report the trace as a diagnostic.
+Held-scale fits use the reciprocal transformed gamma profile. With $a,p$ held, the score for $k$ has one root. With $a,k$ held, the likelihood in $p$ is strictly concave and has a finite maximum unless every observation equals $a$. With only $a$ held, the bounded profile strictly beats the reachable Pareto trace. The numerical comparison can still report the trace as a diagnostic, with one log-likelihood unit subtracted per observation at the held endpoint.
 
 For narrowly spaced data with both shapes free, the comparison uses
 reflected relative logs $-\log(x_i/x_0)$. Subtracting independently

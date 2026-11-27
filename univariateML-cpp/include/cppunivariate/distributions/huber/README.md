@@ -52,13 +52,17 @@ limits:
     when: 'The free shape satisfies $\epsilon\to\infty$, leaving the normal law at the eligible fitted or held location and scale.'
     fixed: []
     status: NormalLimit
-    detect_firmness: numerical
+    detect: With shape free, the zero-residual held-scale case or a strict compact-profile cover and signed tail exclusion select the eligible normal law. An overlapping enclosure is an unresolved comparison.
+    detect_firmness: proved
+    detect_proof: ["dev/research/evaluations/2026-11-07-huber-cert-report.md#closing-the-noncompact-ends"]
   - model: laplace
     firmness: proved
     when: 'The free shape and scale tend to zero with $b=\sigma/\epsilon$ fixed, giving a Laplace law.'
     fixed: []
     status: LaplaceLimit
-    detect_firmness: numerical
+    detect: With shape and scale free, the strict median-cluster tail bound and compact-profile cover exclude every finite shape and the normal face. An overlapping enclosure is an unresolved comparison.
+    detect_firmness: proved
+    detect_proof: ["dev/research/evaluations/2026-11-07-huber-cert-report.md#closing-the-noncompact-ends"]
 holds: []
 fit_args:
   epsilon: 1.345
@@ -89,7 +93,7 @@ key_references:
 existence:
   uniqueness: unknown
   statement: >-
-    With location, scale and shape free, a finite MLE need not exist: the supremum can lie at a normal or Laplace limit, and constant data permit unbounded scale collapse. No general uniqueness theorem is asserted. With shape held, a finite maximum is attained for nonconstant data, including ties. For constant data it is attained when scale is held or location is held away from the observation. With shape free, held location and scale are respected in the eligible limit comparisons; all supported subsets use global likelihood bounds or stop with an unresolved comparison or work budget.
+    With location, scale and shape free, a finite MLE need not exist: the supremum can lie at a normal or Laplace limit, and constant data permit unbounded scale collapse. No general uniqueness theorem is asserted. With shape held, a finite maximum is attained for nonconstant data, including ties. For constant data it is attained when scale is held or location is held away from the observation. With shape free, held location and scale are respected in the eligible limit comparisons; a strict cover certifies a face. With tuning held and scale free, the all-tail scale and gap can certify an interval of maximizing locations. When the fitted coefficients pass the accuracy check but the set comparison remains unresolved, the fitter returns an uncertified estimate with unknown cardinality.
   reason: >-
     For fixed shape, write inverse scale $\eta=1/\sigma$ and scaled location $\nu=\mu/\sigma$. The log-likelihood is $n\log\eta-\sum_i\rho_\epsilon(\eta x_i-\nu)$ plus a constant, with convex Huber loss $\rho_\epsilon$. It is concave, but linear tails can give an interval of maximizing locations. Coercivity gives attainment except for the stated zero-residual collapse. Concavity in shape of the loss gives endpoint bounds for the profiled search; both limit likelihoods are retained.
   equivariance:
@@ -124,7 +128,10 @@ The scale is the joint maximum-likelihood scale. When the fitter certifies a
 nontrivial maximizing location interval, it returns the closed interval at
 the common scale and uses its midpoint as representative. For held tuning and nonconstant data, a nontrivial interval requires equal
 tail counts and a central gap wider than twice the transition width. The
-interval is the central gap eroded at each end by $\epsilon\sigma$. At equality the eroded gap is a singleton. See the
+interval is the central gap eroded at each end by $\epsilon\sigma$.
+With two equally populated levels, the common scale is $\epsilon$ times
+the central half-gap. A strict interval then exists for $0<\epsilon<1$,
+with half-width equal to the central half-gap times $1-\epsilon^2$. At equality the eroded gap is a singleton. See the
 [exact maximizer-set analysis](../../../../../dev/research/evaluations/2026-11-25-lean-huber-report.md). For held $\epsilon$ and nonconstant data
 the maximum is attained, ties included; constant data have an unbounded
 likelihood unless $\mu$ is held at a different value or $\sigma$ is held.

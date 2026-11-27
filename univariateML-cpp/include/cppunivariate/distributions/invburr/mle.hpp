@@ -329,7 +329,9 @@ inline InvBurrResult invburr_mle_holds(span x,double a,double b,double s,double 
  if(r.status==BurrStatus::ParetoBoundary)st=InvBurrStatus::PowerBoundary;
  if(r.status==BurrStatus::AllGeOne)st=InvBurrStatus::AllLeOne;
  InvBurrResult out{r.shape1,r.shape2,std::isnan(s)?1/r.scale:s,r.logLik+jac,r.iterations,st};
- out.certified=r.certified;
+ // The held-power Lomax cover excludes finite competitors on the rounded
+ // transformed sample. Its bounds do not enclose the original observations.
+ out.certified=r.certified && st!=InvBurrStatus::InvWeibullBoundary;
  out.singleton_proved=r.singleton_proved && !scale_only;
  out.stop_detail=invburr_stop_detail(r.stop_detail,jac,std::isnan(s)?NAN:s);
  // A solve on rounded reciprocals is only a proposal when the signed
@@ -360,7 +362,7 @@ inline FitOutcome outcome(const InvBurrResult& r) {
   if (r.stop_detail.accuracy_stop == AccuracyStop::Conditioning) return FitOutcome::failure(OutcomeReason::Conditioning);
   switch (r.status) {
     case InvBurrStatus::Ok: return r.singleton_proved ? FitOutcome::singleton(r.certified) : FitOutcome::unknown_cardinality(r.certified);
-    case InvBurrStatus::InvWeibullBoundary: return FitOutcome::limit(true);
+    case InvBurrStatus::InvWeibullBoundary: return FitOutcome::limit(r.certified);
     case InvBurrStatus::PowerBoundary: return FitOutcome::limit(true);
     case InvBurrStatus::InvalidInit: return FitOutcome::failure(OutcomeReason::InvalidInput);
     case InvBurrStatus::IterationFailure: return FitOutcome::failure(OutcomeReason::Unresolved);

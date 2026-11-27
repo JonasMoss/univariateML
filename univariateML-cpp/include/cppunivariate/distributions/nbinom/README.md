@@ -230,19 +230,25 @@ modifiers:
         configuration: {zero: inflated}
         firmness: proved
         when: The size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p$ fixed and positive inflation.
-        detect: Size and probability are free; a signed Poisson-tail bound and complete finite-rectangle coverage
-          select the same-inflation ZIP face, or certified positive-count and NB comparisons select the free-inflation
-          face. Unresolved comparisons stop without selecting a limit.
+        detect: Size and probability are free. With no zeros and positive held inflation, a certified
+          ordinary-NB reduction gives the Poisson rate at the held inflation. Otherwise, a signed Poisson-tail
+          bound and complete finite-rectangle cover select ZIP for free or positive held inflation.
+          With free inflation, certified positive-count exclusion and strict NB comparison can also select ZIP.
+          Unresolved comparisons retain witnesses without selecting a limit.
         status: ZipLimit
-        detect_firmness: numerical
+        detect_firmness: proved
+        detect_proof: ["UnivariateML.NegBinomial.poisson_supremum", "dev/research/evaluations/2026-11-06-zinb-cert-report.md#implementation-and-mathematical-scope"]
       - model: pois
         firmness: proved
         when: The size $r$ tends to infinity and $p$ tends to one with $r(1-p)/p$ fixed, while inflation tends to
           zero.
-        detect: A certified ordinary-NB reduction or complete global comparison selects the zero-inflation Poisson
-          face. An unresolved global comparison is a numerical stop, not a non-existence report.
+        detect: Size and probability are free. Zero held inflation, no zeros with free inflation, or a
+          proved zero deficit reduces the comparison to ordinary NB. With free inflation, a signed
+          tail and complete rectangle cover or a strict positive-count and NB comparison can select
+          the face at zero inflation. Unresolved comparisons retain witnesses without selecting a limit.
         status: PoissonLimit
-        detect_firmness: numerical
+        detect_firmness: proved
+        detect_proof: ["UnivariateML.NegBinomial.poisson_supremum", "dev/research/evaluations/2026-11-06-zinb-cert-report.md#implementation-and-mathematical-scope"]
   truncate:
     status: implemented
     certified: 'yes'

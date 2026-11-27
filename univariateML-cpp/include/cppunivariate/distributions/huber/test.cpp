@@ -603,3 +603,33 @@ TEST_CASE("huber: the exact held cutoff resolves a rounded product tie") {
   CHECK(cppunivariate::huber_gap_sign(-1,1,1+step,1-step/2)==-1);
   CHECK(cppunivariate::huber_gap_sign(-1,1,1,1)==0);
 }
+
+TEST_CASE("huber: balanced two-level data certify the held-tuning gap at the cutoff") {
+  const std::vector<double> x{-1., -1., 1., 1.};
+  const double c = std::nextafter(1., 0.);
+  const auto fit = cppunivariate::huber_mle(mltest::as_span(x), 1e-10, 200, c);
+  const auto o = cppunivariate::outcome(fit);
+  REQUIRE(o.kind == cppunivariate::OutcomeKind::Estimate);
+  CHECK(o.certified);
+  CHECK_FALSE(o.unique);
+  REQUIRE(fit.maximizers.size == 1);
+  const auto& box = std::get<cppunivariate::Box>(fit.maximizers.pieces[0].value);
+  const double width = std::fma(-c, c, 1.);
+  CHECK(fit.sigma == c);
+  CHECK(box.axes[0].range.lower == -width);
+  CHECK(box.axes[0].range.upper == width);
+}
+
+TEST_CASE("huber: certification follows the closed face comparison") {
+  cppunivariate::HuberResult proposal{};
+  for (auto status : {cppunivariate::HuberStatus::NormalLimit,
+                      cppunivariate::HuberStatus::LaplaceLimit}) {
+    proposal.status = status;
+    CHECK(cppunivariate::outcome(proposal).kind == cppunivariate::OutcomeKind::Limit);
+    CHECK_FALSE(cppunivariate::outcome(proposal).certified);
+  }
+  const std::vector<double> centered(3, 2.);
+  const auto limit = cppunivariate::huber_mle(mltest::as_span(centered), 1e-10, 200, NAN, NAN, 1.);
+  REQUIRE(limit.status == cppunivariate::HuberStatus::NormalLimit);
+  CHECK(cppunivariate::outcome(limit).certified);
+}

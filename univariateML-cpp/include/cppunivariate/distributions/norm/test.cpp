@@ -788,3 +788,26 @@ TEST_CASE("a wide truncation preserves a positive exponential-face variance") {
   REQUIRE(r.status == cppunivariate::TnormStatus::Ok);
   CHECK(r.logLik > r.limit_logLik);
 }
+
+TEST_CASE("tnorm: opposing score signs distinguish strict faces from rounded equality") {
+  const std::vector<double> equality{0., 2.};
+  const auto close = cppunivariate::tnorm_mle(mltest::as_span(equality), 0., INFINITY);
+  REQUIRE(close.status == cppunivariate::TnormStatus::ExponentialBoundary);
+  CHECK_FALSE(cppunivariate::outcome(close).certified);
+
+  const std::vector<double> right{0., 0., 3.}, left{-3., 0., 0.};
+  const auto exp = cppunivariate::tnorm_mle(mltest::as_span(right), 0., INFINITY);
+  const auto reflected = cppunivariate::tnorm_mle(mltest::as_span(left), -INFINITY, 0.);
+  REQUIRE(exp.status == cppunivariate::TnormStatus::ExponentialBoundary);
+  REQUIRE(reflected.status == cppunivariate::TnormStatus::ReflectedExponentialBoundary);
+  CHECK(cppunivariate::outcome(exp).certified);
+  CHECK(cppunivariate::outcome(reflected).certified);
+
+  const std::vector<double> bounded{-1., -1., 1.};
+  const auto tilt = cppunivariate::tnorm_mle(mltest::as_span(bounded), -1., 1.);
+  const auto uniform = cppunivariate::tnorm_mle(mltest::as_span(bounded), -1., 1., 1e-12, 100, 0.);
+  REQUIRE(tilt.status == cppunivariate::TnormStatus::TruncatedExponentialBoundary);
+  REQUIRE(uniform.status == cppunivariate::TnormStatus::UniformBoundary);
+  CHECK(cppunivariate::outcome(tilt).certified);
+  CHECK(cppunivariate::outcome(uniform).certified);
+}
