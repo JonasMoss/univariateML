@@ -127,3 +127,15 @@ public import UnivariateML.Family.Shape2InvBurr
 public import UnivariateML.Family.Shape2InvTrGamma
 public import UnivariateML.Family.Shape2PGW
 public import UnivariateML.Family.Shape2TrGamma
+public import UnivariateML.Family.Discrete4BBinom
+public import UnivariateML.Family.Discrete4BNBinom
+public import UnivariateML.Family.Discrete4CMB
+public import UnivariateML.Family.Discrete4CMP
+public import UnivariateML.Family.Discrete4DGamma
+public import UnivariateML.Family.Discrete4DNorm
+public import UnivariateML.Family.Discrete4DWeibull
+public import UnivariateML.Family.Discrete4Hyper
+public import UnivariateML.Family.Discrete4NBinom
+public import UnivariateML.Family.Discrete4NHyper
+public import UnivariateML.Family.Discrete4PIG
+public import UnivariateML.Family.Discrete4Skellam
