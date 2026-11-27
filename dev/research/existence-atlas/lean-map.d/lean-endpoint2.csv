@@ -1,0 +1,946 @@
+family,regime,theorem,file,line,statement,hypotheses_and_conclusion,scope,proof_marker,dossier_scope_note,coverage
+fpareto,all free,UnivariateML.Endpoint2FellerPareto.threshold_spike,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,39,"A subunit lower power gives divergence as the threshold approaches the minimum from below, with all ties at that minimum included."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {a b c s K : ℝ} (ha : a < 1) (hc : 0 < c)
+    (hs : 0 < s) :
+    Tendsto (logLik d a b c s K) (𝓝[>] 0) atTop",failure,,"Subunit-lower-power branch, with every minimum tie counted.",
+fpareto,scale+shape1+shape2+shape3,UnivariateML.Endpoint2FellerPareto.threshold_spike,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,39,"A subunit lower power gives divergence as the threshold approaches the minimum from below, with all ties at that minimum included."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {a b c s K : ℝ} (ha : a < 1) (hc : 0 < c)
+    (hs : 0 < s) :
+    Tendsto (logLik d a b c s K) (𝓝[>] 0) atTop",failure,,"Subunit-lower-power branch, with every minimum tie counted.",
+fpareto,shape1+shape2+shape3,UnivariateML.Endpoint2FellerPareto.threshold_spike,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,39,"A subunit lower power gives divergence as the threshold approaches the minimum from below, with all ties at that minimum included."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {a b c s K : ℝ} (ha : a < 1) (hc : 0 < c)
+    (hs : 0 < s) :
+    Tendsto (logLik d a b c s K) (𝓝[>] 0) atTop",failure,,"Subunit-lower-power branch, with every minimum tie counted.",
+fpareto,scale+shape2+shape3,UnivariateML.Endpoint2FellerPareto.threshold_spike,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,39,"A subunit lower power gives divergence as the threshold approaches the minimum from below, with all ties at that minimum included."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {a b c s K : ℝ} (ha : a < 1) (hc : 0 < c)
+    (hs : 0 < s) :
+    Tendsto (logLik d a b c s K) (𝓝[>] 0) atTop",failure,,"Subunit-lower-power branch, with every minimum tie counted.",
+fpareto,all free,UnivariateML.Endpoint2FellerPareto.unbounded_of_threshold_path,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,92,"Every model admitting the full subunit-power threshold path has an unbounded objective, hence no finite maximizer. The ambient model may include closed threshold contact and additional free parameters."," {P : Type*} {D : Set P} {L : P → ℝ}
+    {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0)
+    {a b c s K : ℝ} (ha : a < 1) (hc : 0 < c) (hs : 0 < s) (path : ℝ → P)
+    (hpath : ∀ t > 0, path t ∈ D ∧ L (path t) = logLik d a b c s K t) :
+    ¬ BddAbove (L '' D) ∧ ¬ ∃ p ∈ D, IsMaxOn L D p",failure,,Transfers the interior spike to any ambient finite objective containing the path.,
+fpareto,scale+shape1+shape2+shape3,UnivariateML.Endpoint2FellerPareto.threshold_contact_unique,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,114,"At lower power one, closed contact uniquely maximizes over the threshold gap for any fixed positive scale, power, and upper tail power."," (hn : 0 < n) {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) {b c s K : ℝ} (hb : 0 < b) (hc : 0 < c) (hs : 0 < s) :
+    ∃! t, t ∈ Ici (0 : ℝ) ∧ IsMaxOn (logLik d 1 b c s K) (Ici 0) t",uniqueness,,Unit lower power.,
+fpareto,all free,UnivariateML.Endpoint2FellerPareto.free_lower_shape_or_power,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,151,"If either the lower beta shape or the power is free, the finite interior log likelihood is unbounded with any valid holds on scale and upper shape. The parameter `t` is the positive gap between threshold and sample minimum."," {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0)
+    (P C : Option ℝ) (hfree : P = none ∨ C = none)
+    (hP : 0 < P.getD 1) (hC : 0 < C.getD 1) {q s : ℝ} (hq : 0 < q) (hs : 0 < s) :
+    ∀ M : ℝ, ∃ p q' c s' t : ℝ,
+      0 < p ∧ P.getD p = p ∧ 0 < q' ∧ q' = q ∧ 0 < c ∧ C.getD c = c ∧
+        s' = s ∧ 0 < t ∧ M < interiorLogLik d p q' c s' t",failure,,This path applies when either the lower beta shape or transformation power is free.,
+fpareto,scale,UnivariateML.Endpoint2FellerPareto.free_lower_shape_or_power,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,151,"If either the lower beta shape or the power is free, the finite interior log likelihood is unbounded with any valid holds on scale and upper shape. The parameter `t` is the positive gap between threshold and sample minimum."," {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0)
+    (P C : Option ℝ) (hfree : P = none ∨ C = none)
+    (hP : 0 < P.getD 1) (hC : 0 < C.getD 1) {q s : ℝ} (hq : 0 < q) (hs : 0 < s) :
+    ∀ M : ℝ, ∃ p q' c s' t : ℝ,
+      0 < p ∧ P.getD p = p ∧ 0 < q' ∧ q' = q ∧ 0 < c ∧ C.getD c = c ∧
+        s' = s ∧ 0 < t ∧ M < interiorLogLik d p q' c s' t",failure,,This path applies when either the lower beta shape or transformation power is free.,
+fpareto,scale+shape1,UnivariateML.Endpoint2FellerPareto.free_lower_shape_or_power,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,151,"If either the lower beta shape or the power is free, the finite interior log likelihood is unbounded with any valid holds on scale and upper shape. The parameter `t` is the positive gap between threshold and sample minimum."," {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0)
+    (P C : Option ℝ) (hfree : P = none ∨ C = none)
+    (hP : 0 < P.getD 1) (hC : 0 < C.getD 1) {q s : ℝ} (hq : 0 < q) (hs : 0 < s) :
+    ∀ M : ℝ, ∃ p q' c s' t : ℝ,
+      0 < p ∧ P.getD p = p ∧ 0 < q' ∧ q' = q ∧ 0 < c ∧ C.getD c = c ∧
+        s' = s ∧ 0 < t ∧ M < interiorLogLik d p q' c s' t",failure,,This path applies when either the lower beta shape or transformation power is free.,
+fpareto,scale+shape1+shape2,UnivariateML.Endpoint2FellerPareto.free_lower_shape_or_power,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,151,"If either the lower beta shape or the power is free, the finite interior log likelihood is unbounded with any valid holds on scale and upper shape. The parameter `t` is the positive gap between threshold and sample minimum."," {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0)
+    (P C : Option ℝ) (hfree : P = none ∨ C = none)
+    (hP : 0 < P.getD 1) (hC : 0 < C.getD 1) {q s : ℝ} (hq : 0 < q) (hs : 0 < s) :
+    ∀ M : ℝ, ∃ p q' c s' t : ℝ,
+      0 < p ∧ P.getD p = p ∧ 0 < q' ∧ q' = q ∧ 0 < c ∧ C.getD c = c ∧
+        s' = s ∧ 0 < t ∧ M < interiorLogLik d p q' c s' t",failure,,This path applies when either the lower beta shape or transformation power is free.,
+fpareto,scale+shape1+shape3,UnivariateML.Endpoint2FellerPareto.free_lower_shape_or_power,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,151,"If either the lower beta shape or the power is free, the finite interior log likelihood is unbounded with any valid holds on scale and upper shape. The parameter `t` is the positive gap between threshold and sample minimum."," {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0)
+    (P C : Option ℝ) (hfree : P = none ∨ C = none)
+    (hP : 0 < P.getD 1) (hC : 0 < C.getD 1) {q s : ℝ} (hq : 0 < q) (hs : 0 < s) :
+    ∀ M : ℝ, ∃ p q' c s' t : ℝ,
+      0 < p ∧ P.getD p = p ∧ 0 < q' ∧ q' = q ∧ 0 < c ∧ C.getD c = c ∧
+        s' = s ∧ 0 < t ∧ M < interiorLogLik d p q' c s' t",failure,,This path applies when either the lower beta shape or transformation power is free.,
+fpareto,scale+shape2,UnivariateML.Endpoint2FellerPareto.free_lower_shape_or_power,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,151,"If either the lower beta shape or the power is free, the finite interior log likelihood is unbounded with any valid holds on scale and upper shape. The parameter `t` is the positive gap between threshold and sample minimum."," {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0)
+    (P C : Option ℝ) (hfree : P = none ∨ C = none)
+    (hP : 0 < P.getD 1) (hC : 0 < C.getD 1) {q s : ℝ} (hq : 0 < q) (hs : 0 < s) :
+    ∀ M : ℝ, ∃ p q' c s' t : ℝ,
+      0 < p ∧ P.getD p = p ∧ 0 < q' ∧ q' = q ∧ 0 < c ∧ C.getD c = c ∧
+        s' = s ∧ 0 < t ∧ M < interiorLogLik d p q' c s' t",failure,,This path applies when either the lower beta shape or transformation power is free.,
+fpareto,scale+shape3,UnivariateML.Endpoint2FellerPareto.free_lower_shape_or_power,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,151,"If either the lower beta shape or the power is free, the finite interior log likelihood is unbounded with any valid holds on scale and upper shape. The parameter `t` is the positive gap between threshold and sample minimum."," {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0)
+    (P C : Option ℝ) (hfree : P = none ∨ C = none)
+    (hP : 0 < P.getD 1) (hC : 0 < C.getD 1) {q s : ℝ} (hq : 0 < q) (hs : 0 < s) :
+    ∀ M : ℝ, ∃ p q' c s' t : ℝ,
+      0 < p ∧ P.getD p = p ∧ 0 < q' ∧ q' = q ∧ 0 < c ∧ C.getD c = c ∧
+        s' = s ∧ 0 < t ∧ M < interiorLogLik d p q' c s' t",failure,,This path applies when either the lower beta shape or transformation power is free.,
+fpareto,shape1,UnivariateML.Endpoint2FellerPareto.free_lower_shape_or_power,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,151,"If either the lower beta shape or the power is free, the finite interior log likelihood is unbounded with any valid holds on scale and upper shape. The parameter `t` is the positive gap between threshold and sample minimum."," {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0)
+    (P C : Option ℝ) (hfree : P = none ∨ C = none)
+    (hP : 0 < P.getD 1) (hC : 0 < C.getD 1) {q s : ℝ} (hq : 0 < q) (hs : 0 < s) :
+    ∀ M : ℝ, ∃ p q' c s' t : ℝ,
+      0 < p ∧ P.getD p = p ∧ 0 < q' ∧ q' = q ∧ 0 < c ∧ C.getD c = c ∧
+        s' = s ∧ 0 < t ∧ M < interiorLogLik d p q' c s' t",failure,,This path applies when either the lower beta shape or transformation power is free.,
+fpareto,shape1+shape2,UnivariateML.Endpoint2FellerPareto.free_lower_shape_or_power,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,151,"If either the lower beta shape or the power is free, the finite interior log likelihood is unbounded with any valid holds on scale and upper shape. The parameter `t` is the positive gap between threshold and sample minimum."," {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0)
+    (P C : Option ℝ) (hfree : P = none ∨ C = none)
+    (hP : 0 < P.getD 1) (hC : 0 < C.getD 1) {q s : ℝ} (hq : 0 < q) (hs : 0 < s) :
+    ∀ M : ℝ, ∃ p q' c s' t : ℝ,
+      0 < p ∧ P.getD p = p ∧ 0 < q' ∧ q' = q ∧ 0 < c ∧ C.getD c = c ∧
+        s' = s ∧ 0 < t ∧ M < interiorLogLik d p q' c s' t",failure,,This path applies when either the lower beta shape or transformation power is free.,
+fpareto,shape1+shape3,UnivariateML.Endpoint2FellerPareto.free_lower_shape_or_power,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,151,"If either the lower beta shape or the power is free, the finite interior log likelihood is unbounded with any valid holds on scale and upper shape. The parameter `t` is the positive gap between threshold and sample minimum."," {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0)
+    (P C : Option ℝ) (hfree : P = none ∨ C = none)
+    (hP : 0 < P.getD 1) (hC : 0 < C.getD 1) {q s : ℝ} (hq : 0 < q) (hs : 0 < s) :
+    ∀ M : ℝ, ∃ p q' c s' t : ℝ,
+      0 < p ∧ P.getD p = p ∧ 0 < q' ∧ q' = q ∧ 0 < c ∧ C.getD c = c ∧
+        s' = s ∧ 0 < t ∧ M < interiorLogLik d p q' c s' t",failure,,This path applies when either the lower beta shape or transformation power is free.,
+fpareto,shape2,UnivariateML.Endpoint2FellerPareto.free_lower_shape_or_power,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,151,"If either the lower beta shape or the power is free, the finite interior log likelihood is unbounded with any valid holds on scale and upper shape. The parameter `t` is the positive gap between threshold and sample minimum."," {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0)
+    (P C : Option ℝ) (hfree : P = none ∨ C = none)
+    (hP : 0 < P.getD 1) (hC : 0 < C.getD 1) {q s : ℝ} (hq : 0 < q) (hs : 0 < s) :
+    ∀ M : ℝ, ∃ p q' c s' t : ℝ,
+      0 < p ∧ P.getD p = p ∧ 0 < q' ∧ q' = q ∧ 0 < c ∧ C.getD c = c ∧
+        s' = s ∧ 0 < t ∧ M < interiorLogLik d p q' c s' t",failure,,This path applies when either the lower beta shape or transformation power is free.,
+fpareto,shape3,UnivariateML.Endpoint2FellerPareto.free_lower_shape_or_power,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,151,"If either the lower beta shape or the power is free, the finite interior log likelihood is unbounded with any valid holds on scale and upper shape. The parameter `t` is the positive gap between threshold and sample minimum."," {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0)
+    (P C : Option ℝ) (hfree : P = none ∨ C = none)
+    (hP : 0 < P.getD 1) (hC : 0 < C.getD 1) {q s : ℝ} (hq : 0 < q) (hs : 0 < s) :
+    ∀ M : ℝ, ∃ p q' c s' t : ℝ,
+      0 < p ∧ P.getD p = p ∧ 0 < q' ∧ q' = q ∧ 0 < c ∧ C.getD c = c ∧
+        s' = s ∧ 0 < t ∧ M < interiorLogLik d p q' c s' t",failure,,This path applies when either the lower beta shape or transformation power is free.,
+fpareto,min,UnivariateML.Endpoint2FellerPareto.constant_excess_power_path,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,182,"For a constant positive excess, keep its scale and both beta shapes fixed. The ratio of every excess to the scale is one, so increasing the power adds exactly `n * log c` to the log likelihood."," (hn : 0 < n) {s : ℝ} (hs : 0 < s)
+    (p q B : ℝ) :
+    Tendsto
+      (fun c ↦ logLik (fun _ : Fin n ↦ s) (c * p) (c * q) c s
+        (log c - log s - B) 0)
+      atTop atTop",path:3,,Kernel version of the fixed-shapes constant-excess ray.,
+fpareto,min+shape1+shape3,UnivariateML.Endpoint2FellerPareto.constant_excess_power_path,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,182,"For a constant positive excess, keep its scale and both beta shapes fixed. The ratio of every excess to the scale is one, so increasing the power adds exactly `n * log c` to the log likelihood."," (hn : 0 < n) {s : ℝ} (hs : 0 < s)
+    (p q B : ℝ) :
+    Tendsto
+      (fun c ↦ logLik (fun _ : Fin n ↦ s) (c * p) (c * q) c s
+        (log c - log s - B) 0)
+      atTop atTop",path:3,,Kernel version of the fixed-shapes constant-excess ray.,
+fpareto,shape1+shape2+shape3,UnivariateML.Endpoint2FellerPareto.scale_collapse,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,211,"Along the joint scale and threshold ray `t = s`, a minimum contributes coefficient `-1` and a larger observation contributes `b` to the leading `log s` term. A negative sum gives divergence, including constant samples."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    {a b c K : ℝ} (hc : 0 < c)
+    (hE : (∑ i, if d i = 0 then (-1 : ℝ) else b) < 0) :
+    Tendsto (fun s ↦ logLik d a b c s (K - log s) s) (𝓝[>] 0) atTop",failure,,"Negative exponent E, on the positive gap-equals-scale ray.",
+pareto3,shape,UnivariateML.Endpoint2FellerPareto.scale_collapse,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,211,"Along the joint scale and threshold ray `t = s`, a minimum contributes coefficient `-1` and a larger observation contributes `b` to the leading `log s` term. A negative sum gives divergence, including constant samples."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    {a b c K : ℝ} (hc : 0 < c)
+    (hE : (∑ i, if d i = 0 then (-1 : ℝ) else b) < 0) :
+    Tendsto (fun s ↦ logLik d a b c s (K - log s) s) (𝓝[>] 0) atTop",failure,,Negative E on the specialization a=b=c.,
+pareto4,shape1+shape2,UnivariateML.Endpoint2FellerPareto.scale_collapse,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,211,"Along the joint scale and threshold ray `t = s`, a minimum contributes coefficient `-1` and a larger observation contributes `b` to the leading `log s` term. A negative sum gives divergence, including constant samples."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    {a b c K : ℝ} (hc : 0 < c)
+    (hE : (∑ i, if d i = 0 then (-1 : ℝ) else b) < 0) :
+    Tendsto (fun s ↦ logLik d a b c s (K - log s) s) (𝓝[>] 0) atTop",failure,,Negative E on the Burr slice.,
+fpareto,shape2+shape3,UnivariateML.Endpoint2FellerPareto.vanishing_scale_upper_shape,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,264,"With scale and upper beta shape free, the simultaneous path `q = 1/T`, `s = t = exp(-T)` diverges with arbitrary fixed positive lower beta shape and power. Ties at the minimum contribute individually."," {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) (hz : ∃ i, d i = 0)
+    {p c : ℝ} (hp : 0 < p) (hc : 0 < c) :
+    Tendsto (fun T ↦ interiorLogLik d p T⁻¹ c (exp (-T)) (exp (-T))) atTop atTop",failure,,The exact free-scale and upper-shape ray with fixed lower shape and power.,
+fpareto,all free,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness",,"Optional holds match the dossier after ordering lower shape, upper shape, power and scale.",
+fpareto,scale,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness",,"Optional holds match the dossier after ordering lower shape, upper shape, power and scale.",
+fpareto,scale+shape1,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness",,"Optional holds match the dossier after ordering lower shape, upper shape, power and scale.",
+fpareto,scale+shape1+shape2,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness",,"Optional holds match the dossier after ordering lower shape, upper shape, power and scale.",
+fpareto,scale+shape1+shape3,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness",,"Optional holds match the dossier after ordering lower shape, upper shape, power and scale.",
+fpareto,scale+shape2,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness",,"Optional holds match the dossier after ordering lower shape, upper shape, power and scale.",
+fpareto,scale+shape3,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness",,"Optional holds match the dossier after ordering lower shape, upper shape, power and scale.",
+fpareto,shape1,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness",,"Optional holds match the dossier after ordering lower shape, upper shape, power and scale.",
+fpareto,shape1+shape2,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness",,"Optional holds match the dossier after ordering lower shape, upper shape, power and scale.",
+fpareto,shape1+shape3,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness",,"Optional holds match the dossier after ordering lower shape, upper shape, power and scale.",
+fpareto,shape2,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness",,"Optional holds match the dossier after ordering lower shape, upper shape, power and scale.",
+fpareto,shape2+shape3,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness",,"Optional holds match the dossier after ordering lower shape, upper shape, power and scale.",
+fpareto,shape3,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness",,"Optional holds match the dossier after ordering lower shape, upper shape, power and scale.",
+pareto4,all free,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness, path:1, limit:1",,Burr slice with lower beta shape one.,
+pareto4,scale,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness",,Burr slice with lower beta shape one.,
+pareto4,scale+shape1,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness",,Burr slice with lower beta shape one.,
+pareto4,shape1,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness",,Burr slice with lower beta shape one.,
+pareto4,shape2,UnivariateML.Endpoint2FellerPareto.structural_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerPareto.lean,375,All structural free-threshold masks have unbounded likelihood and an empty finite maximizing set. This uses either a subunit lower power or the simultaneous vanishing upper-shape and scale path.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) (P Q C S : Option ℝ)
+    (hP : 0 < P.getD 1) (hQ : 0 < Q.getD 1) (hC : 0 < C.getD 1) (hS : 0 < S.getD 1)
+    (hfree : (P = none ∨ C = none) ∨ (Q = none ∧ S = none)) :
+    let L := fun v : ThresholdParameters ↦
+      interiorLogLik d v.lowerShape v.upperShape v.power v.scale v.gap
+    ¬ BddAbove (L '' thresholdDomain P Q C S) ∧
+      ¬ ∃ v ∈ thresholdDomain P Q C S, IsMaxOn L (thresholdDomain P Q C S) v","criterion, failure, uniqueness",,Burr slice with lower beta shape one.,
+fpareto,shape1+shape2+shape3,UnivariateML.Endpoint2FellerParetoFreeScale.zero_exponent_envelope,dev/lean/UnivariateML/Family/Endpoint2FellerParetoFreeScale.lean,188,"At a zero scale-collapse exponent, the supremum equals the sharp contact envelope and is strictly above all finite points."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {a b c K : ℝ} (ha : 1 ≤ a) (hb : 0 < b) (hc : 0 < c)
+    (hE : exponent d b = 0) :
+    ∃ C : ℝ, IsLUB (logLik d a b c K '' domain a) C ∧
+      ∀ v ∈ domain a, logLik d a b c K v < C",failure,,Feller–Pareto with lower and upper powers a=cp and b=cq. Strict finite supremum at E=0.,
+pareto3,shape,UnivariateML.Endpoint2FellerParetoFreeScale.zero_exponent_envelope,dev/lean/UnivariateML/Family/Endpoint2FellerParetoFreeScale.lean,188,"At a zero scale-collapse exponent, the supremum equals the sharp contact envelope and is strictly above all finite points."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {a b c K : ℝ} (ha : 1 ≤ a) (hb : 0 < b) (hc : 0 < c)
+    (hE : exponent d b = 0) :
+    ∃ C : ℝ, IsLUB (logLik d a b c K '' domain a) C ∧
+      ∀ v ∈ domain a, logLik d a b c K v < C",failure,,Log-logistic slice a=b=c. Strict finite supremum at E=0.,
+pareto4,shape1+shape2,UnivariateML.Endpoint2FellerParetoFreeScale.zero_exponent_envelope,dev/lean/UnivariateML/Family/Endpoint2FellerParetoFreeScale.lean,188,"At a zero scale-collapse exponent, the supremum equals the sharp contact envelope and is strictly above all finite points."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {a b c K : ℝ} (ha : 1 ≤ a) (hb : 0 < b) (hc : 0 < c)
+    (hE : exponent d b = 0) :
+    ∃ C : ℝ, IsLUB (logLik d a b c K '' domain a) C ∧
+      ∀ v ∈ domain a, logLik d a b c K v < C",failure,,Burr slice a=c and b equal to c times the first shape. Strict finite supremum at E=0.,
+fpareto,shape1+shape2+shape3,UnivariateML.Endpoint2FellerParetoFreeScale.negative_exponent_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerParetoFreeScale.lean,244,"A negative collapse exponent gives unbounded likelihood in the positive finite domain, including constant samples."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    {a b c K : ℝ} (hc : 0 < c) (hE : exponent d b < 0) :
+    ¬ BddAbove (logLik d a b c K '' domain a)",failure,,Feller–Pareto with lower and upper powers a=cp and b=cq. Unbounded at E<0.,
+pareto3,shape,UnivariateML.Endpoint2FellerParetoFreeScale.negative_exponent_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerParetoFreeScale.lean,244,"A negative collapse exponent gives unbounded likelihood in the positive finite domain, including constant samples."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    {a b c K : ℝ} (hc : 0 < c) (hE : exponent d b < 0) :
+    ¬ BddAbove (logLik d a b c K '' domain a)",failure,,Log-logistic slice a=b=c. Unbounded at E<0.,
+pareto4,shape1+shape2,UnivariateML.Endpoint2FellerParetoFreeScale.negative_exponent_unbounded,dev/lean/UnivariateML/Family/Endpoint2FellerParetoFreeScale.lean,244,"A negative collapse exponent gives unbounded likelihood in the positive finite domain, including constant samples."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    {a b c K : ℝ} (hc : 0 < c) (hE : exponent d b < 0) :
+    ¬ BddAbove (logLik d a b c K '' domain a)",failure,,Burr slice a=c and b equal to c times the first shape. Unbounded at E<0.,
+fpareto,shape1+shape2+shape3,UnivariateML.Endpoint2FellerParetoFreeScale.fixed_shapes_criterion,dev/lean/UnivariateML/Family/Endpoint2FellerParetoFreeScale.lean,422,A finite joint threshold and scale maximum exists exactly for lower power at least one and positive scale-collapse exponent.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {a b c K : ℝ} (hb : 0 < b) (hc : 0 < c) :
+    (∃ v ∈ domain a, IsMaxOn (logLik d a b c K) (domain a) v) ↔
+      1 ≤ a ∧ 0 < exponent d b",criterion,,Feller–Pareto with lower and upper powers a=cp and b=cq. The zero and negative exponent branches exclude attainment.,
+pareto3,shape,UnivariateML.Endpoint2FellerParetoFreeScale.fixed_shapes_criterion,dev/lean/UnivariateML/Family/Endpoint2FellerParetoFreeScale.lean,422,A finite joint threshold and scale maximum exists exactly for lower power at least one and positive scale-collapse exponent.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {a b c K : ℝ} (hb : 0 < b) (hc : 0 < c) :
+    (∃ v ∈ domain a, IsMaxOn (logLik d a b c K) (domain a) v) ↔
+      1 ≤ a ∧ 0 < exponent d b",criterion,,Log-logistic slice a=b=c. The zero and negative exponent branches exclude attainment.,
+pareto4,shape1+shape2,UnivariateML.Endpoint2FellerParetoFreeScale.fixed_shapes_criterion,dev/lean/UnivariateML/Family/Endpoint2FellerParetoFreeScale.lean,422,A finite joint threshold and scale maximum exists exactly for lower power at least one and positive scale-collapse exponent.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {a b c K : ℝ} (hb : 0 < b) (hc : 0 < c) :
+    (∃ v ∈ domain a, IsMaxOn (logLik d a b c K) (domain a) v) ↔
+      1 ≤ a ∧ 0 < exponent d b",criterion,,Burr slice a=c and b equal to c times the first shape. The zero and negative exponent branches exclude attainment.,
+fpareto,min,UnivariateML.Endpoint2FellerParetoHeld.conditional_power_scale,dev/lean/UnivariateML/Family/Endpoint2FellerParetoHeld.lean,267,"At fixed beta shapes, every nonconstant positive-excess sample has a unique fitted power and scale. This applies under either separate shape hold when conditioning on the remaining beta shape."," (hn : 0 < n) {x : Fin n → ℝ} {μ p q : ℝ}
+    (hx : ∀ i, μ < x i) (hp : 0 < p) (hq : 0 < q) (hne : ∃ i j, x i ≠ x j) :
+    let D : Set (ℝ × ℝ) := Ioi 0 ×ˢ Ioi 0
+    let L := fun v : ℝ × ℝ ↦ ShapeFacesFellerPareto.logLikelihood x μ v.1 v.2 (p,q)
+    ∃! v, v ∈ D ∧ IsMaxOn L D v",uniqueness,,Conditional uniqueness at each beta-shape pair. Stationary component finiteness is separate.,
+fpareto,min+shape1,UnivariateML.Endpoint2FellerParetoHeld.conditional_power_scale,dev/lean/UnivariateML/Family/Endpoint2FellerParetoHeld.lean,267,"At fixed beta shapes, every nonconstant positive-excess sample has a unique fitted power and scale. This applies under either separate shape hold when conditioning on the remaining beta shape."," (hn : 0 < n) {x : Fin n → ℝ} {μ p q : ℝ}
+    (hx : ∀ i, μ < x i) (hp : 0 < p) (hq : 0 < q) (hne : ∃ i j, x i ≠ x j) :
+    let D : Set (ℝ × ℝ) := Ioi 0 ×ˢ Ioi 0
+    let L := fun v : ℝ × ℝ ↦ ShapeFacesFellerPareto.logLikelihood x μ v.1 v.2 (p,q)
+    ∃! v, v ∈ D ∧ IsMaxOn L D v",uniqueness,,Conditional uniqueness at each beta-shape pair. Stationary component finiteness is separate.,
+fpareto,min+shape3,UnivariateML.Endpoint2FellerParetoHeld.conditional_power_scale,dev/lean/UnivariateML/Family/Endpoint2FellerParetoHeld.lean,267,"At fixed beta shapes, every nonconstant positive-excess sample has a unique fitted power and scale. This applies under either separate shape hold when conditioning on the remaining beta shape."," (hn : 0 < n) {x : Fin n → ℝ} {μ p q : ℝ}
+    (hx : ∀ i, μ < x i) (hp : 0 < p) (hq : 0 < q) (hne : ∃ i j, x i ≠ x j) :
+    let D : Set (ℝ × ℝ) := Ioi 0 ×ˢ Ioi 0
+    let L := fun v : ℝ × ℝ ↦ ShapeFacesFellerPareto.logLikelihood x μ v.1 v.2 (p,q)
+    ∃! v, v ∈ D ∧ IsMaxOn L D v",uniqueness,,Conditional uniqueness at each beta-shape pair. Stationary component finiteness is separate.,
+fpareto,min+shape1+shape3,UnivariateML.Endpoint2FellerParetoHeld.conditional_power_scale,dev/lean/UnivariateML/Family/Endpoint2FellerParetoHeld.lean,267,"At fixed beta shapes, every nonconstant positive-excess sample has a unique fitted power and scale. This applies under either separate shape hold when conditioning on the remaining beta shape."," (hn : 0 < n) {x : Fin n → ℝ} {μ p q : ℝ}
+    (hx : ∀ i, μ < x i) (hp : 0 < p) (hq : 0 < q) (hne : ∃ i j, x i ≠ x j) :
+    let D : Set (ℝ × ℝ) := Ioi 0 ×ˢ Ioi 0
+    let L := fun v : ℝ × ℝ ↦ ShapeFacesFellerPareto.logLikelihood x μ v.1 v.2 (p,q)
+    ∃! v, v ∈ D ∧ IsMaxOn L D v",uniqueness,,Conditional uniqueness at each beta-shape pair. Stationary component finiteness is separate.,
+fpareto,min+scale+shape2,UnivariateML.Endpoint2FellerParetoHeld.held_power_scale_criterion,dev/lean/UnivariateML/Family/Endpoint2FellerParetoHeld.lean,286,"Holding threshold, power and scale leaves a two-shape beta-prime fit. The constant branch has unbounded likelihood."," (hn : 0 < n) {x : Fin n → ℝ} {μ c s : ℝ}
+    (hx : ∀ i, μ < x i) (hc : 0 < c) (hs : 0 < s) :
+    let L := ShapeFacesFellerPareto.logLikelihood x μ c s
+    ((∃ p ∈ Beta.domain, IsMaxOn L Beta.domain p) ↔ ∃ i j, x i ≠ x j) ∧
+    ((∀ i j, x i = x j) → ¬ BddAbove (L '' Beta.domain))","criterion, failure",,Exact beta-prime transfer including constants.,
+fpareto,min,UnivariateML.Endpoint2FellerParetoHeld.constant_sample_path,dev/lean/UnivariateML/Family/Endpoint2FellerParetoHeld.lean,309,Fixed beta shapes concentrate at any positive common excess by increasing power with scale set to that excess.," (hn : 0 < n) {v μ : ℝ} (hv : μ < v) (p q : ℝ) :
+    Tendsto (fun c ↦ ShapeFacesFellerPareto.logLikelihood (fun _ : Fin n ↦ v)
+      μ c (v - μ) (p,q)) atTop atTop","failure, path:3, limit:3",,Constant positive excess branch. Dossier likelihood path with scale at the common excess.,
+fpareto,min+shape1,UnivariateML.Endpoint2FellerParetoHeld.constant_sample_path,dev/lean/UnivariateML/Family/Endpoint2FellerParetoHeld.lean,309,Fixed beta shapes concentrate at any positive common excess by increasing power with scale set to that excess.," (hn : 0 < n) {v μ : ℝ} (hv : μ < v) (p q : ℝ) :
+    Tendsto (fun c ↦ ShapeFacesFellerPareto.logLikelihood (fun _ : Fin n ↦ v)
+      μ c (v - μ) (p,q)) atTop atTop",failure,,Constant positive excess branch.,
+fpareto,min+shape3,UnivariateML.Endpoint2FellerParetoHeld.constant_sample_path,dev/lean/UnivariateML/Family/Endpoint2FellerParetoHeld.lean,309,Fixed beta shapes concentrate at any positive common excess by increasing power with scale set to that excess.," (hn : 0 < n) {v μ : ℝ} (hv : μ < v) (p q : ℝ) :
+    Tendsto (fun c ↦ ShapeFacesFellerPareto.logLikelihood (fun _ : Fin n ↦ v)
+      μ c (v - μ) (p,q)) atTop atTop",failure,,Constant positive excess branch.,
+fpareto,min+shape1+shape3,UnivariateML.Endpoint2FellerParetoHeld.constant_sample_path,dev/lean/UnivariateML/Family/Endpoint2FellerParetoHeld.lean,309,Fixed beta shapes concentrate at any positive common excess by increasing power with scale set to that excess.," (hn : 0 < n) {v μ : ℝ} (hv : μ < v) (p q : ℝ) :
+    Tendsto (fun c ↦ ShapeFacesFellerPareto.logLikelihood (fun _ : Fin n ↦ v)
+      μ c (v - μ) (p,q)) atTop atTop","failure, path:3, limit:3",,Constant positive excess branch. Dossier likelihood path with scale at the common excess.,
+fpareto,min+shape1+shape3,UnivariateML.Endpoint2FellerParetoHeld.held_shapes_criterion,dev/lean/UnivariateML/Family/Endpoint2FellerParetoHeld.lean,324,Holding threshold and both beta shapes gives a finite fit exactly on nonconstant positive excesses. Every attained fit is unique.," (hn : 0 < n) {x : Fin n → ℝ} {μ p q : ℝ}
+    (hx : ∀ i, μ < x i) (hp : 0 < p) (hq : 0 < q) :
+    let D : Set (ℝ × ℝ) := Ioi 0 ×ˢ Ioi 0
+    let L := fun v : ℝ × ℝ ↦ ShapeFacesFellerPareto.logLikelihood x μ v.1 v.2 (p,q)
+    ((∃ v ∈ D, IsMaxOn L D v) ↔ ∃ i j, x i ≠ x j) ∧
+      ((∃ i j, x i ≠ x j) → ∃! v, v ∈ D ∧ IsMaxOn L D v)","criterion, uniqueness",,Compact levels and strict concavity in power-intercept coordinates.,
+fpareto,scale+shape1+shape2+shape3,UnivariateML.Endpoint2FellerParetoRegular.score_strictAnti,dev/lean/UnivariateML/Family/Endpoint2FellerParetoRegular.lean,95,"The normalized threshold score is strictly decreasing on the interior, including on constant samples and samples with tied minima."," (hn : 0 < n) {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    {a b c s : ℝ} (hab : 0 < a + b) (hc : 0 < c) (hs : 0 < s) :
+    StrictAntiOn (normalizedScore d a b c s) (Ioi 0)",uniqueness,,Strict score ordering before existence is used. Lower power a=cp and upper power b=cq.,
+pareto3,scale+shape,UnivariateML.Endpoint2FellerParetoRegular.score_strictAnti,dev/lean/UnivariateML/Family/Endpoint2FellerParetoRegular.lean,95,"The normalized threshold score is strictly decreasing on the interior, including on constant samples and samples with tied minima."," (hn : 0 < n) {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    {a b c s : ℝ} (hab : 0 < a + b) (hc : 0 < c) (hs : 0 < s) :
+    StrictAntiOn (normalizedScore d a b c s) (Ioi 0)",uniqueness,,Strict score ordering before existence is used. Log-logistic specialization a=b=c.,
+pareto4,scale+shape1+shape2,UnivariateML.Endpoint2FellerParetoRegular.score_strictAnti,dev/lean/UnivariateML/Family/Endpoint2FellerParetoRegular.lean,95,"The normalized threshold score is strictly decreasing on the interior, including on constant samples and samples with tied minima."," (hn : 0 < n) {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    {a b c s : ℝ} (hab : 0 < a + b) (hc : 0 < c) (hs : 0 < s) :
+    StrictAntiOn (normalizedScore d a b c s) (Ioi 0)",uniqueness,,"Strict score ordering before existence is used. Burr specialization a=c, b=c times the first shape.",
+fpareto,scale+shape1+shape2+shape3,UnivariateML.Endpoint2FellerParetoRegular.interior_threshold_fit,dev/lean/UnivariateML/Family/Endpoint2FellerParetoRegular.lean,262,"At lower power above one the normalized score has exactly one interior root, and that root is the unique likelihood maximum."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {a b c s K : ℝ} (ha : 1 < a)
+    (hb : 0 < b) (hc : 0 < c) (hs : 0 < s) :
+    let L := Endpoint2FellerPareto.logLik d a b c s K
+    (∃! t, t ∈ Ioi (0 : ℝ) ∧ normalizedScore d a b c s t = 0) ∧
+      ∀ t ∈ Ioi 0, IsMaxOn L (Ioi 0) t ↔ normalizedScore d a b c s t = 0",uniqueness,,Lower power above one. Lower power a=cp and upper power b=cq.,
+pareto3,scale+shape,UnivariateML.Endpoint2FellerParetoRegular.interior_threshold_fit,dev/lean/UnivariateML/Family/Endpoint2FellerParetoRegular.lean,262,"At lower power above one the normalized score has exactly one interior root, and that root is the unique likelihood maximum."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {a b c s K : ℝ} (ha : 1 < a)
+    (hb : 0 < b) (hc : 0 < c) (hs : 0 < s) :
+    let L := Endpoint2FellerPareto.logLik d a b c s K
+    (∃! t, t ∈ Ioi (0 : ℝ) ∧ normalizedScore d a b c s t = 0) ∧
+      ∀ t ∈ Ioi 0, IsMaxOn L (Ioi 0) t ↔ normalizedScore d a b c s t = 0",uniqueness,,Lower power above one. Log-logistic specialization a=b=c.,
+pareto4,scale+shape1+shape2,UnivariateML.Endpoint2FellerParetoRegular.interior_threshold_fit,dev/lean/UnivariateML/Family/Endpoint2FellerParetoRegular.lean,262,"At lower power above one the normalized score has exactly one interior root, and that root is the unique likelihood maximum."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {a b c s K : ℝ} (ha : 1 < a)
+    (hb : 0 < b) (hc : 0 < c) (hs : 0 < s) :
+    let L := Endpoint2FellerPareto.logLik d a b c s K
+    (∃! t, t ∈ Ioi (0 : ℝ) ∧ normalizedScore d a b c s t = 0) ∧
+      ∀ t ∈ Ioi 0, IsMaxOn L (Ioi 0) t ↔ normalizedScore d a b c s t = 0",uniqueness,,"Lower power above one. Burr specialization a=c, b=c times the first shape.",
+fpareto,scale+shape1+shape2+shape3,UnivariateML.Endpoint2FellerParetoRegular.fixed_scale_shapes_fit,dev/lean/UnivariateML/Family/Endpoint2FellerParetoRegular.lean,338,"Holding all regular coefficients gives a unique finite threshold exactly at lower power at least one. The subunit branch is unbounded, and the unit lower power has a maximum at closed contact."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {a b c s K : ℝ} (hb : 0 < b) (hc : 0 < c) (hs : 0 < s) :
+    let D := if a = 1 then Ici (0 : ℝ) else Ioi 0
+    let L := Endpoint2FellerPareto.logLik d a b c s K
+    ((∃ t ∈ D, IsMaxOn L D t) ↔ 1 ≤ a) ∧
+      (1 ≤ a → ∃! t, t ∈ D ∧ IsMaxOn L D t) ∧
+      (a < 1 → ¬ BddAbove (L '' D)) ∧
+      (a = 1 → IsMaxOn L D 0)","criterion, failure, uniqueness",,Lower power a=cp and upper power b=cq.,
+pareto3,scale+shape,UnivariateML.Endpoint2FellerParetoRegular.fixed_scale_shapes_fit,dev/lean/UnivariateML/Family/Endpoint2FellerParetoRegular.lean,338,"Holding all regular coefficients gives a unique finite threshold exactly at lower power at least one. The subunit branch is unbounded, and the unit lower power has a maximum at closed contact."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {a b c s K : ℝ} (hb : 0 < b) (hc : 0 < c) (hs : 0 < s) :
+    let D := if a = 1 then Ici (0 : ℝ) else Ioi 0
+    let L := Endpoint2FellerPareto.logLik d a b c s K
+    ((∃ t ∈ D, IsMaxOn L D t) ↔ 1 ≤ a) ∧
+      (1 ≤ a → ∃! t, t ∈ D ∧ IsMaxOn L D t) ∧
+      (a < 1 → ¬ BddAbove (L '' D)) ∧
+      (a = 1 → IsMaxOn L D 0)","criterion, failure, uniqueness",,Log-logistic specialization a=b=c.,
+pareto4,scale+shape1+shape2,UnivariateML.Endpoint2FellerParetoRegular.fixed_scale_shapes_fit,dev/lean/UnivariateML/Family/Endpoint2FellerParetoRegular.lean,338,"Holding all regular coefficients gives a unique finite threshold exactly at lower power at least one. The subunit branch is unbounded, and the unit lower power has a maximum at closed contact."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {a b c s K : ℝ} (hb : 0 < b) (hc : 0 < c) (hs : 0 < s) :
+    let D := if a = 1 then Ici (0 : ℝ) else Ioi 0
+    let L := Endpoint2FellerPareto.logLik d a b c s K
+    ((∃ t ∈ D, IsMaxOn L D t) ↔ 1 ≤ a) ∧
+      (1 ≤ a → ∃! t, t ∈ D ∧ IsMaxOn L D t) ∧
+      (a < 1 → ¬ BddAbove (L '' D)) ∧
+      (a = 1 → IsMaxOn L D 0)","criterion, failure, uniqueness",,"Burr specialization a=c, b=c times the first shape.",
+genbeta,scale+shape1+shape3,UnivariateML.Endpoint2GeneralizedBeta.held_first_shape_fit,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,56,"With scale, power and first beta shape fixed, the free second beta shape always has a unique maximum on strictly interior samples."," (hn : 0 < n) {x : Fin n → ℝ} {b c p : ℝ}
+    (hb : 0 < b) (hc : 0 < c) (hp : 0 < p) (hx : ∀ i, x i ∈ Ioo (0 : ℝ) b) :
+    ∃! q, q ∈ Ioi (0 : ℝ) ∧ IsMaxOn (fun v ↦ logLik x b p v c) (Ioi 0) q","criterion, failure, uniqueness",,Ordinary beta with its first shape held.,
+genbeta,scale+shape2+shape3,UnivariateML.Endpoint2GeneralizedBeta.held_second_shape_fit,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,64,"With scale, power and second beta shape fixed, the free first beta shape always has a unique maximum on strictly interior samples."," (hn : 0 < n) {x : Fin n → ℝ} {b c q : ℝ}
+    (hb : 0 < b) (hc : 0 < c) (hq : 0 < q) (hx : ∀ i, x i ∈ Ioo (0 : ℝ) b) :
+    ∃! p, p ∈ Ioi (0 : ℝ) ∧ IsMaxOn (fun v ↦ logLik x b v q c) (Ioi 0) p","criterion, failure, uniqueness",,Ordinary beta with its second shape held.,
+genbeta,scale,UnivariateML.Endpoint2GeneralizedBeta.held_scale_power_constant_path,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,72,Holding scale and power gives the beta fixed-mean concentration ray on any constant interior sample.," (hn : 0 < n) {b c v : ℝ} (hb : 0 < b) (hc : 0 < c)
+    (hv : v ∈ Ioo (0 : ℝ) b) :
+    let u := (v / b) ^ c
+    Tendsto (fun t ↦ logLik (fun _ : Fin n ↦ v) b (t * u) (t * (1 - u)) c)
+      atTop atTop","failure, path:1, limit:1",,Fixed-mean beta concentration with any compatible held power.,
+genbeta,scale+shape3,UnivariateML.Endpoint2GeneralizedBeta.held_scale_power_constant_path,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,72,Holding scale and power gives the beta fixed-mean concentration ray on any constant interior sample.," (hn : 0 < n) {b c v : ℝ} (hb : 0 < b) (hc : 0 < c)
+    (hv : v ∈ Ioo (0 : ℝ) b) :
+    let u := (v / b) ^ c
+    Tendsto (fun t ↦ logLik (fun _ : Fin n ↦ v) b (t * u) (t * (1 - u)) c)
+      atTop atTop","failure, path:1, limit:1",,Fixed-mean beta concentration with any compatible held power.,
+genbeta,scale+shape3,UnivariateML.Endpoint2GeneralizedBeta.held_scale_power_criterion,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,86,"With scale and power fixed, the two beta shapes have a unique global maximum exactly on nonconstant interior data. Constants have no finite fit."," (hn : 0 < n) {x : Fin n → ℝ} {b c : ℝ}
+    (hb : 0 < b) (hc : 0 < c) (hx : ∀ i, x i ∈ Ioo (0 : ℝ) b) :
+    let L : ℝ × ℝ → ℝ := fun p ↦ logLik x b p.1 p.2 c
+    ((∃ p ∈ Beta.domain, IsMaxOn L Beta.domain p) ↔ ∃ i j, x i ≠ x j) ∧
+      ((∃! p, p ∈ Beta.domain ∧ IsMaxOn L Beta.domain p) ↔ ∃ i j, x i ≠ x j)","criterion, uniqueness",,Powered standardized data preserve nonconstancy.,
+genbeta,all free,UnivariateML.Endpoint2GeneralizedBeta.endpoint_spike,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,178,"A subunit upper beta shape gives a free-endpoint spike on every positive sample, with all tied maxima included."," {x : Fin n → ℝ} {M p q c : ℝ} (hx : ∀ i, 0 < x i)
+    (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M) (hq : q < 1) (hc : 0 < c) :
+    Tendsto (fun t ↦ logLik x (M / (1 - t) ^ c⁻¹) p q c) (𝓝[>] 0) atTop",failure,,Subunit upper shape with fixed other shapes and power.,
+genbeta,shape1,UnivariateML.Endpoint2GeneralizedBeta.endpoint_spike,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,178,"A subunit upper beta shape gives a free-endpoint spike on every positive sample, with all tied maxima included."," {x : Fin n → ℝ} {M p q c : ℝ} (hx : ∀ i, 0 < x i)
+    (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M) (hq : q < 1) (hc : 0 < c) :
+    Tendsto (fun t ↦ logLik x (M / (1 - t) ^ c⁻¹) p q c) (𝓝[>] 0) atTop",failure,,Subunit upper shape with fixed other shapes and power.,
+genbeta,shape1+shape3,UnivariateML.Endpoint2GeneralizedBeta.endpoint_spike,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,178,"A subunit upper beta shape gives a free-endpoint spike on every positive sample, with all tied maxima included."," {x : Fin n → ℝ} {M p q c : ℝ} (hx : ∀ i, 0 < x i)
+    (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M) (hq : q < 1) (hc : 0 < c) :
+    Tendsto (fun t ↦ logLik x (M / (1 - t) ^ c⁻¹) p q c) (𝓝[>] 0) atTop",failure,,Subunit upper shape with fixed other shapes and power.,
+genbeta,shape3,UnivariateML.Endpoint2GeneralizedBeta.endpoint_spike,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,178,"A subunit upper beta shape gives a free-endpoint spike on every positive sample, with all tied maxima included."," {x : Fin n → ℝ} {M p q c : ℝ} (hx : ∀ i, 0 < x i)
+    (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M) (hq : q < 1) (hc : 0 < c) :
+    Tendsto (fun t ↦ logLik x (M / (1 - t) ^ c⁻¹) p q c) (𝓝[>] 0) atTop",failure,,Subunit upper shape with fixed other shapes and power.,
+genbeta,shape1+shape2+shape3,UnivariateML.Endpoint2GeneralizedBeta.endpoint_spike,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,178,"A subunit upper beta shape gives a free-endpoint spike on every positive sample, with all tied maxima included."," {x : Fin n → ℝ} {M p q c : ℝ} (hx : ∀ i, 0 < x i)
+    (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M) (hq : q < 1) (hc : 0 < c) :
+    Tendsto (fun t ↦ logLik x (M / (1 - t) ^ c⁻¹) p q c) (𝓝[>] 0) atTop",failure,,Subunit upper shape with fixed other shapes and power.,
+genbeta,shape1+shape2,UnivariateML.Endpoint2GeneralizedBeta.endpoint_spike,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,178,"A subunit upper beta shape gives a free-endpoint spike on every positive sample, with all tied maxima included."," {x : Fin n → ℝ} {M p q c : ℝ} (hx : ∀ i, 0 < x i)
+    (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M) (hq : q < 1) (hc : 0 < c) :
+    Tendsto (fun t ↦ logLik x (M / (1 - t) ^ c⁻¹) p q c) (𝓝[>] 0) atTop",failure,,Subunit upper shape with fixed other shapes and power.,
+genbeta,shape2+shape3,UnivariateML.Endpoint2GeneralizedBeta.endpoint_spike,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,178,"A subunit upper beta shape gives a free-endpoint spike on every positive sample, with all tied maxima included."," {x : Fin n → ℝ} {M p q c : ℝ} (hx : ∀ i, 0 < x i)
+    (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M) (hq : q < 1) (hc : 0 < c) :
+    Tendsto (fun t ↦ logLik x (M / (1 - t) ^ c⁻¹) p q c) (𝓝[>] 0) atTop",failure,,Subunit upper shape with fixed other shapes and power.,
+genbeta,shape2,UnivariateML.Endpoint2GeneralizedBeta.endpoint_spike,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,178,"A subunit upper beta shape gives a free-endpoint spike on every positive sample, with all tied maxima included."," {x : Fin n → ℝ} {M p q c : ℝ} (hx : ∀ i, 0 < x i)
+    (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M) (hq : q < 1) (hc : 0 < c) :
+    Tendsto (fun t ↦ logLik x (M / (1 - t) ^ c⁻¹) p q c) (𝓝[>] 0) atTop",failure,,Subunit upper shape with fixed other shapes and power.,
+genbeta,all free,UnivariateML.Endpoint2GeneralizedBeta.free_second_shape_unbounded,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,192,A positive allowed first shape and power suffice for a divergent free-scale path whenever the second shape is free. The sets encode arbitrary holds on the first shape or power.," {x : Fin n → ℝ} {M p c : ℝ} (hx : ∀ i, 0 < x i)
+    (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M) (hp : 0 < p) (hc : 0 < c)
+    {A C : Set ℝ} (hA : p ∈ A) (hC : c ∈ C) :
+    let D : Set (ℝ × ℝ × ℝ × ℝ) := {v | (M < v.1 ∨ (v.1 = M ∧ v.2.2.1 = 1)) ∧
+      0 < v.2.1 ∧ v.2.1 ∈ A ∧ 0 < v.2.2.1 ∧ 0 < v.2.2.2 ∧ v.2.2.2 ∈ C}
+    let L : ℝ × ℝ × ℝ × ℝ → ℝ := fun v ↦ logLik x v.1 v.2.1 v.2.2.1 v.2.2.2
+    ¬ BddAbove (L '' D) ∧ ¬ ∃ v ∈ D, IsMaxOn L D v","criterion, uniqueness",,Choose a subunit upper shape within the allowed mask.,
+genbeta,shape1,UnivariateML.Endpoint2GeneralizedBeta.free_second_shape_unbounded,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,192,A positive allowed first shape and power suffice for a divergent free-scale path whenever the second shape is free. The sets encode arbitrary holds on the first shape or power.," {x : Fin n → ℝ} {M p c : ℝ} (hx : ∀ i, 0 < x i)
+    (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M) (hp : 0 < p) (hc : 0 < c)
+    {A C : Set ℝ} (hA : p ∈ A) (hC : c ∈ C) :
+    let D : Set (ℝ × ℝ × ℝ × ℝ) := {v | (M < v.1 ∨ (v.1 = M ∧ v.2.2.1 = 1)) ∧
+      0 < v.2.1 ∧ v.2.1 ∈ A ∧ 0 < v.2.2.1 ∧ 0 < v.2.2.2 ∧ v.2.2.2 ∈ C}
+    let L : ℝ × ℝ × ℝ × ℝ → ℝ := fun v ↦ logLik x v.1 v.2.1 v.2.2.1 v.2.2.2
+    ¬ BddAbove (L '' D) ∧ ¬ ∃ v ∈ D, IsMaxOn L D v","criterion, uniqueness",,Choose a subunit upper shape within the allowed mask.,
+genbeta,shape1+shape3,UnivariateML.Endpoint2GeneralizedBeta.free_second_shape_unbounded,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,192,A positive allowed first shape and power suffice for a divergent free-scale path whenever the second shape is free. The sets encode arbitrary holds on the first shape or power.," {x : Fin n → ℝ} {M p c : ℝ} (hx : ∀ i, 0 < x i)
+    (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M) (hp : 0 < p) (hc : 0 < c)
+    {A C : Set ℝ} (hA : p ∈ A) (hC : c ∈ C) :
+    let D : Set (ℝ × ℝ × ℝ × ℝ) := {v | (M < v.1 ∨ (v.1 = M ∧ v.2.2.1 = 1)) ∧
+      0 < v.2.1 ∧ v.2.1 ∈ A ∧ 0 < v.2.2.1 ∧ 0 < v.2.2.2 ∧ v.2.2.2 ∈ C}
+    let L : ℝ × ℝ × ℝ × ℝ → ℝ := fun v ↦ logLik x v.1 v.2.1 v.2.2.1 v.2.2.2
+    ¬ BddAbove (L '' D) ∧ ¬ ∃ v ∈ D, IsMaxOn L D v","criterion, uniqueness",,Choose a subunit upper shape within the allowed mask.,
+genbeta,shape3,UnivariateML.Endpoint2GeneralizedBeta.free_second_shape_unbounded,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,192,A positive allowed first shape and power suffice for a divergent free-scale path whenever the second shape is free. The sets encode arbitrary holds on the first shape or power.," {x : Fin n → ℝ} {M p c : ℝ} (hx : ∀ i, 0 < x i)
+    (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M) (hp : 0 < p) (hc : 0 < c)
+    {A C : Set ℝ} (hA : p ∈ A) (hC : c ∈ C) :
+    let D : Set (ℝ × ℝ × ℝ × ℝ) := {v | (M < v.1 ∨ (v.1 = M ∧ v.2.2.1 = 1)) ∧
+      0 < v.2.1 ∧ v.2.1 ∈ A ∧ 0 < v.2.2.1 ∧ 0 < v.2.2.2 ∧ v.2.2.2 ∈ C}
+    let L : ℝ × ℝ × ℝ × ℝ → ℝ := fun v ↦ logLik x v.1 v.2.1 v.2.2.1 v.2.2.2
+    ¬ BddAbove (L '' D) ∧ ¬ ∃ v ∈ D, IsMaxOn L D v","criterion, uniqueness",,Choose a subunit upper shape within the allowed mask.,
+genbeta,shape1+shape2+shape3,UnivariateML.Endpoint2GeneralizedBeta.fixed_shapes_endpoint_fit,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,225,"When only the endpoint is free, a finite optimum exists exactly at upper shape at least one. At one it is closed contact. Above one the chart score characterizes the unique interior optimum."," (hn : 0 < n) {x : Fin n → ℝ} {M p q c : ℝ}
+    (hx : ∀ i, 0 < x i) (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M)
+    (hp : 0 < p) (hc : 0 < c) :
+    let D := if q = 1 then Ici M else Ioi M
+    let L := fun b ↦ logLik x b p q c
+    ((∃ b ∈ D, IsMaxOn L D b) ↔ 1 ≤ q) ∧
+    (q = 1 → IsMaxOn L D M ∧ ∀ b ∈ D, IsMaxOn L D b → b = M) ∧
+    (1 < q → ∃! b, b ∈ D ∧ IsMaxOn L D b)","criterion, uniqueness",,Includes constants and all upper contacts.,
+genbeta,shape1+shape2+shape3,UnivariateML.Endpoint2GeneralizedBeta.fixed_shapes_endpoint_score,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,289,"At fixed upper shape above one, the unique endpoint optimum is the interior zero of the transformed score."," (hn : 0 < n) {x : Fin n → ℝ} {M p q c b : ℝ}
+    (hx : ∀ i, 0 < x i) (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M)
+    (hp : 0 < p) (hq : 1 < q) (hc : 0 < c) (hb : M < b) :
+    IsMaxOn (fun s ↦ logLik x s p q c) (Ioi M) b ↔
+      Endpoint2BetaWidth.score (unitData x M c) q p ((M / b) ^ c) = 0",uniqueness,,Interior root characterization.,
+genbeta,scale+shape2,UnivariateML.Endpoint2GeneralizedBeta.held_scale_ridge,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,356,"At held scale and upper shape one, the full maximizing set is the product ridge. Constant interior samples satisfy the same formula."," (hn : 0 < n) {x : Fin n → ℝ} {b : ℝ}
+    (hx : ∀ i, x i ∈ Ioo (0 : ℝ) b) (p : ℝ × ℝ) (hp : p ∈ Beta.domain) :
+    IsMaxOn (fun u : ℝ × ℝ ↦ logLik x b u.1 1 u.2) Beta.domain p ↔
+      p.1 * p.2 = (n : ℝ) / logDistanceSum x b","criterion, uniqueness",,Upper shape one only.,
+genbeta,shape2,UnivariateML.Endpoint2GeneralizedBeta.free_endpoint_ridge,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,390,"With free scale and upper shape one, nonconstant data have the complete maximizing ridge at the closed sample maximum."," (hn : 0 < n) {x : Fin n → ℝ} {M : ℝ}
+    (hx : ∀ i, 0 < x i) (hle : ∀ i, x i ≤ M) (hne : ∃ i, x i < M)
+    (u : ℝ × ℝ × ℝ) (hu : u ∈ Ici M ×ˢ Beta.domain) :
+    IsMaxOn (fun v : ℝ × ℝ × ℝ ↦ logLik x v.1 v.2.1 1 v.2.2)
+        (Ici M ×ˢ Beta.domain) u ↔
+      u.1 = M ∧ u.2.1 * u.2.2 = (n : ℝ) / logDistanceSum x M","criterion, uniqueness",,"Upper shape one and nonconstant data, with closed contact.",
+genbeta,scale+shape2,UnivariateML.Endpoint2GeneralizedBeta.held_scale_two_point_ridge,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,451,The binary sample at held scale one realizes the specified exact product ridge.," (p : ℝ × ℝ) (hp : p ∈ Beta.domain) :
+    let x : Fin 2 → ℝ := ![1/2, 1/4]
+    IsMaxOn (fun u : ℝ × ℝ ↦ logLik x 1 u.1 1 u.2) Beta.domain p ↔
+      p.1 * p.2 = 2 / (3 * log 2)",uniqueness,,Exact binary sample.,
+genbeta,shape2,UnivariateML.Endpoint2GeneralizedBeta.free_endpoint_two_point_ridge,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,468,The binary sample whose maximum is one realizes the specified exact closed-contact ridge with the endpoint free.," (u : ℝ × ℝ × ℝ)
+    (hu : u ∈ Ici (1 : ℝ) ×ˢ Beta.domain) :
+    let x : Fin 2 → ℝ := ![1/2, 1]
+    IsMaxOn (fun v : ℝ × ℝ × ℝ ↦ logLik x v.1 v.2.1 1 v.2.2)
+        (Ici (1 : ℝ) ×ˢ Beta.domain) u ↔
+      u.1 = 1 ∧ u.2.1 * u.2.2 = 2 / log 2",uniqueness,,Exact binary sample.,
+genbeta,shape1,UnivariateML.Endpoint2GeneralizedBeta.constant_sample_free_power_path,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,487,"With fixed beta shapes and free power, a constant sample collapses at a shrinking positive log distance from the free endpoint."," (hn : 0 < n) {v : ℝ} (hv : 0 < v) (p q : ℝ) :
+    Tendsto (fun c ↦ logLik (fun _ : Fin n ↦ v) (v * exp c⁻¹) p q c) atTop atTop",failure,,Constant positive observations with moving endpoint and free power.,
+genbeta,shape1+shape2,UnivariateML.Endpoint2GeneralizedBeta.constant_sample_free_power_path,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,487,"With fixed beta shapes and free power, a constant sample collapses at a shrinking positive log distance from the free endpoint."," (hn : 0 < n) {v : ℝ} (hv : 0 < v) (p q : ℝ) :
+    Tendsto (fun c ↦ logLik (fun _ : Fin n ↦ v) (v * exp c⁻¹) p q c) atTop atTop",failure,,Constant positive observations with moving endpoint and free power.,
+genbeta,shape2,UnivariateML.Endpoint2GeneralizedBeta.constant_sample_free_power_path,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,487,"With fixed beta shapes and free power, a constant sample collapses at a shrinking positive log distance from the free endpoint."," (hn : 0 < n) {v : ℝ} (hv : 0 < v) (p q : ℝ) :
+    Tendsto (fun c ↦ logLik (fun _ : Fin n ↦ v) (v * exp c⁻¹) p q c) atTop atTop",failure,,Constant positive observations with moving endpoint and free power.,
+genbeta,shape2,UnivariateML.Endpoint2GeneralizedBeta.constant_sample_contact_rate_path,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,509,"At free-scale contact, upper shape one permits arbitrary concentration on a constant sample with either held positive power or held first shape through the corresponding positive product."," (hn : 0 < n) {v : ℝ} (hv : 0 < v) :
+    Tendsto (fun r ↦ logLik (fun _ : Fin n ↦ v) v r 1 1) atTop atTop",failure,,Upper shape one and constant positive data.,
+genbeta,shape2+shape3,UnivariateML.Endpoint2GeneralizedBeta.constant_sample_contact_rate_path,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBeta.lean,509,"At free-scale contact, upper shape one permits arbitrary concentration on a constant sample with either held positive power or held first shape through the corresponding positive product."," (hn : 0 < n) {v : ℝ} (hv : 0 < v) :
+    Tendsto (fun r ↦ logLik (fun _ : Fin n ↦ v) v r 1 1) atTop atTop",failure,,Upper shape one and constant positive data.,
+genbeta,shape1+shape2,UnivariateML.Endpoint2GeneralizedBetaJoint.fixed_shapes_joint_regular,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBetaJoint.lean,274,"For held positive first shape and held upper shape above one, every nonconstant positive sample has exactly one maximizing power and strictly containing endpoint."," (hn : 0 < n) {x : Fin n → ℝ} {M p q : ℝ}
+    (hx : ∀ i, 0 < x i) (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M)
+    (hne : ∃ i, x i < M) (hp : 0 < p) (hq : 1 < q) :
+    let D := Ioi (0 : ℝ) ×ˢ Ioi M
+    let L := fun v : ℝ × ℝ ↦ Endpoint2GeneralizedBeta.logLik x v.2 p q v.1
+    ∃! v, v ∈ D ∧ IsMaxOn L D v","criterion, uniqueness",,Upper shape above one.,
+genbeta,shape1+shape2,UnivariateML.Endpoint2GeneralizedBetaJoint.fixed_shapes_joint_criterion,dev/lean/UnivariateML/Family/Endpoint2GeneralizedBetaJoint.lean,294,"Holding both beta shapes gives a finite endpoint and power fit exactly for a nonconstant positive sample with upper shape at least one. The solution is unique, with closed endpoint precisely at shape one."," (hn : 0 < n) {x : Fin n → ℝ} {M p q : ℝ}
+    (hx : ∀ i, 0 < x i) (hle : ∀ i, x i ≤ M) (heq : ∃ i, x i = M) (hp : 0 < p) :
+    let D := Ioi (0 : ℝ) ×ˢ (if q = 1 then Ici M else Ioi M)
+    let L := fun v : ℝ × ℝ ↦ Endpoint2GeneralizedBeta.logLik x v.2 p q v.1
+    ((∃ v ∈ D, IsMaxOn L D v) ↔ 1 ≤ q ∧ ∃ i, x i < M) ∧
+      ((1 ≤ q ∧ ∃ i, x i < M) → ∃! v, v ∈ D ∧ IsMaxOn L D v)","criterion, uniqueness",,"Covers constants, subunit shapes and the closed-contact unit-shape case.",
+nsbeta,min+shape1+shape2,UnivariateML.Endpoint2NonstandardBeta.held_contact_classification,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,46,Positive finite factors are possible exactly when the sample is strictly inside at the held end or the held shape permits closed contact.," (z : Fin n → ℝ) (b : ℝ) :
+    ¬ heldCompatible z b ↔ (∃ i, z i < 0) ∨ (b ≠ 1 ∧ ∃ i, z i = 0)",failure,,Which held-end branches have positive finite factors.,
+nsbeta,max+shape1+shape2,UnivariateML.Endpoint2NonstandardBeta.held_contact_classification,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,46,Positive finite factors are possible exactly when the sample is strictly inside at the held end or the held shape permits closed contact.," (z : Fin n → ℝ) (b : ℝ) :
+    ¬ heldCompatible z b ↔ (∃ i, z i < 0) ∨ (b ≠ 1 ∧ ∃ i, z i = 0)",failure,,Which held-end branches have positive finite factors.,
+nsbeta,min,UnivariateML.Endpoint2NonstandardBeta.held_contact_classification,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,46,Positive finite factors are possible exactly when the sample is strictly inside at the held end or the held shape permits closed contact.," (z : Fin n → ℝ) (b : ℝ) :
+    ¬ heldCompatible z b ↔ (∃ i, z i < 0) ∨ (b ≠ 1 ∧ ∃ i, z i = 0)",failure,,Which held-end branches have positive finite factors.,
+nsbeta,max,UnivariateML.Endpoint2NonstandardBeta.held_contact_classification,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,46,Positive finite factors are possible exactly when the sample is strictly inside at the held end or the held shape permits closed contact.," (z : Fin n → ℝ) (b : ℝ) :
+    ¬ heldCompatible z b ↔ (∃ i, z i < 0) ∨ (b ≠ 1 ∧ ∃ i, z i = 0)",failure,,Which held-end branches have positive finite factors.,
+nsbeta,min+shape1,UnivariateML.Endpoint2NonstandardBeta.held_contact_classification,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,46,Positive finite factors are possible exactly when the sample is strictly inside at the held end or the held shape permits closed contact.," (z : Fin n → ℝ) (b : ℝ) :
+    ¬ heldCompatible z b ↔ (∃ i, z i < 0) ∨ (b ≠ 1 ∧ ∃ i, z i = 0)",failure,,Which held-end branches have positive finite factors.,
+nsbeta,max+shape2,UnivariateML.Endpoint2NonstandardBeta.held_contact_classification,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,46,Positive finite factors are possible exactly when the sample is strictly inside at the held end or the held shape permits closed contact.," (z : Fin n → ℝ) (b : ℝ) :
+    ¬ heldCompatible z b ↔ (∃ i, z i < 0) ∨ (b ≠ 1 ∧ ∃ i, z i = 0)",failure,,Which held-end branches have positive finite factors.,
+nsbeta,min+shape2,UnivariateML.Endpoint2NonstandardBeta.held_contact_classification,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,46,Positive finite factors are possible exactly when the sample is strictly inside at the held end or the held shape permits closed contact.," (z : Fin n → ℝ) (b : ℝ) :
+    ¬ heldCompatible z b ↔ (∃ i, z i < 0) ∨ (b ≠ 1 ∧ ∃ i, z i = 0)",failure,,Which held-end branches have positive finite factors.,
+nsbeta,max+shape1,UnivariateML.Endpoint2NonstandardBeta.held_contact_classification,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,46,Positive finite factors are possible exactly when the sample is strictly inside at the held end or the held shape permits closed contact.," (z : Fin n → ℝ) (b : ℝ) :
+    ¬ heldCompatible z b ↔ (∃ i, z i < 0) ∨ (b ≠ 1 ∧ ∃ i, z i = 0)",failure,,Which held-end branches have positive finite factors.,
+nsbeta,min+shape1+shape2,UnivariateML.Endpoint2NonstandardBeta.fixed_shapes_fit,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,102,"With fixed positive shapes and a positive farthest distance, the regular free endpoint has a unique maximizing width. This includes zeros when the held-side shape is one."," (hn : 0 < n) {z : Fin n → ℝ} {a b Z : ℝ}
+    (hZ : 0 < Z) (hz : heldCompatible z b) (hle : ∀ i, z i ≤ Z)
+    (hcontact : ∃ i, z i = Z) (ha : 1 ≤ a) (hb : 0 < b) :
+    let D := if a = 1 then Ici Z else Ioi Z
+    (∃! W, W ∈ D ∧ IsMaxOn (widthLogLik z a b) D W) ∧
+      (a = 1 → IsMaxOn (widthLogLik z a b) D Z) ∧
+      (1 < a → ∀ W ∈ D, IsMaxOn (widthLogLik z a b) D W ↔
+        Endpoint2BetaWidth.score (fun i ↦ z i / Z) a b (Z / W) = 0)",uniqueness,,"All positive finite held-side branches, including zeros at held shape one.",
+nsbeta,max+shape1+shape2,UnivariateML.Endpoint2NonstandardBeta.fixed_shapes_fit,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,102,"With fixed positive shapes and a positive farthest distance, the regular free endpoint has a unique maximizing width. This includes zeros when the held-side shape is one."," (hn : 0 < n) {z : Fin n → ℝ} {a b Z : ℝ}
+    (hZ : 0 < Z) (hz : heldCompatible z b) (hle : ∀ i, z i ≤ Z)
+    (hcontact : ∃ i, z i = Z) (ha : 1 ≤ a) (hb : 0 < b) :
+    let D := if a = 1 then Ici Z else Ioi Z
+    (∃! W, W ∈ D ∧ IsMaxOn (widthLogLik z a b) D W) ∧
+      (a = 1 → IsMaxOn (widthLogLik z a b) D Z) ∧
+      (1 < a → ∀ W ∈ D, IsMaxOn (widthLogLik z a b) D W ↔
+        Endpoint2BetaWidth.score (fun i ↦ z i / Z) a b (Z / W) = 0)",uniqueness,,"All positive finite held-side branches, including zeros at held shape one.",
+nsbeta,min+shape1+shape2,UnivariateML.Endpoint2NonstandardBeta.fixed_shapes_spike,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,170,"For subunit free-side shape and positive held-side factors, width approaching the farthest observation gives unbounded likelihood."," {z : Fin n → ℝ} {a b Z : ℝ} (hZ : 0 < Z)
+    (hz : heldCompatible z b) (hle : ∀ i, z i ≤ Z) (hcontact : ∃ i, z i = Z)
+    (ha : a < 1) :
+    Tendsto (fun t ↦ widthLogLik z a b (Z / (1 - t))) (𝓝[>] 0) atTop",failure,,Subunit free-side shape and positive held-end factors.,
+nsbeta,max+shape1+shape2,UnivariateML.Endpoint2NonstandardBeta.fixed_shapes_spike,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,170,"For subunit free-side shape and positive held-side factors, width approaching the farthest observation gives unbounded likelihood."," {z : Fin n → ℝ} {a b Z : ℝ} (hZ : 0 < Z)
+    (hz : heldCompatible z b) (hle : ∀ i, z i ≤ Z) (hcontact : ∃ i, z i = Z)
+    (ha : a < 1) :
+    Tendsto (fun t ↦ widthLogLik z a b (Z / (1 - t))) (𝓝[>] 0) atTop",failure,,Subunit free-side shape and positive held-end factors.,
+nsbeta,min,UnivariateML.Endpoint2NonstandardBeta.fixed_shapes_spike,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,170,"For subunit free-side shape and positive held-side factors, width approaching the farthest observation gives unbounded likelihood."," {z : Fin n → ℝ} {a b Z : ℝ} (hZ : 0 < Z)
+    (hz : heldCompatible z b) (hle : ∀ i, z i ≤ Z) (hcontact : ∃ i, z i = Z)
+    (ha : a < 1) :
+    Tendsto (fun t ↦ widthLogLik z a b (Z / (1 - t))) (𝓝[>] 0) atTop",failure,,Subunit free-side shape and positive held-end factors.,
+nsbeta,max,UnivariateML.Endpoint2NonstandardBeta.fixed_shapes_spike,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,170,"For subunit free-side shape and positive held-side factors, width approaching the farthest observation gives unbounded likelihood."," {z : Fin n → ℝ} {a b Z : ℝ} (hZ : 0 < Z)
+    (hz : heldCompatible z b) (hle : ∀ i, z i ≤ Z) (hcontact : ∃ i, z i = Z)
+    (ha : a < 1) :
+    Tendsto (fun t ↦ widthLogLik z a b (Z / (1 - t))) (𝓝[>] 0) atTop",failure,,Subunit free-side shape and positive held-end factors.,
+nsbeta,min+shape1,UnivariateML.Endpoint2NonstandardBeta.fixed_shapes_spike,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,170,"For subunit free-side shape and positive held-side factors, width approaching the farthest observation gives unbounded likelihood."," {z : Fin n → ℝ} {a b Z : ℝ} (hZ : 0 < Z)
+    (hz : heldCompatible z b) (hle : ∀ i, z i ≤ Z) (hcontact : ∃ i, z i = Z)
+    (ha : a < 1) :
+    Tendsto (fun t ↦ widthLogLik z a b (Z / (1 - t))) (𝓝[>] 0) atTop",failure,,Subunit free-side shape and positive held-end factors.,
+nsbeta,max+shape2,UnivariateML.Endpoint2NonstandardBeta.fixed_shapes_spike,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,170,"For subunit free-side shape and positive held-side factors, width approaching the farthest observation gives unbounded likelihood."," {z : Fin n → ℝ} {a b Z : ℝ} (hZ : 0 < Z)
+    (hz : heldCompatible z b) (hle : ∀ i, z i ≤ Z) (hcontact : ∃ i, z i = Z)
+    (ha : a < 1) :
+    Tendsto (fun t ↦ widthLogLik z a b (Z / (1 - t))) (𝓝[>] 0) atTop",failure,,Subunit free-side shape and positive held-end factors.,
+nsbeta,min+shape2,UnivariateML.Endpoint2NonstandardBeta.fixed_shapes_spike,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,170,"For subunit free-side shape and positive held-side factors, width approaching the farthest observation gives unbounded likelihood."," {z : Fin n → ℝ} {a b Z : ℝ} (hZ : 0 < Z)
+    (hz : heldCompatible z b) (hle : ∀ i, z i ≤ Z) (hcontact : ∃ i, z i = Z)
+    (ha : a < 1) :
+    Tendsto (fun t ↦ widthLogLik z a b (Z / (1 - t))) (𝓝[>] 0) atTop",failure,,Subunit free-side shape and positive held-end factors.,
+nsbeta,max+shape1,UnivariateML.Endpoint2NonstandardBeta.fixed_shapes_spike,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,170,"For subunit free-side shape and positive held-side factors, width approaching the farthest observation gives unbounded likelihood."," {z : Fin n → ℝ} {a b Z : ℝ} (hZ : 0 < Z)
+    (hz : heldCompatible z b) (hle : ∀ i, z i ≤ Z) (hcontact : ∃ i, z i = Z)
+    (ha : a < 1) :
+    Tendsto (fun t ↦ widthLogLik z a b (Z / (1 - t))) (𝓝[>] 0) atTop",failure,,Subunit free-side shape and positive held-end factors.,
+nsbeta,min+shape1+shape2,UnivariateML.Endpoint2NonstandardBeta.zero_distances_collapse,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,184,"At held-side shape one and with every observation at the held end, shrinking width gives unbounded likelihood."," (hn : 0 < n) (a : ℝ) :
+    Tendsto (widthLogLik (fun _ : Fin n ↦ 0) a 1) (𝓝[>] 0) atTop",failure,,Every distance zero at held-end shape one.,
+nsbeta,max+shape1+shape2,UnivariateML.Endpoint2NonstandardBeta.zero_distances_collapse,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,184,"At held-side shape one and with every observation at the held end, shrinking width gives unbounded likelihood."," (hn : 0 < n) (a : ℝ) :
+    Tendsto (widthLogLik (fun _ : Fin n ↦ 0) a 1) (𝓝[>] 0) atTop",failure,,Every distance zero at held-end shape one.,
+nsbeta,min,UnivariateML.Endpoint2NonstandardBeta.zero_distances_collapse,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,184,"At held-side shape one and with every observation at the held end, shrinking width gives unbounded likelihood."," (hn : 0 < n) (a : ℝ) :
+    Tendsto (widthLogLik (fun _ : Fin n ↦ 0) a 1) (𝓝[>] 0) atTop",failure,,Every distance zero at held-end shape one.,
+nsbeta,max,UnivariateML.Endpoint2NonstandardBeta.zero_distances_collapse,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,184,"At held-side shape one and with every observation at the held end, shrinking width gives unbounded likelihood."," (hn : 0 < n) (a : ℝ) :
+    Tendsto (widthLogLik (fun _ : Fin n ↦ 0) a 1) (𝓝[>] 0) atTop",failure,,Every distance zero at held-end shape one.,
+nsbeta,min+shape1,UnivariateML.Endpoint2NonstandardBeta.zero_distances_collapse,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,184,"At held-side shape one and with every observation at the held end, shrinking width gives unbounded likelihood."," (hn : 0 < n) (a : ℝ) :
+    Tendsto (widthLogLik (fun _ : Fin n ↦ 0) a 1) (𝓝[>] 0) atTop",failure,,Every distance zero at held-end shape one.,
+nsbeta,max+shape2,UnivariateML.Endpoint2NonstandardBeta.zero_distances_collapse,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,184,"At held-side shape one and with every observation at the held end, shrinking width gives unbounded likelihood."," (hn : 0 < n) (a : ℝ) :
+    Tendsto (widthLogLik (fun _ : Fin n ↦ 0) a 1) (𝓝[>] 0) atTop",failure,,Every distance zero at held-end shape one.,
+nsbeta,min+shape1+shape2,UnivariateML.Endpoint2NonstandardBeta.fixed_shapes_criterion,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,200,The fixed-shape criterion covers contact at either end as well as incompatible distances and the all-zero sample.," (hn : 0 < n) {z : Fin n → ℝ} {a b Z : ℝ}
+    (hle : ∀ i, z i ≤ Z) (hZeq : ∃ i, z i = Z) (hb : 0 < b) :
+    (∃ W ∈ finiteWidthDomain z a b,
+      IsMaxOn (widthLogLik z a b) (finiteWidthDomain z a b) W) ↔
+      0 < Z ∧ 1 ≤ a ∧ heldCompatible z b",criterion,,"Complete positive finite criterion, including incompatible distances.",
+nsbeta,max+shape1+shape2,UnivariateML.Endpoint2NonstandardBeta.fixed_shapes_criterion,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,200,The fixed-shape criterion covers contact at either end as well as incompatible distances and the all-zero sample.," (hn : 0 < n) {z : Fin n → ℝ} {a b Z : ℝ}
+    (hle : ∀ i, z i ≤ Z) (hZeq : ∃ i, z i = Z) (hb : 0 < b) :
+    (∃ W ∈ finiteWidthDomain z a b,
+      IsMaxOn (widthLogLik z a b) (finiteWidthDomain z a b) W) ↔
+      0 < Z ∧ 1 ≤ a ∧ heldCompatible z b",criterion,,"Complete positive finite criterion, including incompatible distances.",
+nsbeta,min,UnivariateML.Endpoint2NonstandardBeta.free_endpoint_shape_no_fit,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,263,"Free shape at the moving endpoint precludes a positive finite fit, whether the opposite shape is held or free. The domain excludes held contacts whose fixed factor is zero or infinite."," (hn : 0 < n) {z : Fin n → ℝ} {Z : ℝ}
+    (hle : ∀ i, z i ≤ Z) (heq : ∃ i, z i = Z) (B : Set ℝ) :
+    let D : Set (ℝ × ℝ × ℝ) :=
+      {v | 0 < v.2.1 ∧ 0 < v.2.2 ∧ v.2.2 ∈ B ∧
+        v.1 ∈ finiteWidthDomain z v.2.1 v.2.2}
+    let L := fun v : ℝ × ℝ × ℝ ↦ widthLogLik z v.2.1 v.2.2 v.1
+    ¬ ∃ v ∈ D, IsMaxOn L D v","criterion, uniqueness",,"Either orientation, with arbitrary holds on the other shape.",
+nsbeta,max,UnivariateML.Endpoint2NonstandardBeta.free_endpoint_shape_no_fit,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,263,"Free shape at the moving endpoint precludes a positive finite fit, whether the opposite shape is held or free. The domain excludes held contacts whose fixed factor is zero or infinite."," (hn : 0 < n) {z : Fin n → ℝ} {Z : ℝ}
+    (hle : ∀ i, z i ≤ Z) (heq : ∃ i, z i = Z) (B : Set ℝ) :
+    let D : Set (ℝ × ℝ × ℝ) :=
+      {v | 0 < v.2.1 ∧ 0 < v.2.2 ∧ v.2.2 ∈ B ∧
+        v.1 ∈ finiteWidthDomain z v.2.1 v.2.2}
+    let L := fun v : ℝ × ℝ × ℝ ↦ widthLogLik z v.2.1 v.2.2 v.1
+    ¬ ∃ v ∈ D, IsMaxOn L D v","criterion, uniqueness",,"Either orientation, with arbitrary holds on the other shape.",
+nsbeta,min+shape1,UnivariateML.Endpoint2NonstandardBeta.free_endpoint_shape_no_fit,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,263,"Free shape at the moving endpoint precludes a positive finite fit, whether the opposite shape is held or free. The domain excludes held contacts whose fixed factor is zero or infinite."," (hn : 0 < n) {z : Fin n → ℝ} {Z : ℝ}
+    (hle : ∀ i, z i ≤ Z) (heq : ∃ i, z i = Z) (B : Set ℝ) :
+    let D : Set (ℝ × ℝ × ℝ) :=
+      {v | 0 < v.2.1 ∧ 0 < v.2.2 ∧ v.2.2 ∈ B ∧
+        v.1 ∈ finiteWidthDomain z v.2.1 v.2.2}
+    let L := fun v : ℝ × ℝ × ℝ ↦ widthLogLik z v.2.1 v.2.2 v.1
+    ¬ ∃ v ∈ D, IsMaxOn L D v","criterion, uniqueness",,"Either orientation, with arbitrary holds on the other shape.",
+nsbeta,max+shape2,UnivariateML.Endpoint2NonstandardBeta.free_endpoint_shape_no_fit,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,263,"Free shape at the moving endpoint precludes a positive finite fit, whether the opposite shape is held or free. The domain excludes held contacts whose fixed factor is zero or infinite."," (hn : 0 < n) {z : Fin n → ℝ} {Z : ℝ}
+    (hle : ∀ i, z i ≤ Z) (heq : ∃ i, z i = Z) (B : Set ℝ) :
+    let D : Set (ℝ × ℝ × ℝ) :=
+      {v | 0 < v.2.1 ∧ 0 < v.2.2 ∧ v.2.2 ∈ B ∧
+        v.1 ∈ finiteWidthDomain z v.2.1 v.2.2}
+    let L := fun v : ℝ × ℝ × ℝ ↦ widthLogLik z v.2.1 v.2.2 v.1
+    ¬ ∃ v ∈ D, IsMaxOn L D v","criterion, uniqueness",,"Either orientation, with arbitrary holds on the other shape.",
+nsbeta,all free,UnivariateML.Endpoint2NonstandardBeta.free_endpoints_unbounded,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,319,"Any subunit shape produces a free-endpoint spike. The other endpoint can be taken strictly outside the sample, even for constant data."," (hn : 0 < n) (x : Fin n → ℝ) {a b : ℝ}
+    (h : a < 1 ∨ b < 1) :
+    let D : Set (ℝ × ℝ) := {p | p.1 < p.2 ∧ ∀ i, x i ∈ Ioo p.1 p.2}
+    let L : ℝ × ℝ → ℝ := fun p ↦ NonstandardBeta.logLik x p.1 p.2 (b, a)
+    ¬ BddAbove (L '' D)","criterion, failure, uniqueness",,Take a subunit free shape and use the corresponding endpoint spike.,
+nsbeta,shape1,UnivariateML.Endpoint2NonstandardBeta.free_endpoints_unbounded,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,319,"Any subunit shape produces a free-endpoint spike. The other endpoint can be taken strictly outside the sample, even for constant data."," (hn : 0 < n) (x : Fin n → ℝ) {a b : ℝ}
+    (h : a < 1 ∨ b < 1) :
+    let D : Set (ℝ × ℝ) := {p | p.1 < p.2 ∧ ∀ i, x i ∈ Ioo p.1 p.2}
+    let L : ℝ × ℝ → ℝ := fun p ↦ NonstandardBeta.logLik x p.1 p.2 (b, a)
+    ¬ BddAbove (L '' D)","criterion, failure, uniqueness",,Take a subunit free shape and use the corresponding endpoint spike.,
+nsbeta,shape2,UnivariateML.Endpoint2NonstandardBeta.free_endpoints_unbounded,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,319,"Any subunit shape produces a free-endpoint spike. The other endpoint can be taken strictly outside the sample, even for constant data."," (hn : 0 < n) (x : Fin n → ℝ) {a b : ℝ}
+    (h : a < 1 ∨ b < 1) :
+    let D : Set (ℝ × ℝ) := {p | p.1 < p.2 ∧ ∀ i, x i ∈ Ioo p.1 p.2}
+    let L : ℝ × ℝ → ℝ := fun p ↦ NonstandardBeta.logLik x p.1 p.2 (b, a)
+    ¬ BddAbove (L '' D)","criterion, failure, uniqueness",,Take a subunit free shape and use the corresponding endpoint spike.,
+nsbeta,shape1+shape2,UnivariateML.Endpoint2NonstandardBeta.free_endpoints_unbounded,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,319,"Any subunit shape produces a free-endpoint spike. The other endpoint can be taken strictly outside the sample, even for constant data."," (hn : 0 < n) (x : Fin n → ℝ) {a b : ℝ}
+    (h : a < 1 ∨ b < 1) :
+    let D : Set (ℝ × ℝ) := {p | p.1 < p.2 ∧ ∀ i, x i ∈ Ioo p.1 p.2}
+    let L : ℝ × ℝ → ℝ := fun p ↦ NonstandardBeta.logLik x p.1 p.2 (b, a)
+    ¬ BddAbove (L '' D)",failure,,At least one shape below one.,
+nsbeta,shape1+shape2,UnivariateML.Endpoint2NonstandardBeta.free_endpoints_constant_collapse,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,371,Both endpoints can shrink symmetrically around a constant sample with any fixed positive beta shapes.," (hn : 0 < n) (a b v : ℝ) :
+    Tendsto (fun w ↦ NonstandardBeta.logLik (fun _ : Fin n ↦ v)
+      (v - w / 2) (v + w / 2) (b, a)) (𝓝[>] 0) atTop",failure,,Constant data for any fixed shapes.,
+nsbeta,max+min,UnivariateML.Endpoint2NonstandardBeta.held_endpoints_constant_unbounded,dev/lean/UnivariateML/Family/Endpoint2NonstandardBeta.lean,390,"With both endpoints fixed, the beta shape-concentration limit transfers exactly for every constant interior sample."," (hn : 0 < n) {l r v : ℝ}
+    (hl : l < v) (hr : v < r) :
+    ¬ BddAbove (NonstandardBeta.logLik (fun _ : Fin n ↦ v) l r '' Beta.domain)",limit:1,,Constant interior sample.,
+nsbeta,shape1+shape2,UnivariateML.Endpoint2NonstandardBetaAffine.fixed_shapes_affine_fit,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaAffine.lean,92,"For fixed shapes at least one, nonconstant samples have a unique fit in the affine endpoint chart, including closed uniform contact."," {z : Fin n → ℝ} (hz : ∀ i, z i ∈ Icc (0 : ℝ) 1)
+    (hzero : ∃ i, z i = 0) (hone : ∃ i, z i = 1) {a b : ℝ} (ha : 1 ≤ a) (hb : 1 ≤ b) :
+    ∃! p, p ∈ domain a b ∧ IsMaxOn (logLik z a b) (domain a b) p",uniqueness,,Normalized nonconstant data including the uniform case.,
+nsbeta,shape1+shape2,UnivariateML.Endpoint2NonstandardBetaAffine.fixed_shapes_endpoint_fit,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaAffine.lean,327,"On nonconstant samples, both regular fixed shapes give a unique positive finite endpoint pair in the original coordinates."," {x : Fin n → ℝ} {m M a b : ℝ} (hspan : m < M)
+    (hx : ∀ i, x i ∈ Icc m M) (hmin : ∃ i, x i = m) (hmax : ∃ i, x i = M)
+    (ha : 1 ≤ a) (hb : 1 ≤ b) :
+    let D := endpointDomain m M a b
+    ∃! v, v ∈ D ∧ IsMaxOn (fun v : ℝ × ℝ ↦ NonstandardBeta.logLik x v.1 v.2 (a,b)) D v","criterion, uniqueness",,Regular nonconstant branch in original endpoint coordinates.,
+nsbeta,min+shape1+shape2,UnivariateML.Endpoint2NonstandardBetaContacts.incompatible_zero,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaContacts.lean,47,Negative distances violate support for every strictly containing width.," (z : Fin n → ℝ) {a b W : ℝ}
+    (h : ∃ i, z i < 0) : strictWidthLikelihood z a b W = 0",failure,,Extended held factor evaluated before free-endpoint contact.,
+nsbeta,max+shape1+shape2,UnivariateML.Endpoint2NonstandardBetaContacts.incompatible_zero,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaContacts.lean,47,Negative distances violate support for every strictly containing width.," (z : Fin n → ℝ) {a b W : ℝ}
+    (h : ∃ i, z i < 0) : strictWidthLikelihood z a b W = 0",failure,,Extended held factor evaluated before free-endpoint contact.,
+nsbeta,min,UnivariateML.Endpoint2NonstandardBetaContacts.incompatible_zero,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaContacts.lean,47,Negative distances violate support for every strictly containing width.," (z : Fin n → ℝ) {a b W : ℝ}
+    (h : ∃ i, z i < 0) : strictWidthLikelihood z a b W = 0",failure,,Extended held factor evaluated before free-endpoint contact.,
+nsbeta,max,UnivariateML.Endpoint2NonstandardBetaContacts.incompatible_zero,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaContacts.lean,47,Negative distances violate support for every strictly containing width.," (z : Fin n → ℝ) {a b W : ℝ}
+    (h : ∃ i, z i < 0) : strictWidthLikelihood z a b W = 0",failure,,Extended held factor evaluated before free-endpoint contact.,
+nsbeta,min+shape1,UnivariateML.Endpoint2NonstandardBetaContacts.incompatible_zero,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaContacts.lean,47,Negative distances violate support for every strictly containing width.," (z : Fin n → ℝ) {a b W : ℝ}
+    (h : ∃ i, z i < 0) : strictWidthLikelihood z a b W = 0",failure,,Extended held factor evaluated before free-endpoint contact.,
+nsbeta,max+shape2,UnivariateML.Endpoint2NonstandardBetaContacts.incompatible_zero,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaContacts.lean,47,Negative distances violate support for every strictly containing width.," (z : Fin n → ℝ) {a b W : ℝ}
+    (h : ∃ i, z i < 0) : strictWidthLikelihood z a b W = 0",failure,,Extended held factor evaluated before free-endpoint contact.,
+nsbeta,min+shape2,UnivariateML.Endpoint2NonstandardBetaContacts.incompatible_zero,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaContacts.lean,47,Negative distances violate support for every strictly containing width.," (z : Fin n → ℝ) {a b W : ℝ}
+    (h : ∃ i, z i < 0) : strictWidthLikelihood z a b W = 0",failure,,Extended held factor at contact. The mixed-shape width profile is separate.,
+nsbeta,max+shape1,UnivariateML.Endpoint2NonstandardBetaContacts.incompatible_zero,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaContacts.lean,47,Negative distances violate support for every strictly containing width.," (z : Fin n → ℝ) {a b W : ℝ}
+    (h : ∃ i, z i < 0) : strictWidthLikelihood z a b W = 0",failure,,Extended held factor at contact. The mixed-shape width profile is separate.,
+nsbeta,min+shape1+shape2,UnivariateML.Endpoint2NonstandardBetaContacts.contact_likelihood,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaContacts.lean,56,"When some data touch the held endpoint, its subunit shape gives an infinite likelihood, its superunit shape gives zero, and unit shape gives a finite positive likelihood. These rules apply on either reflected side."," {z : Fin n → ℝ} {a b W : ℝ}
+    (hW : 0 < W) (hz : ∀ i, 0 ≤ z i ∧ z i < W) (hcontact : ∃ i, z i = 0) :
+    (b < 1 → strictWidthLikelihood z a b W = ⊤) ∧
+      (1 < b → strictWidthLikelihood z a b W = 0) ∧
+      (b = 1 → 0 < strictWidthLikelihood z a b W ∧ strictWidthLikelihood z a b W < ⊤)",failure,,Extended held factor evaluated before free-endpoint contact.,
+nsbeta,max+shape1+shape2,UnivariateML.Endpoint2NonstandardBetaContacts.contact_likelihood,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaContacts.lean,56,"When some data touch the held endpoint, its subunit shape gives an infinite likelihood, its superunit shape gives zero, and unit shape gives a finite positive likelihood. These rules apply on either reflected side."," {z : Fin n → ℝ} {a b W : ℝ}
+    (hW : 0 < W) (hz : ∀ i, 0 ≤ z i ∧ z i < W) (hcontact : ∃ i, z i = 0) :
+    (b < 1 → strictWidthLikelihood z a b W = ⊤) ∧
+      (1 < b → strictWidthLikelihood z a b W = 0) ∧
+      (b = 1 → 0 < strictWidthLikelihood z a b W ∧ strictWidthLikelihood z a b W < ⊤)",failure,,Extended held factor evaluated before free-endpoint contact.,
+nsbeta,min,UnivariateML.Endpoint2NonstandardBetaContacts.contact_likelihood,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaContacts.lean,56,"When some data touch the held endpoint, its subunit shape gives an infinite likelihood, its superunit shape gives zero, and unit shape gives a finite positive likelihood. These rules apply on either reflected side."," {z : Fin n → ℝ} {a b W : ℝ}
+    (hW : 0 < W) (hz : ∀ i, 0 ≤ z i ∧ z i < W) (hcontact : ∃ i, z i = 0) :
+    (b < 1 → strictWidthLikelihood z a b W = ⊤) ∧
+      (1 < b → strictWidthLikelihood z a b W = 0) ∧
+      (b = 1 → 0 < strictWidthLikelihood z a b W ∧ strictWidthLikelihood z a b W < ⊤)",failure,,Extended held factor evaluated before free-endpoint contact.,
+nsbeta,max,UnivariateML.Endpoint2NonstandardBetaContacts.contact_likelihood,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaContacts.lean,56,"When some data touch the held endpoint, its subunit shape gives an infinite likelihood, its superunit shape gives zero, and unit shape gives a finite positive likelihood. These rules apply on either reflected side."," {z : Fin n → ℝ} {a b W : ℝ}
+    (hW : 0 < W) (hz : ∀ i, 0 ≤ z i ∧ z i < W) (hcontact : ∃ i, z i = 0) :
+    (b < 1 → strictWidthLikelihood z a b W = ⊤) ∧
+      (1 < b → strictWidthLikelihood z a b W = 0) ∧
+      (b = 1 → 0 < strictWidthLikelihood z a b W ∧ strictWidthLikelihood z a b W < ⊤)",failure,,Extended held factor evaluated before free-endpoint contact.,
+nsbeta,min+shape1,UnivariateML.Endpoint2NonstandardBetaContacts.contact_likelihood,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaContacts.lean,56,"When some data touch the held endpoint, its subunit shape gives an infinite likelihood, its superunit shape gives zero, and unit shape gives a finite positive likelihood. These rules apply on either reflected side."," {z : Fin n → ℝ} {a b W : ℝ}
+    (hW : 0 < W) (hz : ∀ i, 0 ≤ z i ∧ z i < W) (hcontact : ∃ i, z i = 0) :
+    (b < 1 → strictWidthLikelihood z a b W = ⊤) ∧
+      (1 < b → strictWidthLikelihood z a b W = 0) ∧
+      (b = 1 → 0 < strictWidthLikelihood z a b W ∧ strictWidthLikelihood z a b W < ⊤)",failure,,Extended held factor evaluated before free-endpoint contact.,
+nsbeta,max+shape2,UnivariateML.Endpoint2NonstandardBetaContacts.contact_likelihood,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaContacts.lean,56,"When some data touch the held endpoint, its subunit shape gives an infinite likelihood, its superunit shape gives zero, and unit shape gives a finite positive likelihood. These rules apply on either reflected side."," {z : Fin n → ℝ} {a b W : ℝ}
+    (hW : 0 < W) (hz : ∀ i, 0 ≤ z i ∧ z i < W) (hcontact : ∃ i, z i = 0) :
+    (b < 1 → strictWidthLikelihood z a b W = ⊤) ∧
+      (1 < b → strictWidthLikelihood z a b W = 0) ∧
+      (b = 1 → 0 < strictWidthLikelihood z a b W ∧ strictWidthLikelihood z a b W < ⊤)",failure,,Extended held factor evaluated before free-endpoint contact.,
+nsbeta,min+shape2,UnivariateML.Endpoint2NonstandardBetaContacts.contact_likelihood,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaContacts.lean,56,"When some data touch the held endpoint, its subunit shape gives an infinite likelihood, its superunit shape gives zero, and unit shape gives a finite positive likelihood. These rules apply on either reflected side."," {z : Fin n → ℝ} {a b W : ℝ}
+    (hW : 0 < W) (hz : ∀ i, 0 ≤ z i ∧ z i < W) (hcontact : ∃ i, z i = 0) :
+    (b < 1 → strictWidthLikelihood z a b W = ⊤) ∧
+      (1 < b → strictWidthLikelihood z a b W = 0) ∧
+      (b = 1 → 0 < strictWidthLikelihood z a b W ∧ strictWidthLikelihood z a b W < ⊤)",failure,,Extended held factor at contact. The mixed-shape width profile is separate.,
+nsbeta,max+shape1,UnivariateML.Endpoint2NonstandardBetaContacts.contact_likelihood,dev/lean/UnivariateML/Family/Endpoint2NonstandardBetaContacts.lean,56,"When some data touch the held endpoint, its subunit shape gives an infinite likelihood, its superunit shape gives zero, and unit shape gives a finite positive likelihood. These rules apply on either reflected side."," {z : Fin n → ℝ} {a b W : ℝ}
+    (hW : 0 < W) (hz : ∀ i, 0 ≤ z i ∧ z i < W) (hcontact : ∃ i, z i = 0) :
+    (b < 1 → strictWidthLikelihood z a b W = ⊤) ∧
+      (1 < b → strictWidthLikelihood z a b W = 0) ∧
+      (b = 1 → 0 < strictWidthLikelihood z a b W ∧ strictWidthLikelihood z a b W < ⊤)",failure,,Extended held factor at contact. The mixed-shape width profile is separate.,
+pareto2,all free,UnivariateML.Endpoint2ParetoII.free_threshold_diverges,dev/lean/UnivariateML/Family/Endpoint2ParetoII.lean,108,"Any nonempty sample, centered at a sample minimum, has a fixed positive shape for which the free-threshold Pareto II likelihood diverges."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) :
+    ∃ q > 0, Tendsto (fun s ↦ Transfer.ParetoII.logLik d (-s) q s) (𝓝[>] 0) atTop",failure,,Uses closed contact at the minimum when compatible.,
+pareto2,all free,UnivariateML.Endpoint2ParetoII.free_threshold_unbounded,dev/lean/UnivariateML/Family/Endpoint2ParetoII.lean,117,"The unrestricted threshold, shape and scale domain has unbounded likelihood and no finite maximizer, with all sample ties included."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) :
+    let D : Set (ℝ × ℝ × ℝ) := Ici 0 ×ˢ Lomax.domain
+    let L : ℝ × ℝ × ℝ → ℝ := fun p ↦ Transfer.ParetoII.logLik d (-p.1) p.2.1 p.2.2
+    ¬ BddAbove (L '' D) ∧ ¬ ∃ p ∈ D, IsMaxOn L D p","criterion, failure, uniqueness",,Uses closed contact at the minimum when compatible.,
+pareto2,min,UnivariateML.Endpoint2ParetoII.held_threshold_criterion,dev/lean/UnivariateML/Family/Endpoint2ParetoII.lean,133,"Exact held-threshold existence criterion, including compatible observations equal to the threshold."," (hn : 0 < n) {x : Fin n → ℝ} {μ : ℝ}
+    (hx : ∀ i, μ ≤ x i) :
+    (∃ p ∈ Lomax.domain,
+      IsMaxOn (fun q : ℝ × ℝ ↦ Transfer.ParetoII.logLik x μ q.1 q.2) Lomax.domain p) ↔
+    (∀ i, μ < x i) ∧
+      ∃ u ∈ Ioo 0 (Lomax.uBar (Transfer.ParetoII.excess x μ)),
+        Lomax.psi (Transfer.ParetoII.excess x μ) u ≤ 0",criterion,,Uses closed contact at the minimum when compatible.,
+pareto2,scale+shape,UnivariateML.Endpoint2ParetoII.held_scale_shape_threshold,dev/lean/UnivariateML/Family/Endpoint2ParetoII.lean,164,With fixed positive scale and shape the closed sample minimum is the unique maximizing threshold.," (hn : 0 < n) {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) {q s : ℝ} (hq : 0 < q) (hs : 0 < s) :
+    ∃! t, t ∈ Ici (0 : ℝ) ∧
+      IsMaxOn (fun u ↦ Transfer.ParetoII.logLik d (-u) q s) (Ici 0) t","criterion, failure, uniqueness",,Uses closed contact at the minimum when compatible.,
+pareto2,scale,UnivariateML.Endpoint2ParetoII.held_scale_fit,dev/lean/UnivariateML/Family/Endpoint2ParetoII.lean,181,"At fixed scale, a sample with at least two different observations has a unique finite threshold and shape fit. With all gaps zero the likelihood instead grows without bound at closed contact."," (hn : 0 < n) {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) {s : ℝ} (hs : 0 < s) :
+    let D : Set (ℝ × ℝ) := Ici 0 ×ˢ Ioi 0
+    let L : ℝ × ℝ → ℝ := fun p ↦ Transfer.ParetoII.logLik d (-p.1) p.2 s
+    ((∃ i, 0 < d i) → ∃! p, p ∈ D ∧ IsMaxOn L D p) ∧
+      ((∀ i, d i = 0) → ¬ BddAbove (L '' D))","criterion, failure, uniqueness",,Uses closed contact at the minimum when compatible.,
+pareto2,shape,UnivariateML.Endpoint2ParetoII.held_shape_fit,dev/lean/UnivariateML/Family/Endpoint2ParetoII.lean,309,"The fixed-shape threshold/scale fit is unique exactly when the scale-collapse exponent is positive. Its threshold is closed contact. For negative exponent the likelihood diverges, and at zero exponent the finite contact limit strictly exceeds every feasible finite value."," (hn : 0 < n) {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) {q : ℝ} (hq : 0 < q) :
+    let D : Set (ℝ × ℝ) := Ici 0 ×ˢ Ioi 0
+    let L : ℝ × ℝ → ℝ := fun p ↦ Transfer.ParetoII.logLik d (-p.1) q p.2
+    (0 < exponent d q → ∃ s > 0, IsMaxOn L D (0, s) ∧
+      ∀ p ∈ D, IsMaxOn L D p → p = (0, s)) ∧
+      (exponent d q < 0 → ¬ BddAbove (L '' D)) ∧
+      (exponent d q = 0 → ∃ C : ℝ,
+        Tendsto (fun s ↦ L (0, s)) (𝓝[>] 0) (𝓝 C) ∧ ∀ p ∈ D, L p < C)","criterion, failure, uniqueness",,Uses closed contact at the minimum when compatible.,
+pareto2,shape,UnivariateML.Endpoint2ParetoII.held_shape_zero_exponent_sup,dev/lean/UnivariateML/Family/Endpoint2ParetoII.lean,459,"At equality in the scale-collapse exponent the contact limit is the exact, strictly unattained supremum."," (hn : 0 < n) {d : Fin n → ℝ}
+    (hd : ∀ i, 0 ≤ d i) {q : ℝ} (hq : 0 < q) (hE : exponent d q = 0) :
+    let D : Set (ℝ × ℝ) := Ici 0 ×ˢ Ioi 0
+    let L : ℝ × ℝ → ℝ := fun p ↦ Transfer.ParetoII.logLik d (-p.1) q p.2
+    ∃ C : ℝ, IsLUB (L '' D) C ∧ ∀ p ∈ D, L p < C",failure,,Uses closed contact at the minimum when compatible.,
+pareto2,min,UnivariateML.Endpoint2ParetoII.held_threshold_three_level_tie,dev/lean/UnivariateML/Family/Endpoint2ParetoII.lean,477,The exact three-level Lomax crossing transfers to a held Pareto II threshold of zero. Pareto II uses reciprocal scale coordinates.," :
+    ∃ a ∈ Ioo ((2 : ℝ) ^ 512)⁻¹ ((2 : ℝ) ^ 32)⁻¹,
+      let x : Fin 21 → ℝ := fun i ↦ if i.val = 0 then a else if i.val ≤ 10 then 1 else 100
+      ∃ p q : ℝ × ℝ, p ≠ q ∧
+        {v ∈ Lomax.domain | IsMaxOn (fun b : ℝ × ℝ ↦
+          Transfer.ParetoII.logLik x 0 b.1 b.2) Lomax.domain v} = {p, q}",uniqueness,,Uses closed contact at the minimum when compatible.,
+pareto3,all free,UnivariateML.Endpoint2ParetoIII.threshold_spike,dev/lean/UnivariateML/Family/Endpoint2ParetoIII.lean,43,"With subunit shape and any fixed scale, all observations tied at the sample minimum contribute to the free-threshold spike."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {c s : ℝ} (hc : 0 < c) (hsub : c < 1) (hs : 0 < s) :
+    Tendsto (fun t ↦ ParetoIII.logLik d (-t) (c, s)) (𝓝[>] 0) atTop",failure,,Log-logistic excess likelihood.,
+pareto3,scale,UnivariateML.Endpoint2ParetoIII.threshold_spike,dev/lean/UnivariateML/Family/Endpoint2ParetoIII.lean,43,"With subunit shape and any fixed scale, all observations tied at the sample minimum contribute to the free-threshold spike."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {c s : ℝ} (hc : 0 < c) (hsub : c < 1) (hs : 0 < s) :
+    Tendsto (fun t ↦ ParetoIII.logLik d (-t) (c, s)) (𝓝[>] 0) atTop",failure,,Log-logistic excess likelihood.,
+pareto3,scale+shape,UnivariateML.Endpoint2ParetoIII.threshold_spike,dev/lean/UnivariateML/Family/Endpoint2ParetoIII.lean,43,"With subunit shape and any fixed scale, all observations tied at the sample minimum contribute to the free-threshold spike."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {c s : ℝ} (hc : 0 < c) (hsub : c < 1) (hs : 0 < s) :
+    Tendsto (fun t ↦ ParetoIII.logLik d (-t) (c, s)) (𝓝[>] 0) atTop",failure,,Log-logistic excess likelihood.,
+pareto3,shape,UnivariateML.Endpoint2ParetoIII.threshold_spike,dev/lean/UnivariateML/Family/Endpoint2ParetoIII.lean,43,"With subunit shape and any fixed scale, all observations tied at the sample minimum contribute to the free-threshold spike."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {c s : ℝ} (hc : 0 < c) (hsub : c < 1) (hs : 0 < s) :
+    Tendsto (fun t ↦ ParetoIII.logLik d (-t) (c, s)) (𝓝[>] 0) atTop",failure,,Log-logistic excess likelihood.,
+pareto3,all free,UnivariateML.Endpoint2ParetoIII.free_threshold_unbounded,dev/lean/UnivariateML/Family/Endpoint2ParetoIII.lean,52,"Freeing the threshold and shape gives an unbounded objective for any positive scale, hence also when scale is free."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {s : ℝ} (hs : 0 < s) :
+    let D : Set (ℝ × ℝ) := Ici 0 ×ˢ Ioi 0
+    let L : ℝ × ℝ → ℝ := fun p ↦ ParetoIII.logLik d (-p.1) (p.2, s)
+    ¬ BddAbove (L '' D) ∧ ¬ ∃ p ∈ D, IsMaxOn L D p","criterion, failure, uniqueness",,Log-logistic excess likelihood.,
+pareto3,scale,UnivariateML.Endpoint2ParetoIII.free_threshold_unbounded,dev/lean/UnivariateML/Family/Endpoint2ParetoIII.lean,52,"Freeing the threshold and shape gives an unbounded objective for any positive scale, hence also when scale is free."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {s : ℝ} (hs : 0 < s) :
+    let D : Set (ℝ × ℝ) := Ici 0 ×ˢ Ioi 0
+    let L : ℝ × ℝ → ℝ := fun p ↦ ParetoIII.logLik d (-p.1) (p.2, s)
+    ¬ BddAbove (L '' D) ∧ ¬ ∃ p ∈ D, IsMaxOn L D p","criterion, failure, uniqueness",,Log-logistic excess likelihood.,
+pareto3,min,UnivariateML.Endpoint2ParetoIII.constant_excess_path,dev/lean/UnivariateML/Family/Endpoint2ParetoIII.lean,66,Increasing shape at the scale of a positive constant excess makes the held-threshold sample log likelihood diverge.," (hn : 0 < n) {v μ : ℝ} (hv : μ < v) :
+    Tendsto (fun c ↦ ParetoIII.logLik (fun _ : Fin n ↦ v) μ (c, v - μ)) atTop atTop","path:1, limit:1",,Log-logistic excess likelihood.,
+pareto3,min+scale,UnivariateML.Endpoint2ParetoIII.constant_excess_path,dev/lean/UnivariateML/Family/Endpoint2ParetoIII.lean,66,Increasing shape at the scale of a positive constant excess makes the held-threshold sample log likelihood diverge.," (hn : 0 < n) {v μ : ℝ} (hv : μ < v) :
+    Tendsto (fun c ↦ ParetoIII.logLik (fun _ : Fin n ↦ v) μ (c, v - μ)) atTop atTop","path:1, limit:1",,Log-logistic excess likelihood.,
+pareto4,all free,UnivariateML.Endpoint2ParetoIV.threshold_spike,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,48,The moving-threshold spike holds with arbitrary fixed positive scale and upper shape whenever the power is below one.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {k c s : ℝ} (hk : 0 < k) (hc : 0 < c) (hsub : c < 1)
+    (hs : 0 < s) :
+    Tendsto (fun t ↦ ShapeFacesParetoIV.logLik d (-t) k c s) (𝓝[>] 0) atTop",failure,,Subunit power at fixed scale.,
+pareto4,scale,UnivariateML.Endpoint2ParetoIV.threshold_spike,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,48,The moving-threshold spike holds with arbitrary fixed positive scale and upper shape whenever the power is below one.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {k c s : ℝ} (hk : 0 < k) (hc : 0 < c) (hsub : c < 1)
+    (hs : 0 < s) :
+    Tendsto (fun t ↦ ShapeFacesParetoIV.logLik d (-t) k c s) (𝓝[>] 0) atTop",failure,,Subunit power at fixed scale.,
+pareto4,scale+shape1,UnivariateML.Endpoint2ParetoIV.threshold_spike,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,48,The moving-threshold spike holds with arbitrary fixed positive scale and upper shape whenever the power is below one.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {k c s : ℝ} (hk : 0 < k) (hc : 0 < c) (hsub : c < 1)
+    (hs : 0 < s) :
+    Tendsto (fun t ↦ ShapeFacesParetoIV.logLik d (-t) k c s) (𝓝[>] 0) atTop",failure,,Subunit power at fixed scale.,
+pareto4,scale+shape1+shape2,UnivariateML.Endpoint2ParetoIV.threshold_spike,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,48,The moving-threshold spike holds with arbitrary fixed positive scale and upper shape whenever the power is below one.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {k c s : ℝ} (hk : 0 < k) (hc : 0 < c) (hsub : c < 1)
+    (hs : 0 < s) :
+    Tendsto (fun t ↦ ShapeFacesParetoIV.logLik d (-t) k c s) (𝓝[>] 0) atTop",failure,,Subunit power at fixed scale.,
+pareto4,scale+shape2,UnivariateML.Endpoint2ParetoIV.threshold_spike,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,48,The moving-threshold spike holds with arbitrary fixed positive scale and upper shape whenever the power is below one.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {k c s : ℝ} (hk : 0 < k) (hc : 0 < c) (hsub : c < 1)
+    (hs : 0 < s) :
+    Tendsto (fun t ↦ ShapeFacesParetoIV.logLik d (-t) k c s) (𝓝[>] 0) atTop",failure,,Subunit power at fixed scale.,
+pareto4,shape1,UnivariateML.Endpoint2ParetoIV.threshold_spike,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,48,The moving-threshold spike holds with arbitrary fixed positive scale and upper shape whenever the power is below one.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {k c s : ℝ} (hk : 0 < k) (hc : 0 < c) (hsub : c < 1)
+    (hs : 0 < s) :
+    Tendsto (fun t ↦ ShapeFacesParetoIV.logLik d (-t) k c s) (𝓝[>] 0) atTop",failure,,Subunit power at fixed scale.,
+pareto4,shape1+shape2,UnivariateML.Endpoint2ParetoIV.threshold_spike,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,48,The moving-threshold spike holds with arbitrary fixed positive scale and upper shape whenever the power is below one.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {k c s : ℝ} (hk : 0 < k) (hc : 0 < c) (hsub : c < 1)
+    (hs : 0 < s) :
+    Tendsto (fun t ↦ ShapeFacesParetoIV.logLik d (-t) k c s) (𝓝[>] 0) atTop",failure,,Subunit power at fixed scale.,
+pareto4,shape2,UnivariateML.Endpoint2ParetoIV.threshold_spike,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,48,The moving-threshold spike holds with arbitrary fixed positive scale and upper shape whenever the power is below one.," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {k c s : ℝ} (hk : 0 < k) (hc : 0 < c) (hsub : c < 1)
+    (hs : 0 < s) :
+    Tendsto (fun t ↦ ShapeFacesParetoIV.logLik d (-t) k c s) (𝓝[>] 0) atTop",failure,,Subunit power at fixed scale.,
+pareto4,all free,UnivariateML.Endpoint2ParetoIV.simultaneous_collapse,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,62,"With scale and upper shape free, the Pareto IV likelihood diverges along the simultaneous small-scale, small-shape path at any fixed power."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {c : ℝ} (hc : 0 < c) :
+    Tendsto (fun T ↦ ShapeFacesParetoIV.logLik d (-exp (-T)) T⁻¹ c (exp (-T)))
+      atTop atTop",failure,,Also works with power fixed above one.,
+pareto4,shape2,UnivariateML.Endpoint2ParetoIV.simultaneous_collapse,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,62,"With scale and upper shape free, the Pareto IV likelihood diverges along the simultaneous small-scale, small-shape path at any fixed power."," {d : Fin n → ℝ} (hd : ∀ i, 0 ≤ d i)
+    (hz : ∃ i, d i = 0) {c : ℝ} (hc : 0 < c) :
+    Tendsto (fun T ↦ ShapeFacesParetoIV.logLik d (-exp (-T)) T⁻¹ c (exp (-T)))
+      atTop atTop",failure,,Also works with power fixed above one.,
+pareto4,min+scale,UnivariateML.Endpoint2ParetoIV.held_scale_criterion,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,72,"With threshold and scale fixed, attainment is exactly the branch with nonconstant positive excesses and an observation below scale."," (hn : 0 < n) {x : Fin n → ℝ} {μ s : ℝ}
+    (hx : ∀ i, μ < x i) (hs : 0 < s) :
+    let D := BurrHeld.shapeDomain
+    let L := fun p : ℝ × ℝ ↦ ShapeFacesParetoIV.logLik x μ p.2 p.1 s
+    (∃ p ∈ D, IsMaxOn L D p) ↔
+      (∃ i j, x i ≠ x j) ∧ (∃ i, x i - μ < s)",criterion,,Includes constant and at-scale cases.,
+pareto4,min+scale,UnivariateML.Endpoint2ParetoIV.held_scale_escape,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,112,Held threshold and scale give the exact Pareto contact trace when all excesses reach scale and some exceed it. A constant excess at or below scale instead allows an unbounded fit.," (hn : 0 < n) {x : Fin n → ℝ} {μ s : ℝ}
+    (hx : ∀ i, μ < x i) (hs : 0 < s) :
+    let D := BurrHeld.shapeDomain
+    let L := fun p : ℝ × ℝ ↦ ShapeFacesParetoIV.logLik x μ p.2 p.1 s / n
+    let z := BurrHeld.logRatios (ShapeFacesParetoIV.excess x μ) s
+    let B := BurrHeld.paretoValue z - BurrHeld.avg (fun i ↦ log (x i - μ))
+    (((∀ i, s ≤ x i - μ) ∧ (∃ i, s < x i - μ)) →
+      IsLUB (L '' D) B ∧ ∀ p ∈ D, L p < B) ∧
+    ((∃ v, (∀ i, x i = v) ∧ v - μ ≤ s) → ¬ BddAbove (L '' D))","failure, limit:2, limit:5",,Pareto value includes the contact penalty at excess equal to scale.,
+pareto4,min+shape1,UnivariateML.Endpoint2ParetoIV.held_first_criterion,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,140,"With threshold and first shape fixed, the existence criterion is nonconstant positive excesses. The constant branch has a divergent path."," (hn : 0 < n) {x : Fin n → ℝ} {μ k : ℝ}
+    (hx : ∀ i, μ < x i) (hk : 0 < k) :
+    let L := fun p : ℝ × ℝ ↦ ShapeFacesParetoIV.logLik x μ k p.1 p.2
+    (∃ p ∈ BurrHeld.shapeDomain, IsMaxOn L BurrHeld.shapeDomain p) ↔
+      ∃ i j, x i ≠ x j",criterion,,Nonconstant positive excesses.,
+pareto4,min+scale+shape1,UnivariateML.Endpoint2ParetoIV.held_first_scale_criterion,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,166,"With threshold, scale and first shape fixed, the remaining power has a finite maximum precisely when some positive excess differs from scale."," (hn : 0 < n) {x : Fin n → ℝ} {μ k s : ℝ}
+    (hx : ∀ i, μ < x i) (hk : 0 < k) (hs : 0 < s) :
+    let L := fun c ↦ ShapeFacesParetoIV.logLik x μ k c s
+    (∃ c ∈ Ioi (0 : ℝ), IsMaxOn L (Ioi 0) c) ↔ ∃ i, x i - μ ≠ s",criterion,,Attainment is equivalent to an excess different from scale.,
+pareto4,min,UnivariateML.Endpoint2ParetoIV.burr_maximizers_transfer,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,184,The entire Burr maximizing set on the excesses is the Pareto IV maximizing set at a held threshold. Every finite tie transfers exactly.," (x : Fin n → ℝ) (μ : ℝ)
+    (D : Set (ℝ × ℝ × ℝ)) :
+    {v ∈ D | IsMaxOn (fun w : ℝ × ℝ × ℝ ↦
+        ShapeFacesParetoIV.logLik x μ w.1 w.2.1 w.2.2) D v} =
+      {v ∈ D | IsMaxOn (fun w : ℝ × ℝ × ℝ ↦
+        Transfer.Burr.logLik (ShapeFacesParetoIV.excess x μ) w.2.1 w.1 w.2.2) D v}",uniqueness,,Conditional equality of the complete Burr and shifted maximizing sets.,
+pareto4,min,UnivariateML.Endpoint2ParetoIV.held_threshold_weibull_path,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,194,"The held-power shifted Weibull path, expressed on the original observations via their excesses."," {x : Fin n → ℝ} {μ c r : ℝ}
+    (hx : ∀ i, μ < x i) (hc : 0 < c) (hr : 0 < r) :
+    let e := ShapeFacesParetoIV.excess x μ
+    Tendsto (fun k ↦ ShapeFacesParetoIV.logLik x μ k c ((k / r) ^ c⁻¹)) atTop
+      (𝓝 (Lomax.expLogLik (Transfer.Burr.powered e c) r + Transfer.Burr.powerJac e c))",path:3,,Sample likelihood path.,
+pareto4,min+shape2,UnivariateML.Endpoint2ParetoIV.held_threshold_weibull_path,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,194,"The held-power shifted Weibull path, expressed on the original observations via their excesses."," {x : Fin n → ℝ} {μ c r : ℝ}
+    (hx : ∀ i, μ < x i) (hc : 0 < c) (hr : 0 < r) :
+    let e := ShapeFacesParetoIV.excess x μ
+    Tendsto (fun k ↦ ShapeFacesParetoIV.logLik x μ k c ((k / r) ^ c⁻¹)) atTop
+      (𝓝 (Lomax.expLogLik (Transfer.Burr.powered e c) r + Transfer.Burr.powerJac e c))",path:3,,Sample likelihood path.,
+pareto4,min+shape2,UnivariateML.Endpoint2ParetoIV.held_power_one_three_level_tie,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,204,The exact Pareto II crossing also gives exactly two Pareto IV maximizers when the threshold is zero and the power is one.," :
+    ∃ a ∈ Ioo ((2 : ℝ) ^ 512)⁻¹ ((2 : ℝ) ^ 32)⁻¹,
+      let x : Fin 21 → ℝ := fun i ↦ if i.val = 0 then a else if i.val ≤ 10 then 1 else 100
+      ∃ p q : ℝ × ℝ, p ≠ q ∧
+        {v ∈ Lomax.domain | IsMaxOn (fun b : ℝ × ℝ ↦
+          ShapeFacesParetoIV.logLik x 0 b.1 1 b.2) Lomax.domain v} = {p, q}",uniqueness,,Exact Lomax crossing.,
+pareto4,min,UnivariateML.Endpoint2ParetoIV.held_threshold_failure,dev/lean/UnivariateML/Family/Endpoint2ParetoIV.lean,237,"With a held threshold, constants diverge. On nonconstant excesses, if the finite maximum fails to exist, the larger fitted Weibull and Pareto values give the strict, unattained supremum."," {x : Fin n → ℝ} {μ : ℝ}
+    (hx : ∀ i, μ < x i) (j : Fin n) (hj : ∀ i, x j ≤ x i) :
+    let D := BurrFree.physicalDomain
+    let f := fun p : ℝ × ℝ × ℝ ↦ ShapeFacesParetoIV.logLik x μ p.1 p.2.1 p.2.2 / n
+    let e := ShapeFacesParetoIV.excess x μ
+    let y := BurrFree.logExcess e j
+    let J := BurrHeld.avg (fun i ↦ log (e i))
+    ((∀ i, x i = x j) → ¬ BddAbove (f '' D)) ∧
+      ((∃ i k, x i ≠ x k) → ∃ c > 0, ∃ u,
+        (∀ v > 0, ∀ w, BurrFree.weibullLik y v w ≤ BurrFree.weibullLik y c u) ∧
+        ((¬ ∃ p ∈ D, IsMaxOn f D p) →
+          IsLUB (f '' D) (max (BurrFree.paretoValue y) (BurrFree.weibullLik y c u) - J) ∧
+          ∀ p ∈ D, f p < max (BurrFree.paretoValue y) (BurrFree.weibullLik y c u) - J))",failure,,Exact larger fitted Weibull/Pareto value when nonconstant data fail to attain.,
+nsbeta,min+shape1+shape2,UnivariateML.Endpoint2BetaWidth.spike,dev/lean/UnivariateML/Generic/Endpoint2BetaWidth.lean,44,A subunit free-endpoint shape makes the finite log likelihood diverge as the endpoint approaches any tied farthest observations.," {z : Fin n → ℝ} (hz : ∀ i, z i ∈ Icc (0 : ℝ) 1)
+    (hcontact : ∃ i, z i = 1) {a : ℝ} (ha : a < 1) (b : ℝ) :
+    Tendsto (fun t ↦ logLik z a b (1 - t)) (𝓝[>] 0) atTop",support,,Common reflected normalized width chart.,
+nsbeta,max+shape1+shape2,UnivariateML.Endpoint2BetaWidth.spike,dev/lean/UnivariateML/Generic/Endpoint2BetaWidth.lean,44,A subunit free-endpoint shape makes the finite log likelihood diverge as the endpoint approaches any tied farthest observations.," {z : Fin n → ℝ} (hz : ∀ i, z i ∈ Icc (0 : ℝ) 1)
+    (hcontact : ∃ i, z i = 1) {a : ℝ} (ha : a < 1) (b : ℝ) :
+    Tendsto (fun t ↦ logLik z a b (1 - t)) (𝓝[>] 0) atTop",support,,Common reflected normalized width chart.,
+genbeta,shape1+shape2+shape3,UnivariateML.Endpoint2BetaWidth.spike,dev/lean/UnivariateML/Generic/Endpoint2BetaWidth.lean,44,A subunit free-endpoint shape makes the finite log likelihood diverge as the endpoint approaches any tied farthest observations.," {z : Fin n → ℝ} (hz : ∀ i, z i ∈ Icc (0 : ℝ) 1)
+    (hcontact : ∃ i, z i = 1) {a : ℝ} (ha : a < 1) (b : ℝ) :
+    Tendsto (fun t ↦ logLik z a b (1 - t)) (𝓝[>] 0) atTop",support,,Powered inverse-endpoint chart.,
+nsbeta,min+shape1+shape2,UnivariateML.Endpoint2BetaWidth.contact_max,dev/lean/UnivariateML/Generic/Endpoint2BetaWidth.lean,84,"At free-endpoint shape one, the unique finite maximizer is closed contact."," (hn : 0 < n) {z : Fin n → ℝ} {b : ℝ} (hb : 0 < b) :
+    IsMaxOn (logLik z 1 b) (Ioc (0 : ℝ) 1) 1 ∧
+      ∀ u ∈ Ioc (0 : ℝ) 1, IsMaxOn (logLik z 1 b) (Ioc 0 1) u → u = 1",support,,Common reflected normalized width chart.,
+nsbeta,max+shape1+shape2,UnivariateML.Endpoint2BetaWidth.contact_max,dev/lean/UnivariateML/Generic/Endpoint2BetaWidth.lean,84,"At free-endpoint shape one, the unique finite maximizer is closed contact."," (hn : 0 < n) {z : Fin n → ℝ} {b : ℝ} (hb : 0 < b) :
+    IsMaxOn (logLik z 1 b) (Ioc (0 : ℝ) 1) 1 ∧
+      ∀ u ∈ Ioc (0 : ℝ) 1, IsMaxOn (logLik z 1 b) (Ioc 0 1) u → u = 1",support,,Common reflected normalized width chart.,
+genbeta,shape1+shape2+shape3,UnivariateML.Endpoint2BetaWidth.contact_max,dev/lean/UnivariateML/Generic/Endpoint2BetaWidth.lean,84,"At free-endpoint shape one, the unique finite maximizer is closed contact."," (hn : 0 < n) {z : Fin n → ℝ} {b : ℝ} (hb : 0 < b) :
+    IsMaxOn (logLik z 1 b) (Ioc (0 : ℝ) 1) 1 ∧
+      ∀ u ∈ Ioc (0 : ℝ) 1, IsMaxOn (logLik z 1 b) (Ioc 0 1) u → u = 1",support,,Powered inverse-endpoint chart.,
+nsbeta,min+shape1+shape2,UnivariateML.Endpoint2BetaWidth.interior_max,dev/lean/UnivariateML/Generic/Endpoint2BetaWidth.lean,106,"Above free-endpoint shape one, the maximum is at the unique interior score root. The theorem allows zeros and repeats in the normalized data."," (hn : 0 < n) {z : Fin n → ℝ} (hz : ∀ i, z i ∈ Icc (0 : ℝ) 1)
+    (hcontact : ∃ i, z i = 1) {a b : ℝ} (ha : 1 < a) (hb : 0 < b) :
+    (∃! u, u ∈ Ioo (0 : ℝ) 1 ∧ score z a b u = 0) ∧
+      ∀ u ∈ Ioo (0 : ℝ) 1,
+        IsMaxOn (logLik z a b) (Ioo 0 1) u ↔ score z a b u = 0",support,,Common reflected normalized width chart.,
+nsbeta,max+shape1+shape2,UnivariateML.Endpoint2BetaWidth.interior_max,dev/lean/UnivariateML/Generic/Endpoint2BetaWidth.lean,106,"Above free-endpoint shape one, the maximum is at the unique interior score root. The theorem allows zeros and repeats in the normalized data."," (hn : 0 < n) {z : Fin n → ℝ} (hz : ∀ i, z i ∈ Icc (0 : ℝ) 1)
+    (hcontact : ∃ i, z i = 1) {a b : ℝ} (ha : 1 < a) (hb : 0 < b) :
+    (∃! u, u ∈ Ioo (0 : ℝ) 1 ∧ score z a b u = 0) ∧
+      ∀ u ∈ Ioo (0 : ℝ) 1,
+        IsMaxOn (logLik z a b) (Ioo 0 1) u ↔ score z a b u = 0",support,,Common reflected normalized width chart.,
+genbeta,shape1+shape2+shape3,UnivariateML.Endpoint2BetaWidth.interior_max,dev/lean/UnivariateML/Generic/Endpoint2BetaWidth.lean,106,"Above free-endpoint shape one, the maximum is at the unique interior score root. The theorem allows zeros and repeats in the normalized data."," (hn : 0 < n) {z : Fin n → ℝ} (hz : ∀ i, z i ∈ Icc (0 : ℝ) 1)
+    (hcontact : ∃ i, z i = 1) {a b : ℝ} (ha : 1 < a) (hb : 0 < b) :
+    (∃! u, u ∈ Ioo (0 : ℝ) 1 ∧ score z a b u = 0) ∧
+      ∀ u ∈ Ioo (0 : ℝ) 1,
+        IsMaxOn (logLik z a b) (Ioo 0 1) u ↔ score z a b u = 0",support,,Powered inverse-endpoint chart.,
