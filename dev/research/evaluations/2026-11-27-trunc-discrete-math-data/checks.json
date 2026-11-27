@@ -1,0 +1,182 @@
+[
+  {
+    "case": "bbinom growing-size NB",
+    "grid": "100",
+    "sup_error": "0.005570463789032915980775"
+  },
+  {
+    "case": "bbinom growing-size NB",
+    "grid": "1000",
+    "sup_error": "0.0005500285884911469109838"
+  },
+  {
+    "case": "bbinom growing-size NB",
+    "grid": "10000",
+    "sup_error": "0.00005493321366809925528789"
+  },
+  {
+    "case": "bbinom growing-size NB",
+    "grid": "100000",
+    "sup_error": "0.000005492625454430060077061"
+  },
+  {
+    "case": "bnbinom growing-shape Poisson",
+    "grid": "100",
+    "sup_error": "0.01750287670738778054272"
+  },
+  {
+    "case": "bnbinom growing-shape Poisson",
+    "grid": "1000",
+    "sup_error": "0.001743087397530709225738"
+  },
+  {
+    "case": "bnbinom growing-shape Poisson",
+    "grid": "10000",
+    "sup_error": "0.0001742312777473629498375"
+  },
+  {
+    "case": "bnbinom growing-shape Poisson",
+    "grid": "100000",
+    "sup_error": "0.00001742234789985007557093"
+  },
+  {
+    "case": "hyper growing-population Poisson",
+    "grid": "100",
+    "sup_error": "0.004828004226010450866673"
+  },
+  {
+    "case": "hyper growing-population Poisson",
+    "grid": "1000",
+    "sup_error": "0.0004710527748742265883405"
+  },
+  {
+    "case": "hyper growing-population Poisson",
+    "grid": "10000",
+    "sup_error": "0.00004698840433780307964028"
+  },
+  {
+    "case": "hyper growing-population Poisson",
+    "grid": "100000",
+    "sup_error": "0.000004697672316929373431074"
+  },
+  {
+    "case": "nhyper growing-population shifted NB",
+    "grid": "100",
+    "sup_error": "0.004951307243626274816247"
+  },
+  {
+    "case": "nhyper growing-population shifted NB",
+    "grid": "1000",
+    "sup_error": "0.0004922529523597149879107"
+  },
+  {
+    "case": "nhyper growing-population shifted NB",
+    "grid": "10000",
+    "sup_error": "0.00004919664689389245425501"
+  },
+  {
+    "case": "nhyper growing-population shifted NB",
+    "grid": "100000",
+    "sup_error": "0.000004919378342680791253054"
+  },
+  {
+    "case": "dnorm broad geometric",
+    "grid": "0.01",
+    "sup_error": "0.01982075712387937743373"
+  },
+  {
+    "case": "dnorm broad geometric",
+    "grid": "0.0001",
+    "sup_error": "0.0002014777228995224784252"
+  },
+  {
+    "case": "dnorm broad geometric",
+    "grid": "0.00000001",
+    "sup_error": "2.015101655529157809807e-8"
+  },
+  {
+    "case": "dnorm broad geometric",
+    "grid": "0.0000000000000001",
+    "sup_error": "2.015101687968374767924e-16"
+  },
+  {
+    "case": "dweibull small-shape discretised Pareto",
+    "grid": "0.01",
+    "sup_error": "0.0003941677600719639895716"
+  },
+  {
+    "case": "dweibull small-shape discretised Pareto",
+    "grid": "0.0001",
+    "sup_error": "0.000003818657013872720349317"
+  },
+  {
+    "case": "dweibull small-shape discretised Pareto",
+    "grid": "0.00000001",
+    "sup_error": "3.817419160983178778913e-10"
+  },
+  {
+    "case": "dweibull small-shape discretised Pareto",
+    "grid": "0.0000000000000001",
+    "sup_error": "3.817419037190163621065e-18"
+  },
+  {
+    "case": "skellam large-product geometric",
+    "grid": "100",
+    "sup_error": "0.002885477981979347749203"
+  },
+  {
+    "case": "skellam large-product geometric",
+    "grid": "1000",
+    "sup_error": "0.0002862355951880813435815"
+  },
+  {
+    "case": "skellam large-product geometric",
+    "grid": "10000",
+    "sup_error": "0.00002860041691362249434867"
+  },
+  {
+    "case": "skellam large-product geometric",
+    "grid": "100000",
+    "sup_error": "0.000002859810247306646209962"
+  },
+  {
+    "case": "pig rare tilted Sibuya",
+    "grid": "0.01",
+    "sup_error": "0.000009527150751688469759261"
+  },
+  {
+    "case": "pig rare tilted Sibuya",
+    "grid": "0.0001",
+    "sup_error": "9.608904775396785688539e-10"
+  },
+  {
+    "case": "pig rare tilted Sibuya",
+    "grid": "0.00000001",
+    "sup_error": "9.609736965498464041693e-18"
+  },
+  {
+    "case": "pig rare tilted Sibuya",
+    "grid": "0.0000000000000001",
+    "sup_error": "9.6097370487323220137e-34"
+  },
+  {
+    "case": "yulesimon zero-shape harmonic",
+    "grid": "0.01",
+    "sup_error": "0.001433787204646363837908"
+  },
+  {
+    "case": "yulesimon zero-shape harmonic",
+    "grid": "0.0001",
+    "sup_error": "0.00001434777699476301761147"
+  },
+  {
+    "case": "yulesimon zero-shape harmonic",
+    "grid": "0.00000001",
+    "sup_error": "1.434787659233524383452e-9"
+  },
+  {
+    "case": "yulesimon zero-shape harmonic",
+    "grid": "0.0000000000000001",
+    "sup_error": "1.434787660229555290881e-17"
+  }
+]
