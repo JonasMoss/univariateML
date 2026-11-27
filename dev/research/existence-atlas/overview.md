@@ -62,10 +62,10 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | betapr | scale+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | betapr | scale+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | betapr | shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
-| bhatt | a | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) |
-| bhatt | a+mu | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) |
+| bhatt | a | lean (iff) | written (exact) · partial Lean | written (exact) |
+| bhatt | a+mu | lean (iff) | written (exact) · partial Lean | written (exact) · partial Lean |
 | bhatt | a+mu+sigma | lean (iff) | lean (exact) | lean (exact) |
-| bhatt | a+sigma | written (iff) | written (exact) | written (exact) |
+| bhatt | a+sigma | lean (iff) | lean (exact) | lean (exact) |
 | binom | all free | lean (iff) | lean (exact) | written (exact) · partial Lean |
 | binom | prob | lean (iff) | lean (exact) | lean (exact) |
 | binom | prob+size | lean (iff) | lean (exact) | lean (exact) |
@@ -94,11 +94,11 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | cmp | lambda+nu | lean (iff) | lean (exact) | lean (exact) |
 | cmp | nu | lean (iff) | lean (exact) | lean (exact) |
 | dblpareto | all free | lean (iff) | lean (exact) | lean (exact) |
-| dblpareto | left_rate | written (iff) | written (exact) | written (exact) |
+| dblpareto | left_rate | lean (iff) | lean (exact) | lean (exact) |
 | dblpareto | left_rate+right_rate | lean (iff) | lean (exact) | lean (exact) |
 | dblpareto | left_rate+right_rate+scale | lean (iff) | lean (exact) | lean (exact) |
 | dblpareto | left_rate+scale | lean (iff) | lean (exact) | lean (exact) |
-| dblpareto | right_rate | written (iff) | written (exact) | written (exact) |
+| dblpareto | right_rate | lean (iff) | lean (exact) | lean (exact) |
 | dblpareto | right_rate+scale | lean (iff) | lean (exact) | lean (exact) |
 | dblpareto | scale | lean (iff) | lean (exact) | lean (exact) |
 | dgamma | rate | lean (iff) | lean (exact) | lean (exact) |
@@ -193,11 +193,11 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | gompertz | a+b | lean (iff) | lean (exact) | lean (exact) |
 | gompertz | b | lean (iff) | lean (exact) | lean (exact) |
 | gpd | all free | lean (iff) | lean (exact) | lean (exact) |
-| gpd | mu+sigma | written (iff) | written (exact) | written (exact) |
+| gpd | mu+sigma | lean (iff) | written (exact) · partial Lean | written (exact) · partial Lean |
 | gpd | mu+sigma+xi | lean (iff) | lean (exact) | lean (exact) |
 | gpd | mu+xi | lean (iff) | lean (exact) | lean (exact) |
-| gpd | sigma | written (iff) | written (exact) | written (exact) |
-| gpd | xi | written (iff) | written (exact) | written (exact) |
+| gpd | sigma | lean (iff) | written (exact) · partial Lean | written (exact) · partial Lean |
+| gpd | xi | lean (iff) | written (exact) · partial Lean | written (exact) · partial Lean |
 | gumbel | all free | lean (iff) | lean (exact) | lean (exact) |
 | gumbel | mu | lean (iff) | lean (exact) | lean (exact) |
 | gumbel | mu+sigma | lean (iff) | lean (exact) | lean (exact) |
@@ -210,7 +210,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | hnorm | mu | lean (iff) | lean (exact) | lean (exact) |
 | hnorm | mu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | hnorm | sigma | lean (iff) | lean (exact) | lean (exact) |
-| ht | all free | lean (iff) | lean (exact) | written (exact) · partial Lean |
+| ht | all free | lean (iff) | lean (exact) | lean (exact) |
 | ht | mu+nu | lean (iff) | lean (exact) | lean (exact) |
 | ht | mu+nu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | ht | nu | lean (iff) | lean (exact) | lean (exact) |
@@ -376,17 +376,17 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | sged | nu+xi | lean (iff) | lean (exact) | lean (exact) |
 | sgomp | b | lean (iff) | lean (exact) | lean (exact) |
 | sgomp | b+eta | lean (iff) | lean (exact) | lean (exact) |
-| sgomp | eta | written (iff) · partial Lean | lean (exact) | lean (exact) |
+| sgomp | eta | lean (iff) | lean (exact) | lean (exact) |
 | skellam | mu1 | lean (iff) | lean (exact) | lean (exact) |
 | skellam | mu1+mu2 | lean (iff) | lean (exact) | lean (exact) |
 | skellam | mu2 | lean (iff) | lean (exact) | lean (exact) |
 | slash | mu | lean (iff) | lean (exact) | lean (exact) |
-| sn | alpha | lean (iff) | written (exact) | lean (exact) |
-| sn | alpha+omega | written (iff) | written (exact) | written (exact) |
+| sn | alpha | lean (iff) | lean (exact) | lean (exact) |
+| sn | alpha+omega | lean (iff) | lean (exact) | lean (exact) |
 | sn | alpha+omega+xi | lean (iff) | lean (exact) | lean (exact) |
-| sn | alpha+xi | written (iff) | written (exact) | written (exact) |
-| sn | omega+xi | written (iff) | written (exact) · partial Lean | written (exact) |
-| sn | xi | written (iff) | written (exact) | written (exact) |
+| sn | alpha+xi | lean (iff) | lean (exact) | lean (exact) |
+| sn | omega+xi | lean (iff) | lean (exact) | lean (exact) |
+| sn | xi | lean (iff) | written (exact) · partial Lean | lean (exact) |
 | snorm | all free | lean (iff) | lean (exact) | lean (exact) |
 | snorm | mean | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) |
 | snorm | mean+sd | lean (iff) | lean (exact) | written (exact) |
@@ -398,8 +398,8 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | sstd | mean+nu+sd+xi | lean (iff) | lean (exact) | lean (exact) |
 | std | mean+nu | lean (iff) | lean (exact) | lean (exact) |
 | std | mean+nu+sd | lean (iff) | lean (exact) | lean (exact) |
-| std | nu | lean (iff) | written (exact) · partial Lean | written (exact) · partial Lean |
-| tlambda | lambda+mu | written (iff) | written (exact) | written (exact) |
+| std | nu | lean (iff) | lean (exact) | lean (exact) |
+| tlambda | lambda+mu | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) |
 | tlambda | lambda+mu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | trgamma | scale+shape1 | lean (iff) | lean (exact) | lean (exact) |
 | trgamma | scale+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
@@ -407,14 +407,14 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | trgamma | shape1 | lean (iff) | lean (exact) | lean (exact) |
 | trgamma | shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | trgamma | shape2 | lean (iff) | lean (exact) | lean (exact) |
-| triang | all free | written (iff) | written (exact) | written (exact) |
-| triang | a | written (iff) | written (exact) | written (exact) |
-| triang | a+b | lean (iff) | written (exact) | lean (exact) |
+| triang | all free | lean (iff) | lean (exact) | written (exact) · partial Lean |
+| triang | a | lean (iff) | lean (exact) | lean (exact) |
+| triang | a+b | lean (iff) | written (exact) · partial Lean | lean (exact) |
 | triang | a+b+c | lean (iff) | lean (exact) | lean (exact) |
-| triang | a+c | written (iff) | written (exact) | written (exact) |
-| triang | b | written (iff) | written (exact) | written (exact) |
-| triang | b+c | written (iff) | written (exact) | written (exact) |
-| triang | c | written (iff) | written (exact) | written (exact) |
+| triang | a+c | lean (iff) | lean (exact) | lean (exact) |
+| triang | b | lean (iff) | lean (exact) | lean (exact) |
+| triang | b+c | lean (iff) | lean (exact) | lean (exact) |
+| triang | c | lean (iff) | lean (exact) | lean (exact) |
 | unif | all free | lean (iff) | lean (exact) | lean (exact) |
 | unif | max | lean (iff) | lean (exact) | lean (exact) |
 | unif | max+min | lean (iff) | lean (exact) | lean (exact) |
@@ -452,19 +452,19 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | cmb | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | cmb | nu | lean (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | dgamma | all free | lean (iff) | lean (exact) | written (one-sided) |
-| emg | all free | lean (iff) | lean (exact) | written (one-sided) |
-| emg | lambda | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| emg | lambda+mu | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| emg | mu | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| emg | mu+sigma | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| emg | sigma | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
+| emg | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| emg | lambda | lean (iff) | written (exact) · partial Lean | written (one-sided) |
+| emg | lambda+mu | lean (iff) | lean (exact) | written (one-sided) |
+| emg | mu | lean (iff) | written (exact) · partial Lean | written (one-sided) |
+| emg | mu+sigma | lean (iff) | lean (exact) | written (one-sided) |
+| emg | sigma | lean (iff) | lean (exact) | written (one-sided) |
 | expweibull | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
 | expweibull | scale | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | fatigue | alpha | lean (iff) | lean (exact) | written (one-sided) |
 | fatigue | alpha+beta | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | fatigue | alpha+mu | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | fatigue | beta | written (iff) | written (exact) | written (one-sided) |
-| foldnorm | all free | written (iff) | lean (exact) | lean (one-sided) |
+| foldnorm | all free | lean (iff) | lean (exact) | lean (one-sided) |
 | fpareto | min | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | fpareto | min+shape1 | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | fpareto | min+shape3 | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
@@ -488,14 +488,14 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | gev | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
 | gev | mu | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
 | gev | sigma | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
-| gpd | mu | written (iff) · partial Lean | written (exact) · partial Lean | lean (one-sided) |
-| ht | mu | lean (iff) | written (exact) · partial Lean | written (one-sided) |
-| ht | mu+sigma | lean (iff) | lean (exact) | written (one-sided) |
-| ht | sigma | lean (iff) | lean (exact) | written (one-sided) |
-| huber | all free | written (iff) | written (exact) | written (one-sided) |
-| huber | mu | written (iff) | written (exact) | written (one-sided) |
-| huber | mu+sigma | written (iff) | written (exact) | written (one-sided) |
-| huber | sigma | written (iff) | written (exact) | written (one-sided) |
+| gpd | mu | lean (iff) | written (exact) · partial Lean | lean (one-sided) |
+| ht | mu | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| ht | mu+sigma | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| ht | sigma | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| huber | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
+| huber | mu | written (iff) | written (exact) | written (one-sided) · partial Lean |
+| huber | mu+sigma | lean (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| huber | sigma | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | hyper | all free | written (iff) · partial Lean | written (exact) | written (one-sided) · partial Lean |
 | hyper | N | lean (iff) | lean (exact) | lean (one-sided) |
 | hyper | k | written (iff) · partial Lean | lean (exact) | written (one-sided) · partial Lean |
@@ -508,11 +508,11 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | invtrgamma | all free | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | invtrgamma | scale | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | lomax | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
-| lst | all free | written (iff) · partial Lean | lean (exact) | written (one-sided) |
-| lst | df | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| lst | all free | written (iff) · partial Lean | lean (exact) | written (one-sided) · partial Lean |
+| lst | df | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | lst | df+sigma | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
-| lst | mu | lean (iff) | written (exact) | written (one-sided) |
-| lst | sigma | written (iff) | written (exact) | written (one-sided) |
+| lst | mu | lean (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| lst | sigma | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | nhyper | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | paralogis | all free | lean (iff) | lean (exact) | lean (one-sided) |
 | paralogis | scale | lean (iff) | lean (exact) | lean (one-sided) |
@@ -535,12 +535,12 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | sged | sd | written (iff) | written (exact) | written (one-sided) |
 | sged | sd+xi | written (iff) | written (exact) | written (one-sided) |
 | sged | xi | lean (iff) | lean (exact) | written (one-sided) |
-| sgomp | all free | written (iff) · partial Lean | lean (exact) | lean (one-sided) |
+| sgomp | all free | lean (iff) | lean (exact) | lean (one-sided) |
 | skellam | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
-| slash | all free | lean (iff) | written (exact) · partial Lean | written (one-sided) |
+| slash | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | slash | sigma | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
-| sn | all free | lean (iff) | lean (exact) | written (one-sided) |
-| sn | omega | written (iff) | written (exact) | written (one-sided) |
+| sn | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| sn | omega | written (iff) | written (exact) · partial Lean | written (one-sided) |
 | sstd | all free | written (iff) | written (exact) | written (one-sided) |
 | sstd | mean | written (iff) | written (exact) | written (one-sided) |
 | sstd | mean+nu | written (iff) | written (exact) | written (one-sided) |
@@ -555,23 +555,23 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | sstd | sd | written (iff) | written (exact) | written (one-sided) |
 | sstd | sd+xi | written (iff) | written (exact) | written (one-sided) |
 | sstd | xi | written (iff) | written (exact) | written (one-sided) |
-| st | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| st | alpha | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
-| st | alpha+nu | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
-| st | alpha+nu+xi | lean (iff) | lean (exact) | written (one-sided) |
-| st | alpha+xi | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| st | nu | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| st | nu+xi | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
-| st | omega | written (iff) | written (exact) | written (one-sided) |
-| st | xi | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| std | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| std | mean | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
-| std | mean+sd | lean (iff) | written (exact) · partial Lean | written (one-sided) |
+| st | all free | written (iff) · partial Lean | lean (exact) | written (one-sided) · partial Lean |
+| st | alpha | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| st | alpha+nu | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| st | alpha+nu+xi | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| st | alpha+xi | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| st | nu | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| st | nu+xi | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| st | omega | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| st | xi | written (iff) · partial Lean | lean (exact) | written (one-sided) · partial Lean |
+| std | all free | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| std | mean | lean (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
+| std | mean+sd | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | std | nu+sd | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
-| std | sd | written (iff) | written (exact) | written (one-sided) |
+| std | sd | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | tlambda | all free | written (iff) | written (exact) | written (one-sided) |
 | tlambda | lambda | written (iff) | written (exact) | written (one-sided) |
-| tlambda | lambda+sigma | written (iff) | written (exact) | written (one-sided) |
+| tlambda | lambda+sigma | written (iff) · partial Lean | written (exact) · partial Lean | written (one-sided) |
 | tlambda | mu | written (iff) | written (exact) | written (one-sided) |
 | tlambda | sigma | written (iff) | written (exact) | written (one-sided) |
 | trgamma | all free | written (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
