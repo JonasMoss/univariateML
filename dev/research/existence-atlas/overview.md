@@ -47,7 +47,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 
 87 families, 520 regimes.
 
-### All three questions proved (371)
+### All three questions proved (376)
 
 | Family | Held coefficients | Criterion | Failure modes | Cardinality |
 | --- | --- | --- | --- | --- |
@@ -66,6 +66,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | bhatt | a+mu | written (iff) · partial Lean | written (exact) · partial Lean | written (exact) |
 | bhatt | a+mu+sigma | lean (iff) | lean (exact) | lean (exact) |
 | bhatt | a+sigma | written (iff) | written (exact) | written (exact) |
+| binom | all free | lean (iff) | lean (exact) | written (exact) · partial Lean |
 | binom | prob | lean (iff) | lean (exact) | lean (exact) |
 | binom | prob+size | lean (iff) | lean (exact) | lean (exact) |
 | binom | size | lean (iff) | lean (exact) | lean (exact) |
@@ -218,6 +219,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | huber | epsilon+sigma | lean (iff) | lean (exact) | lean (exact) |
 | hyper | N+k | lean (iff) | lean (exact) | lean (exact) |
 | hyper | N+m | lean (iff) | lean (exact) | lean (exact) |
+| hyper | k+m | lean (iff) | lean (exact) | lean (exact) |
 | invburr | scale | written (iff) · partial Lean | written (exact) · partial Lean | lean (exact) |
 | invburr | scale+shape1 | written (iff) · partial Lean | lean (exact) | lean (exact) |
 | invburr | scale+shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
@@ -370,6 +372,8 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | rayleigh | sigma | lean (iff) | lean (exact) | lean (exact) |
 | sged | mean+nu+sd+xi | lean (iff) | lean (exact) | lean (exact) |
 | sged | mean+nu+xi | written (iff) | written (exact) | written (exact) |
+| sged | nu+sd+xi | written (iff) | written (exact) | written (exact) |
+| sged | nu+xi | written (iff) | written (exact) | written (exact) |
 | sgomp | b | lean (iff) | lean (exact) | lean (exact) |
 | sgomp | b+eta | lean (iff) | lean (exact) | lean (exact) |
 | sgomp | eta | written (iff) · partial Lean | lean (exact) | lean (exact) |
@@ -403,6 +407,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | trgamma | shape1 | lean (iff) | lean (exact) | lean (exact) |
 | trgamma | shape1+shape2 | lean (iff) | lean (exact) | lean (exact) |
 | trgamma | shape2 | lean (iff) | lean (exact) | lean (exact) |
+| triang | all free | written (iff) | written (exact) | written (exact) |
 | triang | a | written (iff) | written (exact) | written (exact) |
 | triang | a+b | lean (iff) | written (exact) | lean (exact) |
 | triang | a+b+c | lean (iff) | lean (exact) | lean (exact) |
@@ -423,7 +428,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | zeta | all free | lean (iff) | lean (exact) | lean (exact) |
 | zeta | s | lean (iff) | lean (exact) | lean (exact) |
 
-### Criterion proved, uniqueness open (134)
+### Criterion proved, uniqueness open (129)
 
 | Family | Held coefficients | Criterion | Failure modes | Cardinality |
 | --- | --- | --- | --- | --- |
@@ -434,7 +439,6 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | bhatt | mu | written (iff) | written (exact) | written (one-sided) |
 | bhatt | mu+sigma | lean (iff) | lean (exact) | written (one-sided) |
 | bhatt | sigma | lean (iff) | lean (exact) | written (one-sided) |
-| binom | all free | lean (iff) | lean (exact) | cited (one-sided) · partial Lean |
 | bnbinom | alpha | written (iff) · partial Lean | lean (exact) | written (one-sided) · partial Lean |
 | bnbinom | beta | written (iff) | written (exact) | written (one-sided) |
 | bnbinom | size | written (iff) | written (exact) | written (one-sided) |
@@ -485,7 +489,6 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | huber | mu+sigma | written (iff) | written (exact) | written (one-sided) |
 | huber | sigma | written (iff) | written (exact) | written (one-sided) |
 | hyper | N | written (iff) | written (exact) | lean (one-sided) |
-| hyper | k+m | lean (iff) | lean (exact) | lean (one-sided) |
 | invburr | all free | lean (iff) | written (exact) · partial Lean | written (one-sided) · partial Lean |
 | invburr | shape2 | lean (iff) | lean (exact) | written (one-sided) |
 | invparalogis | all free | lean (iff) | lean (exact) | lean (one-sided) |
@@ -516,8 +519,6 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | sged | mean+xi | written (iff) | written (exact) | written (one-sided) |
 | sged | nu | written (iff) | written (exact) | written (one-sided) |
 | sged | nu+sd | written (iff) | written (exact) | written (one-sided) |
-| sged | nu+sd+xi | written (iff) | written (exact) | written (one-sided) |
-| sged | nu+xi | written (iff) | written (exact) | written (one-sided) |
 | sged | sd | written (iff) | written (exact) | written (one-sided) |
 | sged | sd+xi | written (iff) | written (exact) | written (one-sided) |
 | sged | xi | written (iff) | written (exact) | written (one-sided) |
@@ -533,18 +534,18 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | sstd | mean+nu+sd | written (iff) | written (exact) | written (one-sided) |
 | sstd | mean+nu+xi | written (iff) | written (exact) | written (one-sided) |
 | sstd | mean+sd | written (iff) | written (exact) | written (one-sided) |
-| sstd | mean+sd+xi | written (iff) | written (exact) | unproved (open) |
-| sstd | mean+xi | written (iff) | written (exact) | unproved (open) |
+| sstd | mean+sd+xi | written (iff) | written (exact) | written (one-sided) |
+| sstd | mean+xi | written (iff) | written (exact) | written (one-sided) |
 | sstd | nu | written (iff) | written (exact) | written (one-sided) |
 | sstd | nu+sd | written (iff) | written (exact) | written (one-sided) |
 | sstd | nu+xi | written (iff) | written (exact) | written (one-sided) |
 | sstd | sd | written (iff) | written (exact) | written (one-sided) |
 | sstd | sd+xi | written (iff) | written (exact) | written (one-sided) |
-| sstd | xi | written (iff) | written (exact) | unproved (open) |
+| sstd | xi | written (iff) | written (exact) | written (one-sided) |
 | st | alpha | written (iff) | written (exact) | written (one-sided) |
 | st | alpha+nu | written (iff) | written (exact) | written (one-sided) |
-| st | alpha+nu+xi | written (iff) | written (exact) | unproved (open) |
-| st | alpha+xi | written (iff) | written (exact) | unproved (open) |
+| st | alpha+nu+xi | written (iff) | written (exact) | written (one-sided) |
+| st | alpha+xi | written (iff) | written (exact) | written (one-sided) |
 | st | nu | written (iff) | written (exact) | written (one-sided) |
 | st | nu+xi | written (iff) | written (exact) | written (one-sided) |
 | st | omega | written (iff) | written (exact) | written (one-sided) |
@@ -560,7 +561,6 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | tlambda | sigma | written (iff) | written (exact) | written (one-sided) |
 | trgamma | all free | written (iff) | written (exact) | written (one-sided) |
 | trgamma | scale | written (iff) | written (exact) | written (one-sided) |
-| triang | all free | written (iff) | written (exact) | written (one-sided) |
 
 ### Criterion open (15)
 
@@ -570,10 +570,10 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | betapr | shape1 | written (one-sided) | written (one-sided) | written (one-sided) |
 | betapr | shape2 | written (one-sided) | written (one-sided) | written (one-sided) |
 | bnbinom | all free | written (one-sided) | written (one-sided) | lean (one-sided) |
-| gb2 | all free | written (one-sided) | written (one-sided) | unproved (open) |
+| gb2 | all free | written (one-sided) | written (one-sided) | written (one-sided) |
 | gengamma | all free | lean (one-sided) | lean (one-sided) | written (one-sided) |
 | gengamma | mu | written (one-sided) · partial Lean | lean (one-sided) | written (one-sided) |
-| gpd | mu+xi | lean (one-sided) | lean (one-sided) | lean (one-sided) |
+| gpd | mu+xi | lean (one-sided) | lean (one-sided) | lean (exact) |
 | huber | all free | written (one-sided) | written (one-sided) | written (one-sided) |
 | hyper | all free | written (one-sided) | written (one-sided) | written (one-sided) |
 | hyper | k | written (one-sided) | written (one-sided) | written (exact) |
