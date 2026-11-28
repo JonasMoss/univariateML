@@ -334,3 +334,8 @@ public import UnivariateML.Family.GBHeldPower
 public import UnivariateML.Family.GBHeldScaleShape1
 public import UnivariateML.Family.GBNonstandardBeta
 public import UnivariateML.Generic.GBBetaCurvature
+public import UnivariateML.Family.GBTFellerPareto
+public import UnivariateML.Family.GBTGB2
+public import UnivariateML.Family.GBTInvTrGamma
+public import UnivariateML.Family.GBTTrGamma
+public import UnivariateML.Generic.GBTLogConcave
