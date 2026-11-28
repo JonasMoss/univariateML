@@ -339,3 +339,7 @@ public import UnivariateML.Family.GBTGB2
 public import UnivariateML.Family.GBTInvTrGamma
 public import UnivariateML.Family.GBTTrGamma
 public import UnivariateML.Generic.GBTLogConcave
+public import UnivariateML.Family.TLCollapse
+public import UnivariateML.Family.TLHeldLocation
+public import UnivariateML.Family.TLHeldScale
+public import UnivariateML.Family.TLUnrestricted
