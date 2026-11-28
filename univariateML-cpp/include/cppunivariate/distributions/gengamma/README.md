@@ -26,7 +26,7 @@ log_density: 'Piecewise((-log(sigma)-log(x)-log(2*pi)/2-((log(x)-mu)/sigma)**2/2
 limits:
   - model: power
     firmness: proved
-    when: '$Q\to+\infty$ and $\sigma Q\to d>0$, with $\mu$ tending to a finite endpoint'
+    when: '$Q\to +\infty$, $\sigma |Q|\to d>0$, and $\mu\to\mu_0$. For the full power trace require $\varepsilon(\log x_i-\mu_0)\le0$ for all observations, where $\varepsilon=\operatorname{sign}Q$. If an observation equals the endpoint on the log scale, require $k\exp(A\varepsilon(\mu_0-\mu)/k)\to0$, where $k=Q^{-2}$ and $A=1/(\sigma |Q|)$. Holding $\mu=\mu_0$ suffices.'
     detect: 'With all coefficients free, a strict signed-profile comparison certifies the power face over the Pareto face and both signed interiors. With only location held at zero, the same limit holds for a balanced pair whose upper endpoint is exactly one.'
     status: PowerBoundary
     message: power
@@ -35,7 +35,7 @@ limits:
     proof: ["dev/research/evaluations/2026-11-10-gg-theory-report.md#free-fit-signed-profile-and-certificate"]
   - model: pareto
     firmness: proved
-    when: '$Q\to-\infty$ and $\sigma|Q|\to d>0$, with $\mu$ tending to a finite endpoint'
+    when: '$Q\to -\infty$, $\sigma |Q|\to d>0$, and $\mu\to\mu_0$. For the full Pareto trace require $\varepsilon(\log x_i-\mu_0)\le0$ for all observations, where $\varepsilon=\operatorname{sign}Q$. If an observation equals the endpoint on the log scale, require $k\exp(A\varepsilon(\mu_0-\mu)/k)\to0$, where $k=Q^{-2}$ and $A=1/(\sigma |Q|)$. Holding $\mu=\mu_0$ suffices.'
     detect: 'With all coefficients free, a strict signed-profile comparison certifies the Pareto face over the power face and both signed interiors. With only location held at zero, the same limit holds for a balanced pair whose lower endpoint is exactly one.'
     status: ParetoBoundary
     message: Pareto

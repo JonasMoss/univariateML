@@ -101,6 +101,7 @@ limits:
   - model: snorm
     firmness: proved
     when: 'The shape $\nu$ tends to infinity, retaining finite location and scale.'
+    fixed: [xi]
     detect: With only skew held at one, the Student certificate can prove the normal supremum. Other numerical selections remain uncertified.
     status: SnormBoundary
     detect_firmness: proved
@@ -134,6 +135,7 @@ limits:
   - name: two-piece t with 2 degrees of freedom
     firmness: proved
     when: 'The shape $\nu$ decreases to two with ordinary t scale and skew fixed; sd diverges.'
+    fixed: [xi]
     detect: With only skew held at one, the Student certificate can prove the positive-scale two-degree-of-freedom limit. Other numerical selections remain uncertified.
     status: DfTwoBoundary
     detect_firmness: proved
