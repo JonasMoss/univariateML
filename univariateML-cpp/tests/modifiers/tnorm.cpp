@@ -603,3 +603,37 @@ TEST_CASE("tnorm: a distant query retains its finite extreme log survival") {
   CHECK(cppunivariate::distributions::ptnorm(1e100,-1e16,1e8,0,INFINITY,false,true)==
         doctest::Approx(-5e183).epsilon(1e-12));
 }
+
+TEST_CASE("tnorm: held mean resolves the uniform face on archive window 007677") {
+  const std::vector<double> x{-5.264045906833672e-151, -5.887575594316242e-151,
+      -1.4151577748212243e-150, 7.587636626597624e-151, 6.015627500348846e-151,
+      8.737501263014678e-152, 4.4153574172569244e-151, 8.409556743712466e-152,
+      -1.773656664549249e-150, -2.1573937203803818e-150, -4.06597633670686e-151,
+      -3.2742383907487375e-151};
+  const auto r = cppunivariate::tnorm_mle(mltest::as_span(x), kNan, kNan,
+      1e-12, 100, -0.062005588372027076);
+  REQUIRE(r.status == cppunivariate::TnormStatus::UniformBoundary);
+  CHECK(r.certified);
+  CHECK(r.iterations == 0);
+  CHECK(r.stop_detail.limit_model == cppunivariate::StopModel::Unif);
+  CHECK(r.a == -2.1573937203803818e-150);
+  CHECK(r.b == 7.587636626597624e-151);
+  CHECK(r.limit_logLik == doctest::Approx(-double(x.size()) * std::log(r.b - r.a)));
+}
+
+TEST_CASE("tnorm: concentrated sample on the archive window has an interior scale") {
+  const double a = -2.1573937203803818e-150, b = 7.587636626597624e-151;
+  const double width = b - a;
+  const double mean = a + 0.5 * width;
+  const std::vector<double> x{a + 0.4 * width, a + 0.6 * width};
+  const auto r = cppunivariate::tnorm_mle(mltest::as_span(x), a, b, 1e-12, 100, mean);
+  REQUIRE(r.status == cppunivariate::TnormStatus::Ok);
+  CHECK(r.certified);
+  CHECK(r.mean == mean);
+  const double sd = r.sd / width;
+  const double z = 0.5 / sd;
+  const double variance = sd * sd * (1 - 2 * z * std::exp(-0.5 * z * z) /
+      (std::sqrt(2 * cppunivariate::pi) * std::erf(z / std::sqrt(2.))));
+  CHECK(std::abs(variance - 0.01) < 1e-12);
+  CHECK(r.logLik > -double(x.size()) * std::log(width));
+}
