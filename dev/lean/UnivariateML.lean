@@ -351,3 +351,7 @@ public import UnivariateML.Family.PGWProfile
 public import UnivariateML.Family.BPHeld
 public import UnivariateML.Family.BPInverseBurr
 public import UnivariateML.Family.BPJoint
+public import UnivariateML.Family.RBBhatt
+public import UnivariateML.Family.RBEMG
+public import UnivariateML.Family.RBHuber
+public import UnivariateML.Generic.RBProfile
