@@ -355,3 +355,5 @@ public import UnivariateML.Family.RBBhatt
 public import UnivariateML.Family.RBEMG
 public import UnivariateML.Family.RBHuber
 public import UnivariateML.Generic.RBProfile
+public import UnivariateML.Family.AE5Lomax
+public import UnivariateML.Generic.AE5Weighted
