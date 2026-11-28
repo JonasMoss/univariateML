@@ -32,7 +32,7 @@ missing Lean step.
 | Step | Families | Claims | Card |
 | --- | --- | ---: | --- |
 | 1 | hyper, nhyper, gpd, triang, pareto2, pareto3, lomax, invpareto, binom, dgamma, skellam | 31 | TASK-489 (first pass merged, about half complete); TASK-491 (second pass merged; done: 5 claims stay written-only) |
-| 2 | bbinom, cmb, bnbinom, cmp, pig, nbinom | 46 | TASK-490 (first pass merged, 19 complete); TASK-494 (second pass, running) |
+| 2 | bbinom, cmb, bnbinom, cmp, pig, nbinom | 46 | TASK-490 (first pass merged, 19 complete); TASK-494 (second pass merged; done: 12 claims stay written-only) |
 | 3 | positive-shape families: genbeta, gb2, betapr, fpareto, pgw, expweibull, fatigue, frechet, trgamma, invtrgamma, invburr, nsbeta, gev | 53 | TASK-493 (broad pass merged, 4 complete); TASK-495 (gev, frechet, expweibull: all 7 proved); TASK-496 (genbeta, nsbeta, running); TASK-497 (gb2, fpareto, trgamma, invtrgamma, running) |
 | 4 | location-scale and tails: tlambda, huber, bhatt, ged, snorm, sn, std, lst, st, emg | about 45 | — |
 | 5 | skew families sstd, sged (criterion and failure) | about 52 | — |
