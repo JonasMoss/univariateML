@@ -272,3 +272,5 @@ public import UnivariateML.Family.Trunc3CMP
 public import UnivariateML.Family.Trunc3CMPRay
 public import UnivariateML.Family.Trunc3Zero
 public import UnivariateML.Family.Trunc3Zeta
+public import UnivariateML.Generic.TruncEstimated
+public import UnivariateML.Family.Trunc2Known
