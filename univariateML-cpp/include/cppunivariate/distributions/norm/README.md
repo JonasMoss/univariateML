@@ -240,6 +240,13 @@ quadratic coefficient. At held mean the linear coefficient relative to
 that mean is zero, and the same argument compares the empirical squared
 distance with the uniform second moment.
 
+When the window is tiny relative to its distance from the held mean, both
+squared distances can round to the same number. For width $w=b-a$ and
+$u=(x-a)/w$, their difference divided by $w$ is
+$2(a-\mu)(\bar u-1/2)+w(\overline{u^2}-1/3)$. The common constant
+$(a-\mu)^2$ cancels. A positive sign separated from the rounding margin
+certifies the uniform limit even when the separately computed moments agree.
+
 On a finite window, an enclosed tilt within $\delta$ of the evaluation
 tilt in unit-window coordinates changes the normalized density ratio by at
 most $e^\delta$. This bounds the variance by $e^\delta$ times its evaluated

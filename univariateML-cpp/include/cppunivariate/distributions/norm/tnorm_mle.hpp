@@ -347,6 +347,26 @@ inline double endpoint_mean(double t) {
 
 constexpr double face_moment_margin = 128 * std::numeric_limits<double>::epsilon();
 
+// Compare the varying part of the squared distance on a finite window.
+// For u=(x-a)/width, the constant (a-mean)^2 cancels, and we can divide
+// the remaining empirical-minus-uniform difference by width*scale.
+inline bool held_mean_uniform_wins(span x, double a, double width, double mean,
+                                   double margin) {
+  const double offset = a - mean;
+  const double scale = std::max(std::abs(offset), width);
+  if (!std::isfinite(scale)) return false;
+  const double linear = 2 * (offset / scale), quadratic = width / scale;
+  double first = 0, second = 0;
+  for (double v : x) {
+    const double u = (v - a) / width;
+    first += u;
+    second += u * u;
+  }
+  const double n = static_cast<double>(x.size());
+  const double gap = linear * (first / n - 0.5) + quadratic * (second / n - 1. / 3);
+  return gap > margin * (std::abs(linear) + quadratic);
+}
+
 struct ExponentialFace {
   double rate, loglik;
   bool accurate;
@@ -614,7 +634,8 @@ inline TnormResult tnorm_mle_impl(span x,
           std::log(b*.5-a*.5)+std::log(2.));
       const double face_second = (lo * lo + lo * hi + hi * hi) / 3;
       interior = face_second > 1 + face_margin;
-      if (face_second < 1 - face_margin) {
+      if (face_second < 1 - face_margin ||
+          (!interior && tnorm_detail::held_mean_uniform_wins(x, a, width, mu, face_margin))) {
         res.status = TnormStatus::UniformBoundary;
         return res;
       }
