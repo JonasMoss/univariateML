@@ -6,7 +6,7 @@ bbinom,alpha+size,UnivariateML.Base8BBinom.held_alpha_size_failure,dev/lean/Univ
       ((∀ i, x i = 0) → Tendsto (likelihood m x a) atTop (𝓝 1)) ∧
       ((∀ i, x i = m) → Tendsto (likelihood m x a) (𝓝[>] 0) (𝓝 1)) ∧
       (((∀ i, x i = 0) ∨ (∀ i, x i = m)) →
-        IsLUB (likelihood m x a '' Ioi 0) 1 ∧ ∀ b > 0, likelihood m x a b < 1))",failure,,,
+        IsLUB (likelihood m x a '' Ioi 0) 1 ∧ ∀ b > 0, likelihood m x a b < 1))",failure,,,"{""failure"":""full""}"
 bbinom,beta+size,UnivariateML.Base8BBinom.held_beta_size_failure,dev/lean/UnivariateML/Family/Base8BBinom.lean,33,"Gives both count-mass limits, strict endpoint-constant likelihood suprema and size-zero flatness.","theorem held_beta_size_failure {m n : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     (hx : ∀ i, x i ≤ m) {b : ℝ} (hb : 0 < b) :
     (m = 0 → ∀ a > 0, likelihood m x a b = 1) ∧
@@ -17,7 +17,7 @@ bbinom,beta+size,UnivariateML.Base8BBinom.held_beta_size_failure,dev/lean/Univar
         Tendsto (fun a ↦ Discrete5BBinom.countMass m k a b) atTop
           (𝓝 (if k = m then 1 else 0))) ∧
       (((∀ i, x i = 0) ∨ (∀ i, x i = m)) →
-        IsLUB ((fun a ↦ likelihood m x a b) '' Ioi 0) 1 ∧ ∀ a > 0, likelihood m x a b < 1))",failure,,,
+        IsLUB ((fun a ↦ likelihood m x a b) '' Ioi 0) 1 ∧ ∀ a > 0, likelihood m x a b < 1))",failure,,,"{""failure"":""full""}"
 cmb,nu,UnivariateML.Base8CMB.held_dispersion_failure,dev/lean/UnivariateML/Family/Base8CMB.lean,17,Every feasible fixed-size probability profile and its capped global comparison attain.,"theorem held_dispersion_failure {n B : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     (ν : ℝ) (hx : ∀ i, x i ≤ B) :
     (∀ N ≤ B, (∀ i, x i ≤ N) →
@@ -25,14 +25,14 @@ cmb,nu,UnivariateML.Base8CMB.held_dispersion_failure,dev/lean/UnivariateML/Famil
         IsMaxOn (fun q ↦ sizeLikelihood x N q ν) (Icc 0 1) p) ∧
     ∃ N ≤ B, (∀ i, x i ≤ N) ∧ ∃ p ∈ Icc (0 : ℝ) 1,
       ∀ J ≤ B, (∀ i, x i ≤ J) → ∀ q ∈ Icc (0 : ℝ) 1,
-        sizeLikelihood x J q ν ≤ sizeLikelihood x N p ν",failure,,,
+        sizeLikelihood x J q ν ≤ sizeLikelihood x N p ν",failure,,,"{""failure"":""full""}"
 cmb,nu+prob,UnivariateML.Base8CMB.held_probability_dispersion_maximizers,dev/lean/UnivariateML/Family/Base8CMB.lean,46,"All sizes at the winning height maximize, with only the smallest size at zero dispersion and interior probability.","theorem held_probability_dispersion_maximizers {n B : ℕ} (hn : 0 < n)
     (x : Fin n → ℕ) (p ν : ℝ) (hB : ∀ i, x i ≤ B) :
     let D : Set ℕ := {N | N ≤ B ∧ Compatible x N p}
     (D.Nonempty → ∃ v : ℝ, ∀ N ∈ D,
       IsMaxOn (fun J ↦ sizeLikelihood x J p ν) D N ↔ sizeLikelihood x N p ν = v) ∧
     (ν = 0 → p ∈ Ioo (0 : ℝ) 1 →
-      ∀ N ∈ D, IsMaxOn (fun J ↦ sizeLikelihood x J p ν) D N ↔ N = Finset.univ.sup x)",uniqueness,,,
+      ∀ N ∈ D, IsMaxOn (fun J ↦ sizeLikelihood x J p ν) D N ↔ N = Finset.univ.sup x)",uniqueness,,,"{""uniqueness"":""full""}"
 cmb,size,UnivariateML.Base8CMB.held_size_failure,dev/lean/UnivariateML/Family/Base8CMB.lean,98,Joins strict saturated suprema for the three fixed-size excluded support patterns.,"theorem held_size_failure {N n : ℕ} (hN : 2 ≤ N) (hn : 0 < n)
     (x : Fin n → Fin (N+1)) :
     let D := Icc (0 : ℝ) 1 ×ˢ (univ : Set ℝ)
@@ -45,7 +45,7 @@ cmb,size,UnivariateML.Base8CMB.held_size_failure,dev/lean/UnivariateML/Family/Ba
     ((∀ i, x i = 0 ∨ x i = Fin.last N) →
       0 < Discrete3CMB.multiplicity x 0 → 0 < Discrete3CMB.multiplicity x (Fin.last N) →
       Excluded (pairHeight (Discrete3CMB.multiplicity x 0)
-        (Discrete3CMB.multiplicity x (Fin.last N))))",failure,,"Full closed probability chart, including the two losing endpoint atoms.",
+        (Discrete3CMB.multiplicity x (Fin.last N))))",failure,,"Full closed probability chart, including the two losing endpoint atoms.","{""failure"":""full"",""limit:2"":""partial"",""limit:3"":""partial"",""limit:4"":""partial""}"
 cmb,size,UnivariateML.Base8CMB.held_size_maximizers,dev/lean/UnivariateML/Family/Base8CMB.lean,154,"Size-zero, Bernoulli and point-mass fibers are explicit, and the identifiable interior has exactly one fit.","theorem held_size_maximizers {N n : ℕ} (hn : 0 < n) (x : Fin n → Fin (N+1)) :
     let D := Icc (0 : ℝ) 1 ×ˢ (univ : Set ℝ)
     let L := fun q : ℝ × ℝ ↦ closedLikelihood x q.1 q.2
@@ -58,7 +58,7 @@ cmb,size,UnivariateML.Base8CMB.held_size_maximizers,dev/lean/UnivariateML/Family
       ((∀ i, x i = Fin.last N) → ∀ q ∈ D, IsMaxOn L D q ↔ q.1 = 1) ∧
       ((¬ ∀ i, x i = 0) → (¬ ∀ i, x i = Fin.last N) →
         ((∃! q, q ∈ D ∧ IsMaxOn L D q) ↔
-          FinishCMB.empirical x ∈ interior (convexHull ℝ (range (FinishCMB.statistic N))))))",uniqueness,,,
+          FinishCMB.empirical x ∈ interior (convexHull ℝ (range (FinishCMB.statistic N))))))",uniqueness,,,"{""uniqueness"":""full""}"
 cmb,prob+size,UnivariateML.Base8CMBHeldProbability.held_probability_size_classification,dev/lean/UnivariateML/Family/Base8CMBHeldProbability.lean,99,Strictly interior empirical height gives a unique dispersion fit. Flat size and probability cases retain every dispersion.,"theorem held_probability_size_classification {N n : ℕ} (hn : 0 < n)
     (x : Fin n → Fin (N+1)) {p : ℝ} (hp : p ∈ Icc 0 1) :
     let f := closedLikelihood x p
@@ -67,7 +67,7 @@ cmb,prob+size,UnivariateML.Base8CMBHeldProbability.held_probability_size_classif
     ((p = 0 ∨ p = 1 ∨ N ≤ 1) → ∀ t, IsMaxOn f univ t) ∧
     ((p ∈ Ioo 0 1 ∧ 2 ≤ N) →
       ((∃ t, IsMaxOn f univ t) ↔ Inner) ∧
-      (Inner → ∃! t, IsMaxOn f univ t))",criterion; uniqueness,,,
+      (Inner → ∃! t, IsMaxOn f univ t))",criterion; uniqueness,,,"{""criterion"":""full"",""uniqueness"":""full""}"
 cmb,prob+size,UnivariateML.Base8CMBHeldProbability.held_probability_size_failure,dev/lean/UnivariateML/Family/Base8CMBHeldProbability.lean,230,"Extremal empirical heights give sharp, strictly excluded centered or endpoint limits.","theorem held_probability_size_failure {N n : ℕ} (hn : 0 < n) (hN : 2 ≤ N)
     (x : Fin n → Fin (N+1)) {p : ℝ} (hp : p ∈ Ioo 0 1) :
     let m := (∑ i, height N (x i))/(n : ℝ)
@@ -80,7 +80,7 @@ cmb,prob+size,UnivariateML.Base8CMBHeldProbability.held_probability_size_failure
       Tendsto f atTop (𝓝 v) ∧ IsLUB (range f) v ∧ ∀ t, f t < v) ∧
     ((∀ k, m ≤ height N k) →
       (∀ k : Fin (N+1), k ∈ F ↔ k.val = 0 ∨ k.val = N) ∧
-      Tendsto (fun t ↦ f (-t)) atTop (𝓝 v) ∧ IsLUB (range f) v ∧ ∀ t, f t < v)",failure,,,
+      Tendsto (fun t ↦ f (-t)) atTop (𝓝 v) ∧ IsLUB (range f) v ∧ ∀ t, f t < v)",failure,,,"{""failure"":""full"",""limit:2"":""partial"",""limit:3"":""partial"",""limit:4"":""partial""}"
 cmb,prob,UnivariateML.Base8CMBHeldProbability.held_probability_capped,dev/lean/UnivariateML/Family/Base8CMBHeldProbability.lean,376,The capped profile comparison keeps all attained ties and reaches a winning excluded height by its signed path when all attained profiles lose.,"theorem held_probability_capped {n B : ℕ} (hn : 0 < n)
     (x : Fin n → ℕ) {p : ℝ} (hp : p ∈ Icc 0 1) :
     let D : Set ℕ := {N | N ≤ B ∧ Discrete4CMB.Compatible x N p}
@@ -96,7 +96,7 @@ cmb,prob,UnivariateML.Base8CMBHeldProbability.held_probability_capped,dev/lean/U
       ((∀ N ∈ D, Att N → H N < V) →
         ∃ N ∈ D, H N = V ∧ ¬ Att N ∧
           (Tendsto (fun t ↦ L (N,t)) atTop (𝓝 V) ∨
-            Tendsto (fun t ↦ L (N,-t)) atTop (𝓝 V)))",criterion; failure; uniqueness,,,
+            Tendsto (fun t ↦ L (N,-t)) atTop (𝓝 V)))",criterion; failure; uniqueness,,,"{""criterion"":""full"",""uniqueness"":""full"",""failure"":""partial""}"
 bnbinom,beta,UnivariateML.Base8BNBinom.held_beta_size_maximizers_swap,dev/lean/UnivariateML/Family/Base8BNBinom.lean,16,Size-beta symmetry transports the whole maximizing set between the two holds.,"theorem held_beta_size_maximizers_swap {n : ℕ} (x : Fin n → ℕ) (b : ℝ) :
     let D := Ioi (0 : ℝ) ×ˢ Ioi 0
     {p ∈ D | IsMaxOn (fun q : ℝ × ℝ ↦ logLikelihood x q.1 q.2 b) D p} =
@@ -113,7 +113,7 @@ bnbinom,beta,UnivariateML.Base8BNBinom.held_beta_size_zero_suprema,dev/lean/Univ
     (IsLUB (L '' D) 1 ∧ ∀ p ∈ D, L p < 1) ∧
     (IsLUB (R '' D) 1 ∧ ∀ p ∈ D, R p < 1) ∧
     ∀ a > 0, Tendsto (fun r ↦ L (r,a)) (𝓝[>] 0) (𝓝 1) ∧
-      Tendsto (fun r ↦ R (r,a)) (𝓝[>] 0) (𝓝 1)",failure,,All-zero branch. Positive-count escape exhaustion remains open.,
+      Tendsto (fun r ↦ R (r,a)) (𝓝[>] 0) (𝓝 1)",failure,,All-zero branch. Positive-count escape exhaustion remains open.,"{""failure"":""partial"",""criterion"":""partial"",""limit:3"":""full""}"
 bnbinom,size,UnivariateML.Base8BNBinom.held_beta_size_zero_suprema,dev/lean/UnivariateML/Family/Base8BNBinom.lean,27,"Under either symmetric hold, the zero-atom path reaches the strict all-zero likelihood supremum.","theorem held_beta_size_zero_suprema {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     (hx : ∀ i, x i = 0) {b : ℝ} (hb : 0 < b) :
     let D := Ioi (0 : ℝ) ×ˢ Ioi 0
@@ -122,7 +122,7 @@ bnbinom,size,UnivariateML.Base8BNBinom.held_beta_size_zero_suprema,dev/lean/Univ
     (IsLUB (L '' D) 1 ∧ ∀ p ∈ D, L p < 1) ∧
     (IsLUB (R '' D) 1 ∧ ∀ p ∈ D, R p < 1) ∧
     ∀ a > 0, Tendsto (fun r ↦ L (r,a)) (𝓝[>] 0) (𝓝 1) ∧
-      Tendsto (fun r ↦ R (r,a)) (𝓝[>] 0) (𝓝 1)",failure,,All-zero branch. Positive-count escape exhaustion remains open.,
+      Tendsto (fun r ↦ R (r,a)) (𝓝[>] 0) (𝓝 1)",failure,,All-zero branch. Positive-count escape exhaustion remains open.,"{""failure"":""partial"",""criterion"":""partial"",""limit:3"":""full""}"
 cmp,all free,UnivariateML.Base8CMP.all_free_failure,dev/lean/UnivariateML/Family/Base8CMP.lean,563,"Sharp excluded adjacent heights, attained zero and geometric cases, and compact superlevels off the adjacent edges.","theorem all_free_failure {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) :
     let L := fun p : ℝ × ℝ ↦ likelihood x p.1 p.2
     ((∀ i, x i = 0) → ∀ p ∈ rateDomain, IsMaxOn L rateDomain p ↔ p.1 = 0) ∧
@@ -133,22 +133,22 @@ cmp,all free,UnivariateML.Base8CMP.all_free_failure,dev/lean/UnivariateML/Family
     ((∃ i, x i ≠ 0) → (¬ ∃ c, ∀ i, x i = c ∨ x i = c+1) →
       ∀ v : ℝ, IsCompact {p ∈ domain | v ≤ logLik x p}) ∧
     (∃ (j : ℕ) (y : Fin j → ℕ), (∃ i, y i ≠ 0) ∧
-      IsMaxOn (fun p : ℝ × ℝ ↦ likelihood y p.1 p.2) rateDomain ((1/2 : ℝ),0))",failure,,The sharp heights and compactness classify competitive likelihood values. Pointwise law exhaustion on the degenerate branches is separate.,
+      IsMaxOn (fun p : ℝ × ℝ ↦ likelihood y p.1 p.2) rateDomain ((1/2 : ℝ),0))",failure,,The sharp heights and compactness classify competitive likelihood values. Pointwise law exhaustion on the degenerate branches is separate.,"{""failure"":""full"",""limit:1"":""partial"",""limit:2"":""full""}"
 cmp,all free,UnivariateML.Base8CMP.geometric_optimal,dev/lean/UnivariateML/Family/Base8CMP.lean,422,The mean-matching geometric member is globally optimal when its log-factorial moment is at most the empirical value.,"theorem geometric_optimal {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) {r : ℝ}
     (hr : r ∈ Ioo 0 1)
     (hm : (∑ i, (x i : ℝ)) / (n : ℝ) = r/(1-r))
     (ht : (1-r) * (∑' k, r^k * logFactorial k) ≤
       (∑ i, logFactorial (x i)) / (n : ℝ)) :
-    IsMaxOn (fun p : ℝ × ℝ ↦ likelihood x p.1 p.2) rateDomain (r,0)",failure,,Sufficiency direction of the geometric threshold.,
+    IsMaxOn (fun p : ℝ × ℝ ↦ likelihood x p.1 p.2) rateDomain (r,0)",failure,,Sufficiency direction of the geometric threshold.,"{""failure"":""partial""}"
 cmp,all free,UnivariateML.Base8CMP.all_free_uniqueness,dev/lean/UnivariateML/Family/Base8CMP.lean,141,"Every attained positive-count fit is unique, and all zeros retain arbitrary dispersion at zero rate.","theorem all_free_uniqueness {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) :
     let L := fun p : ℝ × ℝ ↦ likelihood x p.1 p.2
     ((∀ i, x i = 0) → ∀ p ∈ rateDomain, IsMaxOn L rateDomain p ↔ p.1 = 0) ∧
     ((∃ i, x i ≠ 0) → ∀ p ∈ rateDomain, IsMaxOn L rateDomain p →
-      ∀ q ∈ rateDomain, IsMaxOn L rateDomain q → p = q)",uniqueness,,,
+      ∀ q ∈ rateDomain, IsMaxOn L rateDomain q → p = q)",uniqueness,,,"{""uniqueness"":""full""}"
 cmp,all free,UnivariateML.Base8CMP.all_free_criterion,dev/lean/UnivariateML/Family/Base8CMP.lean,371,"All zeros attain, and every other sample attains precisely when it is not supported on a single adjacent pair.","theorem all_free_criterion {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) :
     let L := fun p : ℝ × ℝ ↦ likelihood x p.1 p.2
     (∃ p ∈ rateDomain, IsMaxOn L rateDomain p) ↔
-      (∀ i, x i = 0) ∨ ¬ ∃ c, ∀ i, x i = c ∨ x i = c+1",criterion,,,
+      (∀ i, x i = 0) ∨ ¬ ∃ c, ∀ i, x i = c ∨ x i = c+1",criterion,,,"{""criterion"":""full""}"
 pig,mean,UnivariateML.Base8PIG.held_mean_classification,dev/lean/UnivariateML/Family/Base8PIG.lean,19,"If any count is positive, the variance-excess condition is equivalent to existence and the fitted shape is unique. Zeros have only the shape-zero maximizer.","theorem held_mean_classification {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     {μ : ℝ} (hμ : 0 < μ) :
     let m := (∑ i, (x i : ℝ)) / (n : ℝ)
@@ -160,7 +160,7 @@ pig,mean,UnivariateML.Base8PIG.held_mean_classification,dev/lean/UnivariateML/Fa
       ∀ lam ∈ Ici (0 : ℝ), IsMaxOn (HeldSweepPIG.zeroLikelihood n μ) (Ici 0) lam ↔ lam = 0) ∧
     ((∃ i, 0 < x i) →
       ((∃ lam, W lam) ↔ m < v + (m - μ)^2) ∧
-      (m < v + (m - μ)^2 → ∃! lam, W lam))",criterion; uniqueness,,Positive-data physical shapes are represented by images of the compact-profile maximizers.,
+      (m < v + (m - μ)^2 → ∃! lam, W lam))",criterion; uniqueness,,Positive-data physical shapes are represented by images of the compact-profile maximizers.,"{""criterion"":""full"",""uniqueness"":""full""}"
 nbinom,prob,UnivariateML.Base8NBinom.held_probability_failure,dev/lean/UnivariateML/Family/Base8NBinom.lean,17,The infinite-size limit is zero at interior probability and one on the flat compatible probability-one ray.,"theorem held_probability_failure {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     {p : ℝ} (hp : p ∈ Ioc 0 1) (hc : p = 1 → ∀ i, x i = 0) :
     (p = 1 →
@@ -169,7 +169,7 @@ nbinom,prob,UnivariateML.Base8NBinom.held_probability_failure,dev/lean/Univariat
     (p < 1 →
       Tendsto (fun r ↦ likelihood x r p) atTop (𝓝 0) ∧
       ∃ r ∈ Ici (0 : ℝ), 0 < likelihood x r p ∧
-        IsMaxOn (fun s ↦ likelihood x s p) (Ici 0) r)",failure,,,
+        IsMaxOn (fun s ↦ likelihood x s p) (Ici 0) r)",failure,,,"{""failure"":""full""}"
 nbinom,size,UnivariateML.Base8NBinom.held_size_failure,dev/lean/UnivariateML/Family/Base8NBinom.lean,35,The probability-zero limit is zero at positive size and one on the flat compatible size-zero fit.,"theorem held_size_failure {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     {r : ℝ} (hr : 0 ≤ r) (hc : r = 0 → ∀ i, x i = 0) :
     (r = 0 →
@@ -178,4 +178,4 @@ nbinom,size,UnivariateML.Base8NBinom.held_size_failure,dev/lean/UnivariateML/Fam
     (0 < r →
       Tendsto (likelihood x r) (𝓝[>] 0) (𝓝 0) ∧
       ∃ p ∈ Ioc (0 : ℝ) 1, 0 < likelihood x r p ∧
-        IsMaxOn (likelihood x r) (Ioc 0 1) p)",failure,,,
+        IsMaxOn (likelihood x r) (Ioc 0 1) p)",failure,,,"{""failure"":""full""}"

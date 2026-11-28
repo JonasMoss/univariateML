@@ -1,36 +1,36 @@
 family,regime,theorem,file,line,statement,hypotheses_and_conclusion,scope,proof_marker,dossier_scope_note,coverage
 bbinom,all free,UnivariateML.Base8bBBinom.all_free_constant,dev/lean/UnivariateML/Family/Base8bBBinom.lean,109,The unrestricted all-zero maximum is the size-zero shape ridge. Positive constants have an unattained supremum of one.,"theorem all_free_constant {n c : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     (hx : ∀ i, x i = c) :
-    let feasible : Set (ℕ × ℝ × ℝ)",,,"Atlas target criterion, failure, uniqueness.",
+    let feasible : Set (ℕ × ℝ × ℝ)",,,"Atlas target criterion, failure, uniqueness.","{""criterion"":""partial"",""failure"":""partial"",""uniqueness"":""partial""}"
 bbinom,all free,UnivariateML.Base8bBBinom.endpoint_profile_bound,dev/lean/UnivariateML/Family/Base8bBBinom.lean,295,"The endpoint-only log likelihood is bounded by its fitted Bernoulli height, with strict loss at sizes greater than one.","theorem endpoint_profile_bound {m n : ℕ} (hm : 0 < m) (hn : 0 < n) (x : Fin n → ℕ)
     (hx : ∀ i, x i = 0 ∨ x i = m)
     (hp : proportion 1 (fun i ↦ if x i = 0 then 0 else 1) ∈ Ioo 0 1) :
     let y : Fin n → ℕ := fun i ↦ if x i = 0 then 0 else 1
     let B := binomialLogLik 1 y (proportion 1 y)
     (∀ a > 0, ∀ b > 0, logLik m x a b ≤ B ∧ (1 < m → logLik m x a b < B)) ∧
-      (m = 1 → logLik m x (proportion 1 y) (1 - proportion 1 y) = B)",,,"Atlas target criterion, uniqueness.",
+      (m = 1 → logLik m x (proportion 1 y) (1 - proportion 1 y) = B)",,,"Atlas target criterion, uniqueness.","{""criterion"":""partial"",""uniqueness"":""partial""}"
 bbinom,all free,UnivariateML.Base8bBBinom.underdispersed_attained_size_prefix,dev/lean/UnivariateML/Family/Base8bBBinom.lean,446,Every identifiable attained fixed-size profile lies strictly below the dispersion threshold when the sample variance is below its mean.,"theorem underdispersed_attained_size_prefix {m n : ℕ} (hm : 2 ≤ m) (hn : 0 < n)
     (x : Fin n → ℕ) (hx : ∀ i, x i ≤ m) (hi : ∃ i, 0 < x i ∧ x i < m)
     (hv : variance x < mean x) :
     (∃ q ∈ domain, IsMaxOn (fun q : ℝ × ℝ ↦ logLik m x q.1 q.2) domain q) ↔
-      (m : ℝ) < mean x ^ 2 / (mean x - variance x)",,,"Atlas target criterion, uniqueness.",
+      (m : ℝ) < mean x ^ 2 / (mean x - variance x)",,,"Atlas target criterion, uniqueness.","{""criterion"":""partial"",""uniqueness"":""partial""}"
 bbinom,alpha+size,UnivariateML.Base8bBBinom.held_alpha_size_unique,dev/lean/UnivariateML/Family/Base8bBBinom.lean,631,"At positive held size all attained beta fits coincide, and at size zero every positive beta maximizes.","theorem held_alpha_size_unique {m n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) (hx : ∀ i, x i ≤ m)
     {a : ℝ} (ha : 0 < a) :
     (m = 0 → ∀ b > 0, IsMaxOn (logLik m x a) (Ioi 0) b) ∧
     (0 < m → ∀ b ∈ Ioi 0, ∀ c ∈ Ioi 0,
-      IsMaxOn (logLik m x a) (Ioi 0) b → IsMaxOn (logLik m x a) (Ioi 0) c → b = c)",,,Atlas target uniqueness.,
+      IsMaxOn (logLik m x a) (Ioi 0) b → IsMaxOn (logLik m x a) (Ioi 0) c → b = c)",,,Atlas target uniqueness.,"{""uniqueness"":""full""}"
 bbinom,beta+size,UnivariateML.Base8bBBinom.held_beta_size_unique,dev/lean/UnivariateML/Family/Base8bBBinom.lean,665,"At positive held size all attained alpha fits coincide, and at size zero every positive alpha maximizes.","theorem held_beta_size_unique {m n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) (hx : ∀ i, x i ≤ m)
     {b : ℝ} (hb : 0 < b) :
     (m = 0 → ∀ a > 0, IsMaxOn (fun a ↦ logLik m x a b) (Ioi 0) a) ∧
     (0 < m → ∀ a ∈ Ioi 0, ∀ c ∈ Ioi 0,
       IsMaxOn (fun a ↦ logLik m x a b) (Ioi 0) a →
-      IsMaxOn (fun a ↦ logLik m x a b) (Ioi 0) c → a = c)",,,Atlas target uniqueness.,
+      IsMaxOn (fun a ↦ logLik m x a b) (Ioi 0) c → a = c)",,,Atlas target uniqueness.,"{""uniqueness"":""full""}"
 bbinom,size,UnivariateML.Base8bBBinom.held_size_criterion,dev/lean/UnivariateML/Family/Base8bBBinom.lean,387,"Attainment holds exactly at size zero, for mixed Bernoulli data, or with an interior count and positive dispersion excess at size at least two.","theorem held_size_criterion {m n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) (hx : ∀ i, x i ≤ m) :
     (∃ q ∈ domain, IsMaxOn (fun q : ℝ × ℝ ↦ logLik m x q.1 q.2) domain q) ↔
       m = 0 ∨
       (m = 1 ∧ (∃ i, x i = 0) ∧ ∃ i, x i = 1) ∨
       (2 ≤ m ∧ (∃ i, 0 < x i ∧ x i < m) ∧
-        (m : ℝ) * proportion m x * (1 - proportion m x) < variance x)",,,Atlas target criterion.,
+        (m : ℝ) * proportion m x * (1 - proportion m x) < variance x)",,,Atlas target criterion.,"{""criterion"":""full""}"
 bbinom,size,UnivariateML.Base8bBBinom.held_size_failure,dev/lean/UnivariateML/Family/Base8bBBinom.lean,2615,"Joins the strictly excluded binomial, point-mass and mixed-endpoint heights at size at least two, with recovering likelihood paths for all branches.","theorem held_size_failure {m n : ℕ} (hm : 2 ≤ m) (hn : 0 < n)
     (x : Fin n → ℕ) (hx : ∀ i, x i ≤ m) :
     let L := fun q : ℝ × ℝ ↦ logLik m x q.1 q.2
@@ -49,7 +49,7 @@ bbinom,size,UnivariateML.Base8bBBinom.held_size_failure,dev/lean/UnivariateML/Fa
       let p := proportion 1 y
       let B := binomialLogLik 1 y p
       Excluded B ∧
-        Tendsto (fun s : ℝ ↦ logLik m x (p*s) ((1-p)*s)) (𝓝[>] 0) (𝓝 B))",,,Atlas target failure.,
+        Tendsto (fun s : ℝ ↦ logLik m x (p*s) ((1-p)*s)) (𝓝[>] 0) (𝓝 B))",,,Atlas target failure.,"{""failure"":""full"",""limit:2"":""full""}"
 cmb,all free,UnivariateML.Base8bCMB.all_free_pair_failure,dev/lean/UnivariateML/Family/Base8bCMB.lean,166,The capped likelihood supremum is the saturated pair height for the two exceptional histograms. A mixed binary fit attains that height at size one while larger adjacent faces tie it.,"theorem all_free_pair_failure {n B l u : ℕ} (hn : 0 < n) (huB : u ≤ B)
     (x : Fin n → ℕ) (hx : ∀ i, x i = l ∨ x i = u) (hlu : l < u)
     (hl : ∃ i, x i = l) (hu : ∃ i, x i = u) (he : l = 0 ∨ u = l+1) :
@@ -65,42 +65,42 @@ cmb,all free,UnivariateML.Base8bCMB.all_free_pair_failure,dev/lean/UnivariateML/
         ∀ N ≤ B, 2 ≤ N →
           IsLUB ((fun q : ℝ × ℝ ↦ sizeLikelihood x N q.1 q.2) ''
             (Icc 0 1 ×ˢ univ)) H ∧
-            ∀ p ∈ Icc 0 1, ∀ ν, sizeLikelihood x N p ν < H)",,,Atlas target failure.,
+            ∀ p ∈ Icc 0 1, ∀ ν, sizeLikelihood x N p ν < H)",,,Atlas target failure.,"{""failure"":""full"",""uniqueness"":""partial"",""limit:3"":""partial"",""limit:4"":""partial""}"
 cmb,all free,UnivariateML.Base8bCMB.all_free_criterion,dev/lean/UnivariateML/Family/Base8bCMB.lean,550,"On the capped size domain, all feasible samples attain except the two mixed pairs named in the atlas.","theorem all_free_criterion {n B : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     (hB : ∀ i, x i ≤ B) :
     let D : Set (ℕ × ℝ × ℝ) := {q | q.1 ≤ B ∧ q.2.1 ∈ Icc 0 1}
     let L := fun q : ℕ × ℝ × ℝ ↦ sizeLikelihood x q.1 q.2.1 q.2.2
     (∃ q ∈ D, IsMaxOn L D q) ↔
       ¬ ∃ l u : ℕ, 2 ≤ u ∧ l < u ∧ (l = 0 ∨ u = l+1) ∧
-        (∀ i, x i = l ∨ x i = u) ∧ (∃ i, x i = l) ∧ (∃ i, x i = u)",,,Atlas target criterion.,
+        (∀ i, x i = l ∨ x i = u) ∧ (∃ i, x i = l) ∧ (∃ i, x i = u)",,,Atlas target criterion.,"{""criterion"":""full""}"
 bnbinom,beta,UnivariateML.Base8bBNBinom.integer_held_shape_count_mass,dev/lean/UnivariateML/Family/Base8bBNBinom.lean,71,"At a positive integer symmetric hold, the gamma-chart count mass is exactly a rational function of the two free shapes.","theorem integer_held_shape_count_mass {r a : ℝ} (hr : 0 < r) (ha : 0 < a)
     {b : ℕ} (k : ℕ) :
     gammaMass k r a b =
       ((∏ j ∈ Finset.range b, (a + j)) / (∏ j ∈ Finset.range b, (a+r+j))) *
         (((∏ j ∈ Finset.range k, (r+j)) * (∏ j ∈ Finset.range k, ((b : ℝ)+j))) /
           ((∏ j ∈ Finset.range k, (a+r+(b : ℝ)+j)) * k.factorial)) ∧
-    gammaMass k (b : ℝ) a r = gammaMass k r a (b : ℝ)",,,Atlas target uniqueness.,
+    gammaMass k (b : ℝ) a r = gammaMass k r a (b : ℝ)",,,Atlas target uniqueness.,"{""uniqueness"":""partial""}"
 bnbinom,size,UnivariateML.Base8bBNBinom.integer_held_shape_count_mass,dev/lean/UnivariateML/Family/Base8bBNBinom.lean,71,"At a positive integer symmetric hold, the gamma-chart count mass is exactly a rational function of the two free shapes.","theorem integer_held_shape_count_mass {r a : ℝ} (hr : 0 < r) (ha : 0 < a)
     {b : ℕ} (k : ℕ) :
     gammaMass k r a b =
       ((∏ j ∈ Finset.range b, (a + j)) / (∏ j ∈ Finset.range b, (a+r+j))) *
         (((∏ j ∈ Finset.range k, (r+j)) * (∏ j ∈ Finset.range k, ((b : ℝ)+j))) /
           ((∏ j ∈ Finset.range k, (a+r+(b : ℝ)+j)) * k.factorial)) ∧
-    gammaMass k (b : ℝ) a r = gammaMass k r a (b : ℝ)",,,Atlas target uniqueness.,
+    gammaMass k (b : ℝ) a r = gammaMass k r a (b : ℝ)",,,Atlas target uniqueness.,"{""uniqueness"":""partial""}"
 bnbinom,beta,UnivariateML.Base8bBNBinom.held_beta_growing_total,dev/lean/UnivariateML/Family/Base8bBNBinom.lean,108,"A diverging free-shape total and limiting ratio give the negative-binomial face, including both degenerate endpoint limits.","theorem held_beta_growing_total {ι : Type*} {l : Filter ι} {a r : ι → ℝ} {b p : ℝ}
     (hb : 0 < b) (hp : p ∈ Icc 0 1)
     (hpos : ∀ᶠ t in l, 0 < a t ∧ 0 < r t)
     (hT : Tendsto (fun t ↦ a t + r t) l atTop)
     (hP : Tendsto (fun t ↦ a t / (a t+r t)) l (𝓝 p)) (k : ℕ) :
     Tendsto (fun t ↦ gammaMass k (r t) (a t) b) l
-      (𝓝 (p^b * (∏ j ∈ Finset.range k, ((1-p)*(b+j)/((j : ℝ)+1)))))",,,Atlas target failure.,
+      (𝓝 (p^b * (∏ j ∈ Finset.range k, ((1-p)*(b+j)/((j : ℝ)+1)))))",,,Atlas target failure.,"{""failure"":""partial"",""path:1"":""full""}"
 bnbinom,beta,UnivariateML.Base8bBNBinom.held_beta_bounded_boundary,dev/lean/UnivariateML/Family/Base8bBNBinom.lean,179,"At a bounded free-shape total, a parameter boundary leaves only an atom at zero whose mass is the limiting alpha fraction.","theorem held_beta_bounded_boundary {ι : Type*} {l : Filter ι} {a r : ι → ℝ}
     {b p T : ℝ} (hb : 0 < b) (hp : p ∈ Icc 0 1) (hT : 0 ≤ T)
     (hpos : ∀ᶠ t in l, 0 < a t ∧ 0 < r t)
     (hTotal : Tendsto (fun t ↦ a t+r t) l (𝓝 T))
     (hP : Tendsto (fun t ↦ a t/(a t+r t)) l (𝓝 p))
     (hBoundary : T = 0 ∨ p = 0 ∨ p = 1) (k : ℕ) :
-    Tendsto (fun t ↦ gammaMass k (r t) (a t) b) l (𝓝 (if k = 0 then p else 0))",,,Atlas target failure.,
+    Tendsto (fun t ↦ gammaMass k (r t) (a t) b) l (𝓝 (if k = 0 then p else 0))",,,Atlas target failure.,"{""failure"":""partial""}"
 bnbinom,beta,UnivariateML.Base8bBNBinom.held_beta_positive_maximizing_escape,dev/lean/UnivariateML/Family/Base8bBNBinom.lean,375,"On positive-count data, a maximizing escape subsequence converges countwise to the optimized negative binomial, including in the finite-tie case.","theorem held_beta_positive_maximizing_escape {n : ℕ} (hn : 0 < n)
     (x : Fin n → ℕ) (hx : ∃ i, 0 < x i) {b : ℝ} (hb : 0 < b)
     {a r : ℕ → ℝ} (hpos : ∀ j, 0 < a j ∧ 0 < r j)
@@ -112,7 +112,7 @@ bnbinom,beta,UnivariateML.Base8bBNBinom.held_beta_positive_maximizing_escape,dev
     H = (∏ i, faceMass (x i) b p) ∧
       ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ k,
         Tendsto (fun j ↦ gammaMass k (r (φ j)) (a (φ j)) b) atTop
-          (𝓝 (faceMass k b p))",,,Atlas target failure.,
+          (𝓝 (faceMass k b p))",,,Atlas target failure.,"{""failure"":""partial""}"
 bnbinom,size,UnivariateML.Base8bBNBinom.held_size_positive_maximizing_escape,dev/lean/UnivariateML/Family/Base8bBNBinom.lean,431,The symmetric size hold has the same fitted negative-binomial escape result.,"theorem held_size_positive_maximizing_escape {n : ℕ} (hn : 0 < n)
     (x : Fin n → ℕ) (hx : ∃ i, 0 < x i) {b : ℝ} (hb : 0 < b)
     {a r : ℕ → ℝ} (hpos : ∀ j, 0 < a j ∧ 0 < r j)
@@ -124,10 +124,10 @@ bnbinom,size,UnivariateML.Base8bBNBinom.held_size_positive_maximizing_escape,dev
     H = (∏ i, faceMass (x i) b p) ∧
       ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∀ k,
         Tendsto (fun j ↦ gammaMass k b (a (φ j)) (r (φ j))) atTop
-          (𝓝 (faceMass k b p))",,,Atlas target failure.,
+          (𝓝 (faceMass k b p))",,,Atlas target failure.,"{""failure"":""partial""}"
 bbinom,all free,UnivariateML.Base8bBBinom.separated_peak_witness,dev/lean/UnivariateML/Family/Base8bBBinom.lean,679,"Checks the exact four rational comparisons around the size-38 binomial peak of (7,8,13), including the larger size-13 finite witness.","theorem separated_peak_witness :
     let x : Fin 3 → ℕ := ![7, 8, 13]
-    let binom (N : ℕ)",,,Atlas target uniqueness.,
+    let binom (N : ℕ)",,,Atlas target uniqueness.,"{""uniqueness"":""partial""}"
 bbinom,all free,UnivariateML.Base8bBBinom.fixed_size_binomial_trace,dev/lean/UnivariateML/Family/Base8bBBinom.lean,707,Simultaneously growing total shape at fixed size gives the binomial trace for every limiting mixing proportion.,"theorem fixed_size_binomial_trace {ι : Type*} {l : Filter ι} {a b : ι → ℝ}
     (hpos : ∀ᶠ t in l, 0 < a t ∧ 0 < b t) {m k : ℕ} (hk : k ≤ m) {p : ℝ}
     (hS : Tendsto (fun t ↦ a t+b t) l atTop)
@@ -136,7 +136,7 @@ bbinom,all free,UnivariateML.Base8bBBinom.fixed_size_binomial_trace,dev/lean/Uni
       (m.choose k : ℝ) * ((∏ j ∈ Finset.range k, (a t+(j : ℝ))) *
         (∏ j ∈ Finset.range (m-k), (b t+(j : ℝ)))) /
         (∏ j ∈ Finset.range m, (a t+b t+(j : ℝ)))) l
-      (𝓝 ((m.choose k : ℝ) * p^k * (1-p)^(m-k)))",,,Atlas target failure.,
+      (𝓝 ((m.choose k : ℝ) * p^k * (1-p)^(m-k)))",,,Atlas target failure.,"{""failure"":""partial""}"
 bbinom,all free,UnivariateML.Base8bBBinom.fixed_size_two_point_trace,dev/lean/UnivariateML/Family/Base8bBBinom.lean,773,Simultaneously shrinking total shape at fixed positive size gives the endpoint-mixture trace.,"theorem fixed_size_two_point_trace {ι : Type*} {l : Filter ι} {a b : ι → ℝ}
     (hpos : ∀ᶠ t in l, 0 < a t ∧ 0 < b t) {m k : ℕ} (hm : 0 < m) (hk : k ≤ m)
     {p : ℝ} (hS : Tendsto (fun t ↦ a t+b t) l (𝓝 0))
@@ -145,7 +145,7 @@ bbinom,all free,UnivariateML.Base8bBBinom.fixed_size_two_point_trace,dev/lean/Un
       (m.choose k : ℝ) * ((∏ j ∈ Finset.range k, (a t+(j : ℝ))) *
         (∏ j ∈ Finset.range (m-k), (b t+(j : ℝ)))) /
         (∏ j ∈ Finset.range m, (a t+b t+(j : ℝ)))) l
-      (𝓝 (if k = 0 then 1-p else if k = m then p else 0))",,,Atlas target failure.,
+      (𝓝 (if k = 0 then 1-p else if k = m then p else 0))",,,Atlas target failure.,"{""failure"":""partial""}"
 bbinom,alpha,UnivariateML.Base8bBBinom.integer_held_alpha_rational_mass,dev/lean/UnivariateML/Family/Base8bBBinom.lean,862,The fixed-count mass at integer alpha has the written rational extension in size and beta.,"theorem integer_held_alpha_rational_mass {A N k : ℕ} (hk : k ≤ N)
     {b : ℝ} (hb : 0 < b) :
     (N.choose k : ℝ) *
@@ -155,7 +155,7 @@ bbinom,alpha,UnivariateML.Base8bBBinom.integer_held_alpha_rational_mass,dev/lean
       ((∏ j ∈ Finset.range A, (b+j)) / (∏ j ∈ Finset.range A, (b+(N : ℝ)+j))) *
         (((∏ j ∈ Finset.range k, ((N : ℝ)-j)) *
           (∏ j ∈ Finset.range k, ((A : ℝ)+j))) /
-          ((k.factorial : ℝ) * (∏ j ∈ Finset.range k, (b+(N : ℝ)-k+j))))",,,Atlas target uniqueness.,
+          ((k.factorial : ℝ) * (∏ j ∈ Finset.range k, (b+(N : ℝ)-k+j))))",,,Atlas target uniqueness.,"{""uniqueness"":""partial""}"
 bbinom,all free,UnivariateML.Base8bBBinom.underdispersed_global_criterion,dev/lean/UnivariateML/Family/Base8bBBinom.lean,905,"On underdispersed samples with an interior observation at the smallest compatible size, attainment is equivalent to a finite prefix witness meeting the best binomial.","theorem underdispersed_global_criterion {n M : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     (hM : ∃ i, x i = M) (hi : ∃ i, 0 < x i ∧ x i < M)
     (hv : variance x < mean x) :
@@ -164,13 +164,13 @@ bbinom,all free,UnivariateML.Base8bBBinom.underdispersed_global_criterion,dev/le
     let cutoff := mean x ^ 2 / (mean x - variance x)
     let B := sSup (BinomialSize.profile x '' BinomialSize.feasible x)
     (∃ q ∈ D, IsMaxOn L D q) ↔
-      ∃ q ∈ D, (q.1 : ℝ) < cutoff ∧ B ≤ L q",,,Atlas target criterion.,
+      ∃ q ∈ D, (q.1 : ℝ) < cutoff ∧ B ≤ L q",,,Atlas target criterion.,"{""criterion"":""partial""}"
 bbinom,beta,UnivariateML.Base8bBBinom.held_beta_uniform_positive_cell,dev/lean/UnivariateML/Family/Base8bBBinom.lean,1148,Each positive cell vanishes uniformly over the free positive shape as size grows.,"theorem held_beta_uniform_positive_cell {k : ℕ} (hk : 0 < k) {b : ℝ} (hb : 0 < b)
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ m : ℕ in atTop, ∀ a > 0,
       (m.choose k : ℝ) * ((∏ j ∈ Finset.range k, (a+(j : ℝ))) *
         (∏ j ∈ Finset.range (m-k), (b+(j : ℝ)))) /
-        (∏ j ∈ Finset.range m, (a+b+(j : ℝ))) < ε",,,Atlas target failure.,
+        (∏ j ∈ Finset.range m, (a+b+(j : ℝ))) < ε",,,Atlas target failure.,"{""failure"":""partial""}"
 bbinom,beta,UnivariateML.Base8bBBinom.held_beta_classification,dev/lean/UnivariateML/Family/Base8bBBinom.lean,1427,"Recovers the complete zero-data ray, excludes positive constants and characterizes every finite size co-winner on nonconstant data.","theorem held_beta_classification {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) {b : ℝ} (hb : 0 < b) :
     let D : Set (ℕ × ℝ) := {q | (∀ i, x i ≤ q.1) ∧ 0 < q.2}
     let L := fun q : ℕ × ℝ ↦ logLik q.1 x q.2 b
@@ -182,21 +182,21 @@ bbinom,beta,UnivariateML.Base8bBBinom.held_beta_classification,dev/lean/Univaria
           ∀ c ∈ Ioi 0, IsMaxOn (fun t ↦ logLik m x t b) (Ioi 0) c ↔ c = a m) ∧
         (∃ q ∈ D, IsMaxOn L D q) ∧
         ∀ q ∈ D, IsMaxOn L D q ↔ q.1 ≤ K ∧ q.2 = a q.1 ∧
-          ∀ m ≤ K, (∀ i, x i ≤ m) → L (m,a m) ≤ L q)",,,Atlas target uniqueness.,
+          ∀ m ≤ K, (∀ i, x i ≤ m) → L (m,a m) ≤ L q)",,,Atlas target uniqueness.,"{""uniqueness"":""full""}"
 bbinom,beta,UnivariateML.Base8bBBinom.held_beta_criterion,dev/lean/UnivariateML/Family/Base8bBBinom.lean,1449,Finite attainment holds exactly on nonconstant data and the all-zero sample.,"theorem held_beta_criterion {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) {b : ℝ} (hb : 0 < b) :
     let D : Set (ℕ × ℝ) := {q | (∀ i, x i ≤ q.1) ∧ 0 < q.2}
     let L := fun q : ℕ × ℝ ↦ logLik q.1 x q.2 b
-    (∃ q ∈ D, IsMaxOn L D q) ↔ (∀ i, x i = 0) ∨ (∀ c, ¬ ∀ i, x i = c)",,,Atlas target criterion.,
+    (∃ q ∈ D, IsMaxOn L D q) ↔ (∀ i, x i = 0) ∨ (∀ c, ¬ ∀ i, x i = c)",,,Atlas target criterion.,"{""criterion"":""full""}"
 bbinom,beta,UnivariateML.Base8bBBinom.held_beta_growing_zero_atom_iff,dev/lean/UnivariateML/Family/Base8bBBinom.lean,1552,At growing size the zero mass approaches one exactly when alpha times log size tends to zero.,"theorem held_beta_growing_zero_atom_iff {ι : Type*} {l : Filter ι}
     {N : ι → ℕ} {a : ι → ℝ} {b : ℝ} (hb : 0 < b)
     (ha : ∀ᶠ t in l, 0 < a t) (hN : Tendsto N l atTop) :
     Tendsto (fun t ↦ (∏ j ∈ Finset.range (N t), (b+(j : ℝ))) /
       (∏ j ∈ Finset.range (N t), (a t+b+(j : ℝ)))) l (𝓝 1) ↔
-      Tendsto (fun t ↦ a t * Real.log (N t : ℝ)) l (𝓝 0)",,,Atlas target failure.,
+      Tendsto (fun t ↦ a t * Real.log (N t : ℝ)) l (𝓝 0)",,,Atlas target failure.,"{""failure"":""partial""}"
 bbinom,beta,UnivariateML.Base8bBBinom.held_beta_nonconstant_no_escape,dev/lean/UnivariateML/Family/Base8bBBinom.lean,1691,Every positive nonconstant-data superlevel lies inside finitely many sizes and a bounded positive shape interval.,"theorem held_beta_nonconstant_no_escape {n : ℕ} (x : Fin n → ℕ)
     (hnc : ∀ c, ¬ ∀ i, x i = c) {b ε : ℝ} (hb : 0 < b) (hε : 0 < ε) :
     ∃ K : ℕ, ∃ δ > 0, ∃ A : ℝ, ∀ m a, (∀ i, x i ≤ m) → 0 < a →
-      ε ≤ Real.exp (logLik m x a b) → m ≤ K ∧ δ ≤ a ∧ a ≤ A",,,Atlas target failure.,
+      ε ≤ Real.exp (logLik m x a b) → m ≤ K ∧ δ ≤ a ∧ a ≤ A",,,Atlas target failure.,"{""failure"":""partial""}"
 bbinom,beta,UnivariateML.Base8bBBinom.held_beta_failure,dev/lean/UnivariateML/Family/Base8bBBinom.lean,1704,"Joins the upper-atom path for positive constants, compact superlevels on nonconstant data and the bounded and growing zero-data escapes.","theorem held_beta_failure {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) {b : ℝ} (hb : 0 < b) :
     let D : Set (ℕ × ℝ) := {q | (∀ i, x i ≤ q.1) ∧ 0 < q.2}
     let L := fun q : ℕ × ℝ ↦ Real.exp (logLik q.1 x q.2 b)
@@ -211,14 +211,14 @@ bbinom,beta,UnivariateML.Base8bBBinom.held_beta_failure,dev/lean/UnivariateML/Fa
       ∀ {N : ℕ → ℕ} {a : ℕ → ℝ}, (∀ᶠ j in atTop, 0 < a j) →
         Tendsto N atTop atTop →
         (Tendsto (fun j ↦ L (N j,a j)) atTop (𝓝 1) ↔
-          Tendsto (fun j ↦ a j * Real.log (N j : ℝ)) atTop (𝓝 0)))",,,Atlas target failure.,
+          Tendsto (fun j ↦ a j * Real.log (N j : ℝ)) atTop (𝓝 0)))",,,Atlas target failure.,"{""failure"":""full""}"
 cmb,all free,UnivariateML.Base8bCMB.all_free_constant_maximizers,dev/lean/UnivariateML/Family/Base8bCMB.lean,453,"Identifies all constant-data maximizers, including the two ways zero data can attain their atom.","theorem all_free_constant_maximizers {n B c : ℕ} (hn : 0 < n) (hc : c ≤ B)
     (x : Fin n → ℕ) (hx : ∀ i, x i = c) :
     let D : Set (ℕ × ℝ × ℝ) := {q | q.1 ≤ B ∧ q.2.1 ∈ Icc 0 1}
     let L := fun q : ℕ × ℝ × ℝ ↦ sizeLikelihood x q.1 q.2.1 q.2.2
     IsLUB (L '' D) 1 ∧
     ∀ q ∈ D, IsMaxOn L D q ↔
-      (q.1 = 0 ∧ c = 0) ∨ (q.2.1 = 0 ∧ c = 0) ∨ (q.2.1 = 1 ∧ q.1 = c)",,,Atlas target uniqueness.,
+      (q.1 = 0 ∧ c = 0) ∨ (q.2.1 = 0 ∧ c = 0) ∨ (q.2.1 = 1 ∧ q.1 = c)",,,Atlas target uniqueness.,"{""uniqueness"":""partial""}"
 cmb,all free,UnivariateML.Base8bCMB.all_free_maximizer_profiles,dev/lean/UnivariateML/Family/Base8bCMB.lean,621,"Every identifiable attained size has one conditional optimum, and all sizes tied at the largest height are retained.","theorem all_free_maximizer_profiles {n B : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     (hnc : ∀ c, ¬ ∀ i, x i = c) (hlarge : ∃ i, 2 ≤ x i)
     (hbad : ¬ ∃ l u : ℕ, 2 ≤ u ∧ l < u ∧ (l = 0 ∨ u = l+1) ∧
@@ -232,7 +232,7 @@ cmb,all free,UnivariateML.Base8bCMB.all_free_maximizer_profiles,dev/lean/Univari
         IsMaxOn (fun q : ℝ × ℝ ↦ L (N,q)) P q ↔ q = best N) ∧
       (∀ N ∈ S, best N ∈ P) ∧
       ∀ q ∈ D, IsMaxOn L D q ↔
-        q.2 = best q.1 ∧ IsMaxOn (fun N ↦ L (N, best N)) S q.1",,,Atlas target uniqueness.,
+        q.2 = best q.1 ∧ IsMaxOn (fun N ↦ L (N, best N)) S q.1",,,Atlas target uniqueness.,"{""uniqueness"":""partial""}"
 cmb,nu,UnivariateML.Base8bCMB.rational_dispersion_weight,dev/lean/UnivariateML/Family/Base8bCMB.lean,681,The fixed-size weight for each count and rational dispersion is the unique positive solution of its power equation.,"theorem rational_dispersion_weight {N d : ℕ} (hd : 0 < d) (a : ℤ)
     (k : Fin (N+1)) :
     let w := Real.exp ((((a : ℝ)/d) * height N k))
@@ -252,7 +252,7 @@ cmb,nu,UnivariateML.Base8bCMB.held_dispersion_exact_tie,dev/lean/UnivariateML/Fa
       IsLeast {v ∈ Icc 0 1 | S.sup' hS (fun N ↦ H N v) = H 13 v} ν ∧
       ∃ p, ∃ q ∈ D, 13 < q.1 ∧ (13,p) ∈ D ∧
       IsMaxOn (fun q ↦ sizeLikelihood x q.1 q.2 ν) D (13,p) ∧
-      IsMaxOn (fun q ↦ sizeLikelihood x q.1 q.2 ν) D q",,,Atlas target uniqueness.,
+      IsMaxOn (fun q ↦ sizeLikelihood x q.1 q.2 ν) D q",,,Atlas target uniqueness.,"{""uniqueness"":""partial""}"
 bnbinom,beta,UnivariateML.Base8bBNBinom.gamma_likelihood_eq_exp_averageLogMass,dev/lean/UnivariateML/Family/Base8bBNBinom.lean,478,The gamma-chart likelihood agrees with the product-scale version of the existing exposed log objective.,"theorem gamma_likelihood_eq_exp_averageLogMass {n : ℕ} (hn : 0 < n)
     (x : Fin n → ℕ) {r a b : ℝ} (hr : 0 < r) (ha : 0 < a) (hb : 0 < b) :
     (∏ i, gammaMass (x i) r a b) =
@@ -271,7 +271,7 @@ bnbinom,beta,UnivariateML.Base8bBNBinom.held_beta_maximizing_escape,dev/lean/Uni
     let p := NegBinomial.prob x b
     let m := fun k ↦ if (∀ i, x i = 0) then (if k = 0 then 1 else 0) else faceMass k b p
     H = (∏ i, m (x i)) ∧ ∀ k,
-      Tendsto (fun j ↦ gammaMass k (r j) (a j) b) atTop (𝓝 (m k))",,,Atlas target failure.,
+      Tendsto (fun j ↦ gammaMass k (r j) (a j) b) atTop (𝓝 (m k))",,,Atlas target failure.,"{""failure"":""full""}"
 bnbinom,size,UnivariateML.Base8bBNBinom.held_size_maximizing_escape,dev/lean/UnivariateML/Family/Base8bBNBinom.lean,605,The symmetric size hold has the same countwise escape classification.,"theorem held_size_maximizing_escape {n : ℕ} (hn : 0 < n)
     (x : Fin n → ℕ) {b : ℝ} (hb : 0 < b)
     {a r : ℕ → ℝ} (hpos : ∀ j, 0 < a j ∧ 0 < r j)
@@ -282,19 +282,19 @@ bnbinom,size,UnivariateML.Base8bBNBinom.held_size_maximizing_escape,dev/lean/Uni
     let p := NegBinomial.prob x b
     let m := fun k ↦ if (∀ i, x i = 0) then (if k = 0 then 1 else 0) else faceMass k b p
     H = (∏ i, m (x i)) ∧ ∀ k,
-      Tendsto (fun j ↦ gammaMass k b (a j) (r j)) atTop (𝓝 (m k))",,,Atlas target failure.,
+      Tendsto (fun j ↦ gammaMass k b (a j) (r j)) atTop (𝓝 (m k))",,,Atlas target failure.,"{""failure"":""full""}"
 bnbinom,beta,UnivariateML.Base8bBNBinom.held_beta_face_comparison,dev/lean/UnivariateML/Family/Base8bBNBinom.lean,715,"On positive-count data a finite candidate at or above the fitted NB height implies attainment, including equality.","theorem held_beta_face_comparison {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     (hx : ∃ i, 0 < x i) {b : ℝ} (hb : 0 < b) :
     let D := Ioi (0 : ℝ) ×ˢ Ioi 0
     let L := fun q : ℝ × ℝ ↦ ∏ i, gammaMass (x i) q.1 q.2 b
     let F := ∏ i, faceMass (x i) b (NegBinomial.prob x b)
-    (∃ q ∈ D, IsMaxOn L D q) ↔ ∃ q ∈ D, F ≤ L q",,,Atlas target criterion.,
+    (∃ q ∈ D, IsMaxOn L D q) ↔ ∃ q ∈ D, F ≤ L q",,,Atlas target criterion.,"{""criterion"":""partial""}"
 bnbinom,size,UnivariateML.Base8bBNBinom.held_size_face_comparison,dev/lean/UnivariateML/Family/Base8bBNBinom.lean,752,The same finite versus optimized NB comparison holds at fixed size.,"theorem held_size_face_comparison {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     (hx : ∃ i, 0 < x i) {b : ℝ} (hb : 0 < b) :
     let D := Ioi (0 : ℝ) ×ˢ Ioi 0
     let L := fun q : ℝ × ℝ ↦ ∏ i, gammaMass (x i) b q.2 q.1
     let F := ∏ i, faceMass (x i) b (NegBinomial.prob x b)
-    (∃ q ∈ D, IsMaxOn L D q) ↔ ∃ q ∈ D, F ≤ L q",,,Atlas target criterion.,
+    (∃ q ∈ D, IsMaxOn L D q) ↔ ∃ q ∈ D, F ≤ L q",,,Atlas target criterion.,"{""criterion"":""partial""}"
 bnbinom,beta,UnivariateML.Base8bBNBinom.held_beta_criterion,dev/lean/UnivariateML/Family/Base8bBNBinom.lean,846,"All-zero samples have no maximum. With a positive count, the finite fit exists exactly when a two-coordinate stationary point meets the fitted NB face.","theorem held_beta_criterion {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) {b : ℝ} (hb : 0 < b) :
     let D := Ioi (0 : ℝ) ×ˢ Ioi 0
     let L := fun q : ℝ × ℝ ↦ ∏ i, gammaMass (x i) q.1 q.2 b
@@ -303,7 +303,7 @@ bnbinom,beta,UnivariateML.Base8bBNBinom.held_beta_criterion,dev/lean/UnivariateM
     (∃ q ∈ D, IsMaxOn L D q) ↔
       (∃ i, 0 < x i) ∧ ∃ q ∈ D,
       HasDerivAt (fun r ↦ A r q.2 b) 0 q.1 ∧
-      HasDerivAt (fun a ↦ A q.1 a b) 0 q.2 ∧ F ≤ L q",,,Atlas target criterion.,
+      HasDerivAt (fun a ↦ A q.1 a b) 0 q.2 ∧ F ≤ L q",,,Atlas target criterion.,"{""criterion"":""full""}"
 bnbinom,size,UnivariateML.Base8bBNBinom.held_size_criterion,dev/lean/UnivariateML/Family/Base8bBNBinom.lean,895,"The size hold transports the two score equations, all-zero nonattainment and the optimized NB threshold.","theorem held_size_criterion {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) {b : ℝ} (hb : 0 < b) :
     let D := Ioi (0 : ℝ) ×ˢ Ioi 0
     let L := fun q : ℝ × ℝ ↦ ∏ i, gammaMass (x i) b q.2 q.1
@@ -312,7 +312,7 @@ bnbinom,size,UnivariateML.Base8bBNBinom.held_size_criterion,dev/lean/UnivariateM
     (∃ q ∈ D, IsMaxOn L D q) ↔
       (∃ i, 0 < x i) ∧ ∃ q ∈ D,
       HasDerivAt (fun r ↦ A b q.2 r) 0 q.1 ∧
-      HasDerivAt (fun a ↦ A b a q.1) 0 q.2 ∧ F ≤ L q",,,Atlas target criterion.,
+      HasDerivAt (fun a ↦ A b a q.1) 0 q.2 ∧ F ≤ L q",,,Atlas target criterion.,"{""criterion"":""full""}"
 bbinom,alpha,UnivariateML.Base8bGammaRatio.scaled_limit,dev/lean/UnivariateML/Generic/Base8bGammaRatio.lean,112,A scaled gamma-ratio limit remains valid at zero even if the smaller argument stays bounded.,"theorem scaled_limit {ι : Type*} {l : Filter ι} {a T : ι → ℝ} {b p : ℝ}
     (hb : 0 < b) (hp : 0 ≤ p) (ha : ∀ᶠ t in l, 0 < a t)
     (hT : Tendsto T l atTop)
@@ -333,13 +333,13 @@ bbinom,alpha,UnivariateML.Base8bBBinom.held_alpha_growing_trace,dev/lean/Univari
       ((N t).choose k : ℝ) * ((∏ j ∈ Finset.range k, (a+(j : ℝ))) *
         (∏ j ∈ Finset.range (N t-k), (b t+(j : ℝ)))) /
           (∏ j ∈ Finset.range (N t), (a+b t+(j : ℝ)))) l
-      (𝓝 (p^a * ((∏ j ∈ Finset.range k, (a+(j : ℝ))) / k.factorial) * (1-p)^k))",,,Atlas target failure.,
+      (𝓝 (p^a * ((∏ j ∈ Finset.range k, (a+(j : ℝ))) / k.factorial) * (1-p)^k))",,,Atlas target failure.,"{""failure"":""partial""}"
 bbinom,alpha,UnivariateML.Base8bBBinom.held_alpha_nonconstant_criterion,dev/lean/UnivariateML/Family/Base8bBBinom.lean,2108,On nonconstant data attainment holds exactly when a conditional beta optimum reaches the fitted negative-binomial height.,"theorem held_alpha_nonconstant_criterion {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     (hnc : ∀ c, ¬ ∀ i, x i = c) {a : ℝ} (ha : 0 < a) :
     let D : Set (ℕ × ℝ) := {q | (∀ i, x i ≤ q.1) ∧ 0 < q.2}
     let L := fun q : ℕ × ℝ ↦ logLik q.1 x a q.2
     (∃ q ∈ D, IsMaxOn L D q) ↔
-      ∃ q ∈ D, IsMaxOn (logLik q.1 x a) (Ioi 0) q.2 ∧ NegBinomial.profile x a ≤ L q",,,Atlas target criterion.,
+      ∃ q ∈ D, IsMaxOn (logLik q.1 x a) (Ioi 0) q.2 ∧ NegBinomial.profile x a ≤ L q",,,Atlas target criterion.,"{""criterion"":""partial""}"
 bbinom,alpha,UnivariateML.Base8bBBinom.held_alpha_criterion,dev/lean/UnivariateML/Family/Base8bBBinom.lean,2137,"All-zero data attain, positive constants do not, and every nonconstant conditional profile has a unique fit. A finite global fit exists exactly when a profile meets the fitted negative-binomial height.","theorem held_alpha_criterion {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) {a : ℝ} (ha : 0 < a) :
     let D : Set (ℕ × ℝ) := {q | (∀ i, x i ≤ q.1) ∧ 0 < q.2}
     let L := fun q : ℕ × ℝ ↦ logLik q.1 x a q.2
@@ -348,7 +348,7 @@ bbinom,alpha,UnivariateML.Base8bBBinom.held_alpha_criterion,dev/lean/UnivariateM
       ((∀ c, ¬ ∀ i, x i = c) ∧ ∃ q ∈ D,
         IsMaxOn (logLik q.1 x a) (Ioi 0) q.2 ∧ NegBinomial.profile x a ≤ L q)) ∧
     ((∀ c, ¬ ∀ i, x i = c) → ∀ m, (∀ i, x i ≤ m) →
-      ∃! b, b ∈ Ioi 0 ∧ IsMaxOn (logLik m x a) (Ioi 0) b)",,,Atlas target criterion.,
+      ∃! b, b ∈ Ioi 0 ∧ IsMaxOn (logLik m x a) (Ioi 0) b)",,,Atlas target criterion.,"{""criterion"":""full""}"
 bbinom,alpha,UnivariateML.Base8bBBinom.held_alpha_nonconstant_maximizing_escape,dev/lean/UnivariateML/Family/Base8bBBinom.lean,2227,A maximizing escaping sequence on nonconstant data has growing size and converges to the fitted negative-binomial height and probability.,"theorem held_alpha_nonconstant_maximizing_escape {n : ℕ} (hn : 0 < n)
     (x : Fin n → ℕ) (hnc : ∀ c, ¬ ∀ i, x i = c) {a : ℝ} (ha : 0 < a)
     {N : ℕ → ℕ} {b : ℕ → ℝ} (hNx : ∀ j i, x i ≤ N j) (hb : ∀ j, 0 < b j)
@@ -357,7 +357,7 @@ bbinom,alpha,UnivariateML.Base8bBBinom.held_alpha_nonconstant_maximizing_escape,
     {H : ℝ} (hH : ∀ m, (∀ i, x i ≤ m) → ∀ c > 0, Real.exp (logLik m x a c) ≤ H)
     (hlim : Tendsto (fun j ↦ Real.exp (logLik (N j) x a (b j))) atTop (𝓝 H)) :
     H = Real.exp (NegBinomial.profile x a) ∧ Tendsto N atTop atTop ∧
-      Tendsto (fun j ↦ b j/(b j+(N j : ℝ))) atTop (𝓝 (NegBinomial.prob x a))",,,Atlas target failure.,
+      Tendsto (fun j ↦ b j/(b j+(N j : ℝ))) atTop (𝓝 (NegBinomial.prob x a))",,,Atlas target failure.,"{""failure"":""partial""}"
 bbinom,alpha,UnivariateML.Base8bBBinom.held_alpha_failure,dev/lean/UnivariateML/Family/Base8bBBinom.lean,2385,"Joins the excluded upper atom, the fitted negative-binomial escape, and the size-zero ridge with its bounded and growing lower-atom escapes.","theorem held_alpha_failure {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ) {a : ℝ} (ha : 0 < a) :
     let D : Set (ℕ × ℝ) := {q | (∀ i, x i ≤ q.1) ∧ 0 < q.2}
     let L := fun q : ℕ × ℝ ↦ Real.exp (logLik q.1 x a q.2)
@@ -376,40 +376,40 @@ bbinom,alpha,UnivariateML.Base8bBBinom.held_alpha_failure,dev/lean/UnivariateML/
       (∀ m > 0, Tendsto (fun b ↦ L (m,b)) atTop (𝓝 1)) ∧
       ∀ {N : ℕ → ℕ} {b : ℕ → ℝ}, (∀ j, 0 < b j) → Tendsto N atTop atTop →
         (Tendsto (fun j ↦ L (N j,b j)) atTop (𝓝 1) ↔
-          Tendsto (fun j ↦ b j/(N j : ℝ)) atTop atTop))",,,Atlas target failure.,
+          Tendsto (fun j ↦ b j/(N j : ℝ)) atTop atTop))",,,Atlas target failure.,"{""failure"":""full""}"
 bbinom,all free,UnivariateML.Base8bBBinom.mixed_binary_maximizers,dev/lean/UnivariateML/Family/Base8bBBinom.lean,2487,Mixed zero-one data attain only at size one and exactly along the empirical-proportion shape ridge.,"theorem mixed_binary_maximizers {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     (hx : ∀ i, x i ≤ 1) (h0 : ∃ i, x i = 0) (h1 : ∃ i, x i = 1) :
     let D : Set (ℕ × ℝ × ℝ) := {q | (∀ i, x i ≤ q.1) ∧ q.2 ∈ domain}
     let L := fun q : ℕ × ℝ × ℝ ↦ logLik q.1 x q.2.1 q.2.2
     let p := proportion 1 x
     (∀ q ∈ D, IsMaxOn L D q ↔ q.1 = 1 ∧ q.2.1/(q.2.1+q.2.2) = p) ∧
-    (∀ a > 0, ∃! b, (1,a,b) ∈ D ∧ IsMaxOn L D (1,a,b))",,,"Atlas target criterion, uniqueness.",
+    (∀ a > 0, ∃! b, (1,a,b) ∈ D ∧ IsMaxOn L D (1,a,b))",,,"Atlas target criterion, uniqueness.","{""criterion"":""partial"",""uniqueness"":""partial""}"
 bbinom,alpha,UnivariateML.Base8bBBinom.mixed_binary_maximizers,dev/lean/UnivariateML/Family/Base8bBBinom.lean,2487,Each positive alpha intersects the mixed binary global maximizing ridge in one beta.,"theorem mixed_binary_maximizers {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     (hx : ∀ i, x i ≤ 1) (h0 : ∃ i, x i = 0) (h1 : ∃ i, x i = 1) :
     let D : Set (ℕ × ℝ × ℝ) := {q | (∀ i, x i ≤ q.1) ∧ q.2 ∈ domain}
     let L := fun q : ℕ × ℝ × ℝ ↦ logLik q.1 x q.2.1 q.2.2
     let p := proportion 1 x
     (∀ q ∈ D, IsMaxOn L D q ↔ q.1 = 1 ∧ q.2.1/(q.2.1+q.2.2) = p) ∧
-    (∀ a > 0, ∃! b, (1,a,b) ∈ D ∧ IsMaxOn L D (1,a,b))",,,Atlas target uniqueness.,
+    (∀ a > 0, ∃! b, (1,a,b) ∈ D ∧ IsMaxOn L D (1,a,b))",,,Atlas target uniqueness.,"{""uniqueness"":""partial""}"
 bbinom,size,UnivariateML.Base8bBBinom.held_size_polynomial_argmax,dev/lean/UnivariateML/Family/Base8bBBinom.lean,2575,The held-size argmax is exactly a universally quantified polynomial comparison after clearing positive denominators.,"theorem held_size_polynomial_argmax {m n : ℕ} (x : Fin n → ℕ) (hx : ∀ i, x i ≤ m) :
     let A := fun a b : ℝ ↦ ∏ i, (∏ j ∈ Finset.range (x i), (a+(j : ℝ))) *
       (∏ j ∈ Finset.range (m-x i), (b+(j : ℝ)))
     let B := fun a b : ℝ ↦ (∏ j ∈ Finset.range m, (a+b+(j : ℝ)))^n
     ∀ q : ℝ × ℝ, q ∈ domain →
       (IsMaxOn (fun q : ℝ × ℝ ↦ logLik m x q.1 q.2) domain q ↔
-        ∀ r : ℝ × ℝ, r ∈ domain → A r.1 r.2 * B q.1 q.2 ≤ A q.1 q.2 * B r.1 r.2)",,,Atlas target uniqueness.,
+        ∀ r : ℝ × ℝ, r ∈ domain → A r.1 r.2 * B q.1 q.2 ≤ A q.1 q.2 * B r.1 r.2)",,,Atlas target uniqueness.,"{""uniqueness"":""partial""}"
 bbinom,size,UnivariateML.Base8bBBinom.fixed_size_point_mass_traces,dev/lean/UnivariateML/Family/Base8bBBinom.lean,2603,The lower and upper atoms are realized countwise at fixed positive beta.,"theorem fixed_size_point_mass_traces {m k : ℕ} (hk : k ≤ m) {b : ℝ} (hb : 0 < b) :
     let P := fun a : ℝ ↦
       (m.choose k : ℝ) * ((∏ j ∈ Finset.range k, (a+(j : ℝ))) *
         (∏ j ∈ Finset.range (m-k), (b+(j : ℝ)))) /
           (∏ j ∈ Finset.range m, (a+b+(j : ℝ)))
     Tendsto P (𝓝[>] 0) (𝓝 (if k = 0 then 1 else 0)) ∧
-      Tendsto P atTop (𝓝 (if k = m then 1 else 0))",,,Atlas target failure.,
+      Tendsto P atTop (𝓝 (if k = m then 1 else 0))",,,Atlas target failure.,"{""failure"":""partial""}"
 bnbinom,alpha,UnivariateML.Base8bBNBinom.held_alpha_binary_diagonal,dev/lean/UnivariateML/Family/Base8bBNBinom.lean,983,Each off-diagonal point on binary data is strictly improved by a diagonal point with the same first count ratio.,"theorem held_alpha_binary_diagonal {n : ℕ} (hn : 0 < n) (x : Fin n → ℕ)
     (hx : ∀ i, x i ≤ 1) {a r b : ℝ} (ha : 0 < a) (hr : 0 < r) (hb : 0 < b)
     (hne : r ≠ b) :
     ∃ t > 0, t*t/(a+t+t) = r*b/(a+r+b) ∧
-      (∏ i, gammaMass (x i) r a b) < ∏ i, gammaMass (x i) t a t",,,Atlas target uniqueness.,
+      (∏ i, gammaMass (x i) r a b) < ∏ i, gammaMass (x i) t a t",,,Atlas target uniqueness.,"{""uniqueness"":""partial""}"
 cmb,nu,UnivariateML.Base8bCMB.held_dispersion_positive_odds_root,dev/lean/UnivariateML/Family/Base8bCMB.lean,1107,The held-dispersion weighted mean equation has exactly one positive odds root for every interior mean.,"theorem held_dispersion_positive_odds_root {N : ℕ} {μ : ℝ}
     (hμ : μ ∈ Ioo (0 : ℝ) N) (ν : ℝ) :
     ∃! r : ℝ, 0 < r ∧
@@ -423,12 +423,12 @@ bbinom,all free,UnivariateML.Base8bBBinom.all_free_mixed_endpoint_failure,dev/le
     let p := proportion 1 y
     let H := binomialLogLik 1 y p
     IsLUB (L '' D) H ∧ (∀ q ∈ D, L q < H) ∧
-      Tendsto (fun t : ℝ ↦ L (u,p*t,(1-p)*t)) (𝓝[>] 0) (𝓝 H)",,,"Atlas target criterion, failure, uniqueness.",
+      Tendsto (fun t : ℝ ↦ L (u,p*t,(1-p)*t)) (𝓝[>] 0) (𝓝 H)",,,"Atlas target criterion, failure, uniqueness.","{""criterion"":""partial"",""failure"":""partial"",""uniqueness"":""partial""}"
 cmb,nu,UnivariateML.Base8bCMB.rational_dispersion_algebraic_odds,dev/lean/UnivariateML/Family/Base8bCMB.lean,1115,"At a rational hold and an interior rational mean, the unique positive polynomial odds root is real algebraic.","theorem rational_dispersion_algebraic_odds {N d : ℕ} (hd : 0 < d) (a : ℤ)
     (μ : ℚ) (hμ : (μ : ℝ) ∈ Ioo (0 : ℝ) (N : ℝ)) :
     let w := fun k : Fin (N+1) ↦ Real.exp (((a : ℝ)/d)*height N k)
     ∃! r : ℝ, 0 < r ∧ IsAlgebraic ℚ r ∧
-      (∑ k : Fin (N+1), ((k.val : ℝ)-(μ : ℝ))*w k*r^k.val) = 0",,,Atlas target uniqueness.,
+      (∑ k : Fin (N+1), ((k.val : ℝ)-(μ : ℝ))*w k*r^k.val) = 0",,,Atlas target uniqueness.,"{""uniqueness"":""partial""}"
 cmb,nu,UnivariateML.Base8bCMB.rational_dispersion_algebraic_profile,dev/lean/UnivariateML/Family/Base8bCMB.lean,1156,At an interior empirical mean the maximizing odds and exact polynomial-form probability height are real algebraic.,"theorem rational_dispersion_algebraic_profile {N n d : ℕ}
     (hn : 0 < n) (hd : 0 < d) (a : ℤ) (x : Fin n → ℕ) (hx : ∀ i, x i ≤ N)
     (h₀ : ∃ i, 0 < x i) (h₁ : ∃ i, x i < N) :
@@ -441,7 +441,7 @@ cmb,nu,UnivariateML.Base8bCMB.rational_dispersion_algebraic_profile,dev/lean/Uni
       let H := ∏ i, (w (y i) * r^(x i)) / (∑ k, w k*r^k.val)
       IsAlgebraic ℚ H ∧
       sizeLikelihood x N (r/(1+r)) ν = H ∧
-      IsMaxOn (fun p ↦ sizeLikelihood x N p ν) (Icc 0 1) (r/(1+r))",,,Atlas target uniqueness.,
+      IsMaxOn (fun p ↦ sizeLikelihood x N p ν) (Icc 0 1) (r/(1+r))",,,Atlas target uniqueness.,"{""uniqueness"":""partial""}"
 cmb,nu,UnivariateML.Base8bCMB.rational_dispersion_capped_argmax,dev/lean/UnivariateML/Family/Base8bCMB.lean,1288,"Every compatible conditional height is algebraic at a rational hold, and the finite exact comparison retains all global co-winners, including the constant strata.","theorem rational_dispersion_capped_argmax {B n d : ℕ}
     (hn : 0 < n) (hd : 0 < d) (a : ℤ) (x : Fin n → ℕ) :
     let S : Set ℕ := {N | N ≤ B ∧ ∀ i, x i ≤ N}
@@ -450,4 +450,4 @@ cmb,nu,UnivariateML.Base8bCMB.rational_dispersion_capped_argmax,dev/lean/Univari
     ∃ H : ℕ → ℝ,
       (∀ N ∈ S, IsAlgebraic ℚ (H N) ∧
         (∃ p ∈ Icc 0 1, L (N,p) = H N) ∧ ∀ p ∈ Icc 0 1, L (N,p) ≤ H N) ∧
-      ∀ q ∈ D, IsMaxOn L D q ↔ L q = H q.1 ∧ ∀ N ∈ S, H N ≤ H q.1",,,Atlas target uniqueness.,
+      ∀ q ∈ D, IsMaxOn L D q ↔ L q = H q.1 ∧ ∀ N ∈ S, H N ≤ H q.1",,,Atlas target uniqueness.,"{""uniqueness"":""partial""}"
