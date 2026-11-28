@@ -83,6 +83,8 @@ inline Rcpp::List common_maximizer_set(const cppunivariate::MaximizerSet& set,
       if (relation->form == cppunivariate::RelationForm::Semicircle)
         out["anchors"] = Rcpp::NumericVector::create(relation->anchors[0], relation->anchors[1]);
       else {
+        if (relation->form == cppunivariate::RelationForm::AdjacentBinomial)
+          out["lower_count"] = relation->anchors[0];
         const auto& level = relation->level;
         if (level.denominator)
           out["level"] = Rcpp::List::create(Rcpp::_["numerator"] = std::to_string(level.numerator),

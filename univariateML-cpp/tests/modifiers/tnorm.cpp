@@ -142,7 +142,7 @@ TEST_CASE("tnorm: escapes to the exponential faces") {
   CHECK(s.limit_rate == doctest::Approx(1 / m).epsilon(1e-12));
   // The exact criterion v >= (mean - a)^2: scale the spread about the mean
   // to either side of equality. Interior fits approach the face from below
-  // (sd -> inf, mean -> -inf); within 1e-8 n the face wins the tie.
+  // (sd -> inf, mean -> -inf), even when the height difference is small.
   for (double ratio : {0.97, 0.99, 0.9999, 1.0 + 1e-9, 1.001}) {
     std::vector<double> t;
     const double target = std::sqrt(ratio) * m;
@@ -155,6 +155,12 @@ TEST_CASE("tnorm: escapes to the exponential faces") {
       CHECK(f.logLik - f.limit_logLik > 1e-8 * 200);
       CHECK(f.logLik - f.limit_logLik < 0.03);
       check_regular_max(t, f);
+    } else if (ratio < 1) {
+      REQUIRE(f.status == S::Ok);
+      CHECK(cppunivariate::outcome(f).certified);
+      CHECK(f.mean < -50);
+      CHECK(f.logLik > f.limit_logLik);
+      CHECK(f.logLik - f.limit_logLik < 1e-8 * 200);
     } else {
       CHECK(f.status == S::ExponentialBoundary);
     }
@@ -199,8 +205,14 @@ TEST_CASE("tnorm: escapes to the truncated exponential and uniform faces") {
       CHECK(f.logLik > f.limit_logLik + 1e-8 * 400);
       CHECK(f.mean > hi);
       check_regular_max(w, f);
+    } else if (shrink == 1) {
+      // The grid variance is strictly below that of its fitted linear tilt.
+      REQUIRE(f.status == S::Ok);
+      CHECK(cppunivariate::outcome(f).certified);
+      CHECK(f.mean > hi);
+      CHECK(f.logLik > f.limit_logLik);
+      CHECK(f.logLik - f.limit_logLik < 1e-8 * 400);
     } else {
-      // The quantile grid itself is a near tie, decided for the face.
       CHECK(f.status == S::TruncatedExponentialBoundary);
     }
   }

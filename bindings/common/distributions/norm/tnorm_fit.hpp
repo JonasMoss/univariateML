@@ -52,13 +52,13 @@ inline FitResult fit_tnorm(cppunivariate::span x, Held mean_arg = {}, Held sd_ar
     case cppunivariate::TnormStatus::UnboundedLocation:
       return nomle("Truncated normal likelihood is unbounded with held `sd`: all observations equal a finite endpoint and the parent mean escapes beyond that endpoint.");
     case cppunivariate::TnormStatus::ExponentialBoundary:
-      return boundary(fail("The truncated normal fit on (a, Inf) escapes to, or is numerically tied with, a + Y, Y exponential with rate " + decay + ", as sd -> Inf; no finite MLE is returned (variance >= (mean(x) - a)^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(x - a)` to fit the limit."),res.stop_detail,outcome_payload(o),{"mu","rate"},"unavailable:translated-exponential");
+      return boundary(fail("The truncated normal fit on (a, Inf) selects the boundary a + Y, Y exponential with rate " + decay + ", as sd -> Inf; no finite MLE is returned. Use `mlexp(x - a)` to fit the limit."),res.stop_detail,outcome_payload(o),{"mu","rate"},"unavailable:translated-exponential");
     case cppunivariate::TnormStatus::ReflectedExponentialBoundary:
-      return boundary(fail("The truncated normal fit on (-Inf, b) escapes to, or is numerically tied with, b - Y, Y exponential with rate " + rate + ", as sd -> Inf; no finite MLE is returned (variance >= (b - mean(x))^2, or a likelihood tie within 1e-8 per observation). Use `mlexp(b - x)` to fit the limit."),res.stop_detail,outcome_payload(o),{"mu","rate"},"unavailable:reflected-exponential");
+      return boundary(fail("The truncated normal fit on (-Inf, b) selects the boundary b - Y, Y exponential with rate " + rate + ", as sd -> Inf; no finite MLE is returned. Use `mlexp(b - x)` to fit the limit."),res.stop_detail,outcome_payload(o),{"mu","rate"},"unavailable:reflected-exponential");
     case cppunivariate::TnormStatus::TruncatedExponentialBoundary:
-      return boundary(fail("The truncated normal fit on (a, b) escapes to, or is numerically tied with, the truncated exponential distribution on (a, b) with density proportional to exp(" + rate + " * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned (an escape or a likelihood tie within 1e-8 per observation). The package has no model for this limit."),res.stop_detail,outcome_payload(o),{"a","b","rate"},"unavailable:truncated-exponential");
+      return boundary(fail("The truncated normal fit on (a, b) selects the truncated exponential boundary distribution on (a, b) with density proportional to exp(" + rate + " * x) (uniform at rate 0) as sd -> Inf; no finite MLE is returned. The package has no model for this limit."),res.stop_detail,outcome_payload(o),{"a","b","rate"},"unavailable:truncated-exponential");
     case cppunivariate::TnormStatus::UniformBoundary:
-      return boundary(fail("With `mean` held fixed, the truncated normal fit escapes to, or is numerically tied with, the uniform distribution on (a, b) as sd -> Inf; no finite MLE is returned (mean squared distance is at least the uniform's, or a likelihood tie within 1e-8 per observation)."),res.stop_detail,outcome_payload(o),{"a","b"},"unif");
+      return boundary(fail("With `mean` held fixed, the truncated normal fit selects the uniform boundary distribution on (a, b) as sd -> Inf; no finite MLE is returned."),res.stop_detail,outcome_payload(o),{"a","b"},"unif");
     case cppunivariate::TnormStatus::InvalidFixed:
       return fail("`mean` must be finite and `sd` finite and positive.");
     case cppunivariate::TnormStatus::IterationFailure:

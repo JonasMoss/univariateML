@@ -172,10 +172,8 @@ inline FitResult fit_modifier(const std::string& family,cppunivariate::span x,
     }
     if(family=="geom")return truncate_counts(ix,a,b,cppunivariate::GeomTruncationTraits{},h("prob"),"geom",tol,maxit);
     if(family=="binom") {
-      auto out=fit_tbinom_controlled(ix,h("prob"),{true,std::max(-1.0,std::ceil(a)-1)}, {true,std::floor(b)},h("size"),tol,maxit);
-      out.estimates.erase(std::remove_if(out.estimates.begin(),out.estimates.end(),[](const auto& p){return p.first=="a"||p.first=="b";}),out.estimates.end());
-      std::reverse(out.estimates.begin(),out.estimates.end());
-      out.fixed.erase(std::remove_if(out.fixed.begin(),out.fixed.end(),[](const auto& p){return p=="a"||p=="b";}),out.fixed.end());
+      auto out=fit_tbinom_controlled(ix,h("prob"),{true,std::max(-1.0,std::ceil(a)-1)},
+          {true,std::floor(b)},h("size"),tol,maxit,false,false);
       attach_tbinom_window_set(out, std::max(0., std::ceil(a)), std::floor(b),
                                h("size"), h("prob"));
       return out;

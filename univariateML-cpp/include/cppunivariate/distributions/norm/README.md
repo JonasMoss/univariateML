@@ -245,6 +245,10 @@ tilt in unit-window coordinates changes the normalized density ratio by at
 most $e^\delta$. This bounds the variance by $e^\delta$ times its evaluated
 value. For a positive tilt bracket separated from zero, the variance is
 also at most the reciprocal square of the lower tilt, from the truncated
-exponential variance formula. The moment comparison uses a 128-epsilon
-binary64 margin. A close comparison with an evaluated finite fit retains
-both witnesses.
+exponential variance formula. The moment comparison includes a 128-epsilon
+binary64 margin and a sample-summation allowance. The inward score determines which side of the face contains the maximum.
+Near a face, two-component arithmetic evaluates the sample moments and
+integrated score series in rescaled window coordinates. A lower information
+bound encloses the root and checks its distance from zero quadratic tilt. With scale held, the model mean increases from the lower endpoint to the
+upper endpoint as the linear tilt varies, so an interior sample mean gives
+a finite fit.

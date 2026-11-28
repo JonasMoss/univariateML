@@ -811,3 +811,21 @@ TEST_CASE("tnorm: opposing score signs distinguish strict faces from rounded equ
   CHECK(cppunivariate::outcome(tilt).certified);
   CHECK(cppunivariate::outcome(uniform).certified);
 }
+
+TEST_CASE("dyadic estimated normal window has a finite fit arbitrarily close to its uniform face") {
+  constexpr double d = 349525. / 1048576.;
+  const std::vector<double> x{-1,-d,-d,-d,d,d,d,1};
+  for (const auto& cuts : std::vector<std::pair<double,double>>{{NAN,1},{-1,NAN},{NAN,NAN}}) {
+    for (double mean : {double(NAN),0.}) {
+      const auto r = cppunivariate::tnorm_mle(mltest::as_span(x),cuts.first,cuts.second,1e-12,100,mean);
+      REQUIRE(r.status == cppunivariate::TnormStatus::Ok);
+      CHECK(cppunivariate::outcome(r).certified);
+      CHECK(std::abs(r.mean) <= 1e-12*r.sd);
+      CHECK(r.sd == doctest::Approx(528.7914072495850).epsilon(1e-12));
+    }
+    const auto held = cppunivariate::tnorm_mle(mltest::as_span(x),cuts.first,cuts.second,1e-10,100,NAN,2);
+    REQUIRE(held.status == cppunivariate::TnormStatus::Ok);
+    CHECK(cppunivariate::outcome(held).certified);
+    CHECK(held.mean == 0);
+  }
+}

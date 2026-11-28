@@ -1151,3 +1151,29 @@ TEST_CASE("nbinom: inflation limits carry the certificate for the eligible hold 
   REQUIRE(held.stop_detail.limit_coef.size() == 2);
   CHECK(held.stop_detail.limit_coef[1] == .5);
 }
+
+#include "cppunivariate/distributions/geom/truncation.hpp"
+#include "cppunivariate/distributions/nbinom/truncation.hpp"
+TEST_CASE("estimated negative-binomial window reports the weighted zero-probability limit") {
+  const std::vector<int> x{1,2,2};
+  for (const auto& cuts : std::vector<std::pair<double,double>>{{NAN,2},{1,NAN},{NAN,NAN}}) {
+    const auto r = cppunivariate::count_window_mle(as_ispan(x),cuts.first,cuts.second,
+        cppunivariate::NbinomTruncationTraits{2});
+    REQUIRE(r.status == cppunivariate::TruncationStatus::UpperLimit);
+    CHECK(cppunivariate::outcome(r).kind == cppunivariate::OutcomeKind::Limit);
+    CHECK(cppunivariate::outcome(r).certified);
+    CHECK(r.stop_detail.limit_model == cppunivariate::StopModel::NbinomWindowBoundary);
+    CHECK((r.stop_detail.limit_coef == std::vector<double>{2,1,2}));
+    CHECK(r.stop_detail.limit_loglik == doctest::Approx(std::log(.4)+2*std::log(.6)));
+  }
+}
+
+TEST_CASE("weighted negative-binomial boundary likelihood survives the cell budget") {
+  constexpr int upper = 200001;
+  const std::vector<int> x{upper,upper};
+  const auto r = cppunivariate::count_window_mle(as_ispan(x),0,upper,
+      cppunivariate::NbinomTruncationTraits{2},NAN,1e-10,1);
+  REQUIRE(cppunivariate::outcome(r).kind == cppunivariate::OutcomeKind::Limit);
+  CHECK(cppunivariate::outcome(r).certified);
+  CHECK(r.stop_detail.limit_loglik == doctest::Approx(2*std::log(2./(upper+2))).epsilon(1e-13));
+}

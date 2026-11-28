@@ -4,6 +4,7 @@
 #include "../../core/discrete_stop.hpp"
 #include "../../core/truncation.hpp"
 #include "../../special/special.hpp"
+#include <map>
 namespace cppunivariate {
 struct GeomTruncationTraits {
   double size=1;
@@ -25,6 +26,8 @@ struct GeomTruncationTraits {
   double upper_member() const {return NAN;}
   bool positive_valid() const {return true;}
   double boundary_mean(double lo,double hi) const {return lo+(hi-lo)/2;}
+  double boundary_log_ratio(double) const {return 0;}
+  double boundary_loglik(ispan,double,double) const {return NAN;}
   double positive_member() const {return 1.;}
   bool positive_special() const {return false;}
   TruncationResult positive_fit(ispan,double,double,int) const {return {NAN,NAN,0,TruncationStatus::NotImplemented};}
@@ -51,7 +54,7 @@ inline FitOutcome outcome(const TruncationResult& r) {
 namespace cppunivariate {
 // Retain the generic solver's status while distinguishing analytic boundary
 // tests from hitting its finite natural-coordinate bracket.
-enum class CountWindowModel { None, Uniform };
+enum class CountWindowModel { None, Uniform, NbinomBoundary };
 struct CountWindowResult {
   double parameter, logLik;
   int iterations;
@@ -84,21 +87,63 @@ template<class Traits> inline CountWindowResult count_window_mle(ispan x,double 
     r.stop_detail=discrete_point(lower?lo:hi);
     r.decision=FitOutcome::limit();
   } else if(base.status==TruncationStatus::UpperLimit && traits.eta_upper()<0 && std::isfinite(hi)) {
-    const double mean=traits.boundary_mean(lo,hi);
-    const auto mass=truncated<Traits>::mass(traits,0,lo,hi,maxit);
-    if((std::isfinite(mean) && offset>=mean-lo) ||
-       (!std::isfinite(mean) && mass.ok && mass.offset<=(lo-mass.mode)+offset)) {
-      r.status=base.status;
-      r.decision=FitOutcome::nonexistence(OutcomeReason::Unattained);
+    const double n = double(x.size());
+    if (traits.size == 1) {
+      if (offset < (hi-lo)/2) return r;
+      r.status = base.status;
+      r.model = CountWindowModel::Uniform;
+      r.stop_detail.limit_coef = {lo,hi};
+      r.stop_detail.limit_loglik = -n*std::log(hi-lo+1);
+      r.stop_detail.loglik_lower = r.stop_detail.loglik_upper = r.stop_detail.limit_loglik;
+      r.decision = FitOutcome::limit();
+      return r;
     }
-    if(r.decision.kind==OutcomeKind::Nonexistence && traits.size==1) {
-      r.model=CountWindowModel::Uniform;
-      r.stop_detail.limit_coef={lo,hi};
-      r.stop_detail.limit_loglik=-double(x.size())*std::log(hi-lo+1);
-      r.stop_detail.loglik_lower=r.stop_detail.limit_loglik;
-      r.stop_detail.loglik_upper=r.stop_detail.limit_loglik;
-      r.decision=FitOutcome::limit();
+    auto mass = typename truncated<Traits>::Mass{NAN,NAN,0,false};
+    if (hi <= 0x1p53) mass = truncated<Traits>::mass(traits,0,lo,hi,maxit);
+    const double mean = traits.boundary_mean(lo,hi);
+    const double xmin = *std::min_element(x.begin(),x.end());
+    double observed = 0;
+    for (int v : x) observed += (v-xmin)/n;
+    const auto centered = std::isfinite(mean) ? observed+(xmin-mean) :
+        observed+(xmin-mass.mode)-mass.offset;
+    const double scale = std::isfinite(mean) ? std::abs(mean)+xmin :
+        std::abs(xmin-mass.mode)+std::abs(mass.offset);
+    const double error = (std::isfinite(mean) ? 0 : mass.error) +
+        (8+2*n)*std::numeric_limits<double>::epsilon()*(observed+scale);
+    const bool strict = upper || centered > error;
+    if (!(strict || centered >= 0)) return r;
+    r.status = base.status;
+    r.model = CountWindowModel::NbinomBoundary;
+    // Walk from the anchor through the observed cells in order. The
+    // histogram bounds this cost by the window width.
+    double ll = NAN;
+    if (mass.ok) {
+      std::map<int,std::size_t> counts;
+      for (int v : x) ++counts[v];
+      const bool increasing = traits.size > 1;
+      double k = mass.mode, log_weight = 0;
+      std::int64_t cells = enumeration_budget(maxit);
+      ll = -n*mass.logz;
+      while (!counts.empty()) {
+        const auto entry = increasing ? std::prev(counts.end()) : counts.begin();
+        const double v = entry->first;
+        for (; k != v && cells > 0; --cells) {
+          const double j = increasing ? --k : k++;
+          const double step = traits.boundary_log_ratio(j);
+          log_weight += increasing ? -step : step;
+        }
+        if (k != v) { ll = NAN; break; }
+        ll += double(entry->second)*log_weight;
+        counts.erase(entry);
+      }
     }
+    if (!std::isfinite(ll)) ll = traits.boundary_loglik(x,lo,hi);
+    r.stop_detail = limit_detail({traits.size,lo,hi},ll,StopModel::NbinomWindowBoundary);
+    r.stop_detail.limit_coef = {traits.size,lo,hi};
+    r.stop_detail.limit_model = StopModel::NbinomWindowBoundary;
+    r.stop_detail.loglik_lower = r.stop_detail.loglik_upper = ll;
+    r.decision = FitOutcome::limit(strict);
+
   }
   return r;
 }

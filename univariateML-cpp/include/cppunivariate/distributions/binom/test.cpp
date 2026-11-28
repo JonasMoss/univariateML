@@ -868,3 +868,19 @@ TEST_CASE("lower-only binomial small-rate adjacent steps certify a unique size")
   CHECK(cppunivariate::outcome(window).certified);
   CHECK(window.size == 6);
 }
+
+TEST_CASE("adjacent-count binomial window reports all mean-matched integer sizes") {
+  const std::vector<int> x{1,1,2};
+  for (const auto& cuts : std::vector<std::pair<double,double>>{{NAN,2},{0,NAN},{NAN,NAN}}) {
+    const auto r = cppunivariate::tbinom_design_mle(as_ispan(x),cuts.first,cuts.second,NAN);
+    REQUIRE(r.status == cppunivariate::TbinomStatus::Ok);
+    CHECK(cppunivariate::outcome(r).certified);
+    CHECK_FALSE(cppunivariate::outcome(r).unique);
+    const auto set = cppunivariate::tbinom_adjacent_maximizers(r,false);
+    REQUIRE(set.size == 1);
+    for (double size : {2.,3.,17.,1000.}) CHECK((set.contains({{size,1/size}})));
+    CHECK_FALSE(set.contains({{1.,1.}}));
+    CHECK_FALSE(set.contains({{2.5,.4}}));
+    CHECK_FALSE(set.contains({{3.,.5}}));
+  }
+}

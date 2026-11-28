@@ -22,6 +22,7 @@ inline std::string maxset_form(cppunivariate::RelationForm form) {
     case cppunivariate::RelationForm::Product: return "product";
     case cppunivariate::RelationForm::PartOverSum: return "part_over_sum";
     case cppunivariate::RelationForm::CountRatio: return "count_ratio";
+    case cppunivariate::RelationForm::AdjacentBinomial: return "adjacent_binomial";
     case cppunivariate::RelationForm::Semicircle: return "semicircle";
   }
   return "";
@@ -100,6 +101,9 @@ inline std::string maxset_message(const cppunivariate::MaximizerSet& set, const 
               (relation->complement_dependent ? "(1 - " + y + ")" : y);
         else if (relation->form == cppunivariate::RelationForm::PartOverSum)
           equation = x + "/(" + x + " + " + y + ")";
+        else if (relation->form == cppunivariate::RelationForm::AdjacentBinomial)
+          equation = "(" + x + " - " + maxset_number(relation->anchors[0], true) +
+              ") * " + y + "/(1 - " + y + ")";
         else equation = x + "/" + y;
         equation += relation->level.rounded ? " = approximately " : " = ";
         equation += maxset_level(relation->level);
@@ -192,6 +196,8 @@ inline std::string maxset_json(const cppunivariate::MaximizerSet& set, const Nam
         json += ",\"anchors\":[" + maxset_json_number(relation->anchors[0]) + "," +
                 maxset_json_number(relation->anchors[1]) + "]";
       else {
+        if (relation->form == cppunivariate::RelationForm::AdjacentBinomial)
+          json += ",\"lower_count\":" + maxset_json_number(relation->anchors[0]);
         const auto& level = relation->level;
         json += ",\"level\":";
         if (level.denominator)

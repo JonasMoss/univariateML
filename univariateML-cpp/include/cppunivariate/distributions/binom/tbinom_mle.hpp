@@ -1,5 +1,6 @@
 #pragma once
 #include "../../core/outcome.hpp"
+#include "../../core/maximizer_set.hpp"
 #include "tbinom_face_certificate.hpp"
 #include "../../core/discrete_stop.hpp"
 #include "../pois/tpois_profile.hpp"
@@ -226,7 +227,28 @@ struct TbinomDesignResult {
   bool certified = true;
   bool unique = true;
   bool singleton_proved=false;
+  Level adjacent_odds{};
 };
+
+inline MaximizerSet tbinom_adjacent_maximizers(const TbinomDesignResult& fit, bool include_bounds) {
+  MaximizerSet set;
+  set.dimension = include_bounds ? 4 : 2;
+  if (!fit.adjacent_odds.denominator) return set;
+  Relation relation;
+  relation.form = RelationForm::AdjacentBinomial;
+  relation.level = fit.adjacent_odds;
+  relation.anchors[0] = std::max(0., std::floor(fit.a) + 1);
+  relation.driver = include_bounds ? 3 : 0;
+  relation.dependent = include_bounds ? 0 : 1;
+  relation.axes[relation.driver] = interval(fit.size, INFINITY, true, false, true);
+  relation.axes[relation.dependent] = interval(0, 1, false, false);
+  if (include_bounds) {
+    relation.axes[1] = fixed(fit.a);
+    relation.axes[2] = fixed(fit.b);
+  }
+  set.add_relation(relation);
+  return set;
+}
 namespace tbinom_detail {
 inline TbinomDesignResult tbinom_design_proposal(ispan x,double a,double b,double size,
     double prob=std::numeric_limits<double>::quiet_NaN(),double tol=1e-10,int maxit=512,bool legacy_default=false) {
@@ -312,6 +334,26 @@ inline TbinomDesignResult tbinom_design_proposal(ispan x,double a,double b,doubl
     if(status==TbinomStatus::TpoisLimit) out.stop_detail=discrete_face(StopModel::Tpois,{r.stop_detail.limit_coef[0],a,b},r.stop_detail.limit_loglik);
     return out;
   }
+  if (upper - lo == 1) {
+    // The conditional odds equal (N-lo)*p/((lo+1)*(1-p)).
+    std::uint64_t high = 0;
+    for (int v : x) high += v == xmax;
+    const auto low = static_cast<std::uint64_t>(x.size()) - high;
+    const auto factor = static_cast<std::uint64_t>(xmax);
+    const auto divisor = std::gcd(low, factor);
+    if (high > std::numeric_limits<std::uint64_t>::max() / (factor / divisor))
+      return {NAN,a,b,size,NAN,0,TbinomStatus::NumericalFailure};
+    const Level odds{0, high * (factor / divisor), low / divisor};
+    const double p = double(odds.numerator) / (double(odds.numerator) + double(odds.denominator));
+    const double log_odds = std::log(double(high) / double(low));
+    const double ll = -double(low) * special::softplus(log_odds) -
+        double(high) * special::softplus(-log_odds);
+    if (p >= 1 || tol < 4 * std::numeric_limits<double>::epsilon()) return {NAN,a,b,size,NAN,0,TbinomStatus::NumericalFailure};
+    TbinomDesignResult result{p,a,b,double(xmax),ll,0,TbinomStatus::Ok};
+    result.unique = false;
+    result.adjacent_odds = odds;
+    return result;
+  }
   std::map<double,TbinomDesignResult> evaluated;
   const auto evaluate=[&](double k) {
     const auto found=evaluated.find(k);
@@ -323,9 +365,9 @@ inline TbinomDesignResult tbinom_design_proposal(ispan x,double a,double b,doubl
   };
   auto best=evaluate(xmax);
   if(best.status!=TbinomStatus::Ok)return best;
-  // A two-point conditioning window is a saturated Bernoulli family for
-  // every feasible size; equality with its Poisson face is attained here.
-  if(upper-lo==1 || xmax-lo==1)return best;
+  // With a wider window only the smallest feasible size avoids assigning
+  // mass above the two observed counts.
+  if(xmax-lo==1)return best;
   const auto tp=tbinom_detail::profile(x,lo,upper,-1,tol,maxit);
   if(tp.status!=truncated_detail::Status::Ok) {
     best.certified=false;return best;
@@ -714,7 +756,7 @@ inline TbinomDesignResult design_mle_impl(ispan x,double a,double b,double size,
      std::isfinite(best.logLik) && best.size>=0 && best.prob>=0 && best.prob<=1) {
     best.status=TbinomStatus::Ok;best.certified=false;
   }
-  if(best.status==TbinomStatus::Ok && best.certified && tol<1e-10 && std::isnan(prob) && best.prob>0 && best.prob<1 &&
+  if(best.status==TbinomStatus::Ok && !best.adjacent_odds.denominator && best.certified && tol<1e-10 && std::isnan(prob) && best.prob>0 && best.prob<1 &&
       std::min(best.size,std::floor(best.b))>std::max(0.,std::floor(best.a)+1)) {
     const auto refined=tbinom_detail::profile(x,std::max(0.,std::floor(best.a)+1),std::floor(best.b),best.size,tol,maxit);
     if(refined.status!=truncated_detail::Status::Ok) {

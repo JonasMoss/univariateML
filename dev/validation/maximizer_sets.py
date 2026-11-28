@@ -114,7 +114,7 @@ def normalize(wire, names, holds=None):
                 if not a < b:
                     raise ValueError('invalid semicircle anchors')
                 level, complement = (a, b), ()
-            elif form in ('product', 'part_over_sum', 'count_ratio'):
+            elif form in ('product', 'part_over_sum', 'count_ratio', 'adjacent_binomial'):
                 v = piece['level']
                 if isinstance(v, dict):
                     if not all(type(v[k]) is str and v[k].isascii() and v[k].isdigit()
@@ -140,6 +140,15 @@ def normalize(wire, names, holds=None):
                 if (not isinstance(v, dict) or level > 1 or level.denominator > COUNT_MAX or
                         not driver[4] or not dependent[4] or driver[0] < 1 or dependent[0] < 1):
                     raise ValueError('invalid count ratio domain')
+            elif form == 'adjacent_binomial':
+                lower_count = number(piece['lower_count'])
+                if (not isinstance(v, dict) or not math.isfinite(lower_count) or
+                        lower_count < 0 or math.floor(lower_count) != lower_count or
+                        not driver[4] or driver[0] <= lower_count or dependent[4] or
+                        dependent[0] < 0 or dependent[1] > 1 or
+                        includes(dependent, 0) or includes(dependent, 1)):
+                    raise ValueError('invalid adjacent-binomial domain')
+                level = (int(lower_count), level)
             else:
                 if driver[4] or dependent[4]:
                     raise ValueError('real relation uses a lattice')
@@ -152,7 +161,7 @@ def normalize(wire, names, holds=None):
             if form != 'product' and complement:
                 raise ValueError('unexpected complement bits')
             rounded = piece.get('level_rounded', False)
-            if type(rounded) is not bool:
+            if type(rounded) is not bool or (form == 'adjacent_binomial' and rounded):
                 raise ValueError('invalid level rounding flag')
             if form == 'product' and j < i:
                 i, j, complement = j, i, complement[::-1]
@@ -287,6 +296,17 @@ def relation_intervals(signature, driver, dependent):
         lo = max((x0 + n - 1) // n, (y0 + d - 1) // d)
         hi = min(x1 // n, y1 // d)
         return [(lo, hi, True, True)] if lo <= hi else []
+    if form == 'adjacent_binomial':
+        lower_count, odds = level
+
+        def invert(prob):
+            return lower_count + odds * (1 / Fraction(prob) - 1) if prob else math.inf
+
+        lo, hi = invert(dependent[1]), invert(dependent[0])
+        first = math.ceil(lo) if dependent[3] else math.floor(lo) + 1
+        last = hi if hi == math.inf else math.floor(hi) if dependent[2] else math.ceil(hi) - 1
+        bound = intersect((first, last, True, last != math.inf), driver[:4])
+        return [] if bound is None else [bound]
     if form == 'semicircle':
         with localcontext() as ctx:
             # Cover the exponent range of subtracting two exact binary64
@@ -341,6 +361,9 @@ def relation_point(signature, driver):
             driver = Decimal(driver)
             return float(driver), float(((driver - a) * (b - driver)).sqrt())
     x = Fraction(driver)
+    if form == 'adjacent_binomial':
+        lower_count, odds = level
+        return int(x), float(odds / (x - lower_count + odds))
     if form == 'product':
         y = level / (1 - x if bits[0] else x)
         return float(x), float(1 - y if bits[1] else y)
@@ -355,6 +378,9 @@ def relation_contains_exact(signature, x, y):
         return a < x < b and y > 0 and y*y == (x - a) * (b - x)
     if form == 'count_ratio':
         return x >= 1 and y >= 1 and x.denominator == y.denominator == 1 and x == level * y
+    if form == 'adjacent_binomial':
+        lower_count, odds = level
+        return x.denominator == 1 and x > lower_count and 0 < y < 1 and (x-lower_count)*y == odds*(1-y)
     if form == 'part_over_sum':
         return x > 0 and y > 0 and x == level * (x + y)
     x, y = 1 - x if bits[0] else x, 1 - y if bits[1] else y
@@ -382,7 +408,7 @@ def absorb_isolated(boxes, coverage, domains):
             break
         else:
             unmatched.append((axes, order))
-    return unmatched, {key: merge(parts, lattice=key[0][0] == 'count_ratio')
+    return unmatched, {key: merge(parts, lattice=key[0][0] in ('count_ratio', 'adjacent_binomial'))
                        for key, parts in coverage.items()}
 
 
@@ -394,7 +420,7 @@ def relation_coverage(relations):
         if any(a[0] != a[1] for _, a in fixed_axes):
             raise ValueError('relation has an extra free coordinate')
         groups.setdefault((signature, fixed_axes), []).extend(relation_intervals(signature, axes[i], axes[j]))
-    return {key: merge(parts, lattice=key[0][0] == 'count_ratio') for key, parts in groups.items() if parts}
+    return {key: merge(parts, lattice=key[0][0] in ('count_ratio', 'adjacent_binomial')) for key, parts in groups.items() if parts}
 
 
 def member(value, decoded, ulps=8):
@@ -414,6 +440,9 @@ def member(value, decoded, ulps=8):
             continue
         if form == 'semicircle':
             lhs, rhs = y, math.sqrt(x - level[0]) * math.sqrt(level[1] - x)
+        elif form == 'adjacent_binomial':
+            _, rhs = relation_point((form, i, j, level, complement, False), x)
+            lhs = y
         elif form == 'product':
             lhs = (1 - x if complement[0] else x) * (1 - y if complement[1] else y)
             rhs = float(level)

@@ -193,3 +193,19 @@ test_that("estimated truncation-window collapse survives held parent coefficient
     expect_match(conditionMessage(e),"window collapses")
   }
 })
+
+test_that("the dyadic estimated window has an attained near-uniform normal fit", {
+  d <- 349525 / 1048576
+  x <- c(-1, rep(-d, 3), rep(d, 3), 1)
+  for (cuts in list(c(NA, 1), c(-1, NA), c(NA, NA))) {
+    for (held in list(list(), list(mean = 0))) {
+      fit <- do.call(mlnorm, c(list(x = x, truncate = cuts, tol = 1e-12), held))
+      expect_true(attr(fit, "certified"))
+      expect_equal(fit[["mean"]], 0)
+      expect_equal(fit[["sd"]], 528.7914072495850, tolerance = 1e-12)
+    }
+    fit <- mlnorm(x, sd = 2, truncate = cuts)
+    expect_true(attr(fit, "certified"))
+    expect_equal(fit[["mean"]], 0)
+  }
+})

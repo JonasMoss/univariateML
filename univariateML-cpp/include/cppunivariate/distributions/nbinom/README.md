@@ -505,3 +505,8 @@ The identity mass(k;r,p) = p*beta_density(p;r,k+1)/(r+k) retains the beta mean d
 For larger counts whose unit shift rounds away, the mass instead uses a gamma-binomial split with two nonnegative deviances. A scaled product expansion retains p*(r+k)-r without forming an overflowing sum. The log normalizer uses log(r+k) through a ratio and a sum; all Stirling arguments are at least 16.
 
 The positive-conditioned law at prob = 1 is the point mass at one for every size, so estimating size there is not unique. Zero-modified fits inherit this lack of identification when positive observations occur; without any positive observations, every free parent coordinate is unidentified.
+
+For held positive size $r$ and a finite retained count window, the
+excluded $p=0$ law has mass proportional to $(r)_k/k!$. The limit
+condition identifies this law by its size and integer cuts and carries
+its conditional log likelihood. At size one it is the discrete uniform.

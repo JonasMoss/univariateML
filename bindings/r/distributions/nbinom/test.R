@@ -280,3 +280,14 @@ test_that("a held-size negative-binomial window publishes its feasible probabili
     expect_equal(as.numeric(logLik(fit)), 0)
   }
 })
+
+test_that("estimated negative-binomial cuts retain the weighted limit law", {
+  for (cuts in list(c(NA, 2), c(1, NA), c(NA, NA))) {
+    e <- tryCatch(mlnbinom(c(1, 2, 2), size = 2, truncate = cuts), error = identity)
+    expect_s3_class(e, "univariateML_limit")
+    expect_true(e$certified)
+    expect_identical(e$model, "unavailable:negative-binomial-window-boundary")
+    expect_equal(e$estimates, c(size = 2, min = 1, max = 2))
+    expect_equal(e$limit_loglik, log(.4) + 2 * log(.6), tolerance = 1e-14)
+  }
+})

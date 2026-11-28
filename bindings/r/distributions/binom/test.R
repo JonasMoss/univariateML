@@ -366,3 +366,24 @@ test_that("ordinary binomial held probability reports exact adjacent winners", {
   check_single(c(0, 6), .5 + 2^-53, 7, -7.758150378783921470825106807034254)
   check_single(c(0, 1, 6), 1 / 3, 9, -9.171546806660522314667972576844090)
 })
+
+test_that("an adjacent-count binomial window retains the full integer-indexed set", {
+  for (cuts in list(c(NA, 2), c(1, NA), c(NA, NA))) {
+    fit <- mlbinom(c(1, 1, 2), size = NULL, truncate = cuts)
+    expect_false(attr(fit, "unique"))
+    expect_true(attr(fit, "certified"))
+    set <- attr(fit, "maximizer_set")
+    expect_identical(set$coordinates, c("size", "prob"))
+    relation <- set$pieces[[1]]
+    expect_identical(relation$form, "adjacent_binomial")
+    expect_true(relation$axes[[1]]$integer)
+    expect_equal(relation$axes[[1]]$lower, 2)
+    expect_equal(relation$axes[[1]]$upper, Inf)
+    expect_equal(relation$lower_count, 1)
+    expect_identical(relation$level, list(numerator = "1", denominator = "1"))
+    for (size in c(2, 3, 17)) {
+      held <- mlbinom(c(1, 1, 2), size = size, prob = 1 / size, truncate = cuts)
+      expect_equal(as.numeric(logLik(held)), as.numeric(logLik(fit)), tolerance = 1e-14)
+    }
+  }
+})
