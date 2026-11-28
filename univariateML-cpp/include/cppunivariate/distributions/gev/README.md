@@ -73,7 +73,7 @@ r:
 log_density: Piecewise((-log(sigma)-(x-mu)/sigma-exp(-(x-mu)/sigma), Eq(xi,0)), (-log(sigma)-(1+1/xi)*log(1+xi*(x-mu)/sigma)-(1+xi*(x-mu)/sigma)**(-1/xi), True))
 limits:
 - {firmness: proved, name: held-minimum half tie, fixed: [mu], status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\sigma \to 0$ with $\mu$ held at the sample minimum and $\xi=1$', detect: 'Shape and scale are free and exactly half the observations equal held mu, except two distinct values with equal counts: that case attains the supremum at xi=-1.', detect_firmness: proved, detect_proof: ["dev/research/evaluations/2026-11-25-gev-math-report.md#location-held"]}
-- {firmness: proved, name: scale collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: '$\xi \to 1$ and $\sigma \to 0$, with the lower end of the support at the sample minimum', detect: 'All coefficients are free and exactly half of the observations equal the minimum, except two distinct values with equal counts: that case attains the supremum at xi=-1.', detect_firmness: proved, proof: ["univariateML-cpp/include/cppunivariate/distributions/gev/README.md#details"], detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/gev/README.md#details"]}
+- {firmness: proved, name: scale collapse, status: NoMLE, message: "minimum multiplicity permits scale collapse", when: 'Set shape xi=1 and the lower support endpoint at the sample minimum minus a positive gap. Along the nuisance-optimal collapse path the gap and scale decrease to zero and the lower endpoint approaches the sample minimum strictly from below.', detect: 'All coefficients are free and exactly half of the observations equal the minimum, except two distinct values with equal counts: that case attains the supremum at xi=-1.', detect_firmness: proved, proof: ["univariateML-cpp/include/cppunivariate/distributions/gev/README.md#details"], detect_proof: ["univariateML-cpp/include/cppunivariate/distributions/gev/README.md#details"]}
 examples: |
   set.seed(1)
   x <- rml(200, mlgev())
@@ -108,7 +108,8 @@ existence:
     fits keep the shape in $-1 \le \xi \le 1$. Within that range the only
     known obstacle is a tie at the sample minimum. If more than half of the
     observations equal the minimum, no MLE exists. If exactly half do, the
-    supremum is approached as $\xi \to 1$ and the scale shrinks. It is
+    supremum is approached at $\xi=1$ as the scale and the positive gap
+    below the sample minimum shrink to zero. It is
     attained only for two distinct values with equal counts, at $\xi=-1$.
   reason: >-
     Near an end point of the support the density behaves like a power of the

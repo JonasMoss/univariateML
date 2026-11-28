@@ -61,8 +61,8 @@ limits:
   name: unbounded free-threshold likelihood
   status: Unbounded
   message: unbounded
-  when: 'A free-endpoint spike or an allowed scale collapse increases the likelihood without bound.'
-  detect: 'The held mask permits a lower power below one, simultaneous free scale and upper shape, negative collapse exponent, or a constant sample with free upper shape.'
+  when: 'With a free threshold, scale collapse at the sample minimum or concentration as the shape increases can make the likelihood unbounded.'
+  detect: 'With threshold and scale free, the exponent $\alpha(n-k)-k$ is negative for the held or a feasible free shape, where $k$ is the minimum multiplicity. With scale held and shape free, all observations equal the sample minimum.'
   firmness: proved
   detect_firmness: proved
   proof: ["dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-shapes-and-free-scale", "dev/research/evaluations/2026-11-25-thresh-math-report.md#structural-spikes", "dev/research/evaluations/2026-11-25-thresh-math-report.md#fixed-scale-and-free-upper-tail-shape"]
@@ -126,8 +126,11 @@ existence:
     is exactly the Lomax existence criterion on the excesses. The exponential
     limit may supply the supremum, and joint uniqueness is not established.
     Holding either shape or scale as well gives a unique finite estimate of
-    the remaining coefficient. A finite free-threshold fit places the threshold at the sample minimum. Holding all coefficients
-    leaves likelihood evaluation.
+    the remaining coefficient. With positive scale and shape held, the lower
+    endpoint power is one. The density decreases strictly with excess, so
+    the unique threshold is the sample minimum, where the inside-support
+    density is finite. The likelihood tends to zero as the threshold tends
+    to minus infinity. Holding all coefficients leaves likelihood evaluation.
   reason: >-
     If the sample minimum $m$ occurs $k$ times, set $\mu=m-\varepsilon$
     and $\sigma=\varepsilon$. The likelihood has order

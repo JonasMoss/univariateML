@@ -78,7 +78,7 @@ relations: {}
 fit:
   method: profile-search
   certified: 'yes'
-  note: 'Supporting-plane nuisance bounds certify held-epsilon fits; adaptive epsilon subdivision bounds the profiled likelihood, including both limit faces. Conditional on computed comparisons with the stated floating-point margin; unresolved comparisons and work exhaustion stop.'
+  note: 'Supporting-plane nuisance bounds certify held-epsilon fits; adaptive epsilon subdivision bounds the profiled likelihood, including both limit faces. Certification is conditional on computed comparisons with the stated floating-point margin. After the coefficients pass their accuracy checks, an unresolved maximizer-set comparison returns an uncertified estimate with unknown cardinality. An unresolved free-shape profile comparison or exhaustion of its work budget stops.'
 areas:
 - robust modelling
 classification: specialist

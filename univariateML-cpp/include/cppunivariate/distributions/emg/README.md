@@ -40,7 +40,7 @@ limits:
   - model: norm
     firmness: proved
     when: 'The rate satisfies $\lambda\to\infty$ with $\mu$ and $\sigma>0$ fixed.'
-    detect: 'Pointwise domination, or exhaustive exclusion of finite shape intervals and a signed normal-tail proof; otherwise an unexcluded normal face produces an unresolved stop.'
+    detect: 'Pointwise domination, or exhaustive exclusion of finite shape intervals and a signed normal-tail proof; if the normal face remains unexcluded, a finite mode that meets the public coefficient enclosure and candidate comparison checks can be returned uncertified. Otherwise the comparison stops unresolved.'
     status: NormalLimit
     detect_firmness: proved
     proof: ["univariateML-cpp/include/cppunivariate/distributions/emg/README.md#details"]
