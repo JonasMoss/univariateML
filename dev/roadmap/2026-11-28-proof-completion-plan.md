@@ -39,7 +39,7 @@ missing Lean step.
 | 1 | hyper, nhyper, gpd, triang, pareto2, pareto3, lomax, invpareto, binom, dgamma, skellam | 31 | TASK-489 (first pass merged, about half complete); TASK-491 (second pass merged; done: 5 claims stay written-only) |
 | 2 | bbinom, cmb, bnbinom, cmp, pig, nbinom | 46 | TASK-490 (first pass merged, 19 complete); TASK-494 (second pass merged; done: 12 claims stay written-only) |
 | 3 | positive-shape families: genbeta, gb2, betapr, fpareto, pgw, expweibull, fatigue, frechet, trgamma, invtrgamma, invburr, nsbeta, gev | 53 | TASK-493 (broad pass merged, 4 complete); TASK-495 (gev, frechet, expweibull: all 7 proved); TASK-496 (genbeta, nsbeta: 5 of 15 closed); TASK-497 (gb2, fpareto, trgamma, invtrgamma: building blocks only, no claim closed); TASK-499 (betapr, invburr: all targets, invburr via certificate hypotheses); TASK-500 (pgw, fatigue: all 6 proved) |
-| 4 | tlambda; huber, bhatt, emg (deep passes only) | 30 | TASK-501 (tlambda: 6 of 13 closed); TASK-502 (huber, bhatt, emg, running) |
+| 4 | tlambda; huber, bhatt, emg (deep passes only) | 30 | TASK-501 (tlambda: 6 of 13 closed); TASK-502 (huber, bhatt, emg: all 17 targets addressed) |
 | 5 | std, lst, st, sstd, sged, snorm, sn, ged | — | done: both passes already ran (lean-locscale, lean-skewls, lean-twopiece, lean-student, then lean-twopiece2, lean-student2, lean-ged); their written-only claims stand |
 | 6 | almost-everywhere uniqueness, all families | 115 | TASK-504 (classification, shared theorem, pilot; running) |
 
