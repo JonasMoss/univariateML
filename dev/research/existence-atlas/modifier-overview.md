@@ -21,13 +21,13 @@ with a reviewed partial grade and no full grade.
 
 | Modifier | Criterion Lean / partial Lean | Failure Lean / partial Lean | Uniqueness Lean / partial Lean |
 | --- | ---: | ---: | ---: |
-| truncate:known | 5 / 6 | 1 / 8 | 5 / 6 |
-| truncate:lower-estimated | 4 / 0 | 0 / 4 | 4 / 0 |
-| truncate:upper-estimated | 4 / 0 | 0 / 4 | 4 / 0 |
-| truncate:both-estimated | 4 / 0 | 2 / 2 | 4 / 0 |
-| zero:truncated | 2 / 8 | 3 / 5 | 3 / 1 |
-| zero:modified | 0 / 34 | 0 / 30 | 0 / 4 |
-| zero:inflated | 0 / 38 | 2 / 4 | 0 / 2 |
+| truncate:known | 5 / 10 | 1 / 10 | 5 / 10 |
+| truncate:lower-estimated | 6 / 10 | 0 / 4 | 6 / 10 |
+| truncate:upper-estimated | 6 / 10 | 0 / 4 | 6 / 10 |
+| truncate:both-estimated | 6 / 10 | 2 / 2 | 6 / 10 |
+| zero:truncated | 2 / 12 | 3 / 7 | 5 / 1 |
+| zero:modified | 6 / 32 | 0 / 30 | 5 / 3 |
+| zero:inflated | 3 / 36 | 3 / 5 | 1 / 5 |
 
 | Family | Held | Modifier | Criterion | Failure | Uniqueness |
 | --- | --- | --- | --- | --- | --- |
@@ -48,8 +48,9 @@ with a reviewed partial grade and no full grade.
 | binom | size | truncate:upper-estimated | lean | written · partial Lean | lean |
 | binom | size | zero:truncated | written · partial Lean | written · partial Lean | written · partial Lean |
 | binom | size | zero:modified | written · partial Lean | written | written · partial Lean |
+| binom | p0+size | zero:modified | lean | written | written · partial Lean |
 | binom | size | zero:inflated | written · partial Lean | lean | written · partial Lean |
-| binom | pi+size | zero:inflated | written · partial Lean | lean | written |
+| binom | pi+size | zero:inflated | written · partial Lean | lean | written · partial Lean |
 | bnbinom | all free | zero:modified | written · partial Lean | written · partial Lean | unproved |
 | bnbinom | all free | zero:inflated | written · partial Lean | written | unproved |
 | bnbinom | alpha | zero:modified | written · partial Lean | written · partial Lean | unproved |
@@ -67,23 +68,61 @@ with a reviewed partial grade and no full grade.
 | bnbinom | size | zero:modified | written · partial Lean | written · partial Lean | unproved |
 | bnbinom | size | zero:inflated | written · partial Lean | written | unproved |
 | cmb | all free | truncate:known | written · partial Lean | written | written · partial Lean |
-| cmb | all free | zero:truncated | written · partial Lean | written | written |
+| cmb | all free | truncate:lower-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | all free | truncate:upper-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | all free | truncate:both-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | all free | zero:truncated | written · partial Lean | written | lean |
+| cmb | nu | truncate:known | written · partial Lean | written | written · partial Lean |
+| cmb | nu | truncate:lower-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | nu | truncate:upper-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | nu | truncate:both-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | nu | zero:truncated | written · partial Lean | written | unproved |
+| cmb | nu+prob | truncate:known | written · partial Lean | written | written · partial Lean |
+| cmb | nu+prob | truncate:lower-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | nu+prob | truncate:upper-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | nu+prob | truncate:both-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | nu+prob | zero:truncated | written · partial Lean | written | unproved |
 | cmb | nu+prob | zero:inflated | written · partial Lean | written | unproved |
 | cmb | nu+size | truncate:known | written · partial Lean | written · partial Lean | written · partial Lean |
+| cmb | nu+size | truncate:lower-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | nu+size | truncate:upper-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | nu+size | truncate:both-estimated | written · partial Lean | written | written · partial Lean |
 | cmb | nu+size | zero:truncated | written · partial Lean | written · partial Lean | unproved |
-| cmb | prob+size | truncate:known | written · partial Lean | written | written · partial Lean |
-| cmb | prob+size | zero:truncated | written · partial Lean | written | unproved |
+| cmb | prob | truncate:known | written · partial Lean | written | written · partial Lean |
+| cmb | prob | truncate:lower-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | prob | truncate:upper-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | prob | truncate:both-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | prob | zero:truncated | written · partial Lean | written | unproved |
+| cmb | prob+size | truncate:known | written · partial Lean | written · partial Lean | written · partial Lean |
+| cmb | prob+size | truncate:lower-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | prob+size | truncate:upper-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | prob+size | truncate:both-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | prob+size | zero:truncated | written · partial Lean | written · partial Lean | unproved |
 | cmb | size | truncate:known | written · partial Lean | written · partial Lean | written · partial Lean |
+| cmb | size | truncate:lower-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | size | truncate:upper-estimated | written · partial Lean | written | written · partial Lean |
+| cmb | size | truncate:both-estimated | written · partial Lean | written | written · partial Lean |
 | cmb | size | zero:truncated | written · partial Lean | written · partial Lean | unproved |
+| cmp | all free | truncate:known | written · partial Lean | written · partial Lean | written · partial Lean |
+| cmp | all free | truncate:lower-estimated | written · partial Lean | written | written · partial Lean |
+| cmp | all free | truncate:upper-estimated | written · partial Lean | written | written · partial Lean |
+| cmp | all free | truncate:both-estimated | written · partial Lean | written | written · partial Lean |
+| cmp | all free | zero:truncated | written · partial Lean | written · partial Lean | lean |
 | cmp | all free | zero:modified | written · partial Lean | written · partial Lean | unproved |
 | cmp | all free | zero:inflated | written · partial Lean | written | unproved |
 | cmp | lambda | truncate:known | written · partial Lean | written · partial Lean | written · partial Lean |
+| cmp | lambda | truncate:lower-estimated | written · partial Lean | written | written · partial Lean |
+| cmp | lambda | truncate:upper-estimated | written · partial Lean | written | written · partial Lean |
+| cmp | lambda | truncate:both-estimated | written · partial Lean | written | written · partial Lean |
 | cmp | lambda | zero:truncated | written · partial Lean | written · partial Lean | unproved |
 | cmp | lambda | zero:modified | written · partial Lean | written · partial Lean | unproved |
 | cmp | lambda | zero:inflated | written · partial Lean | written | unproved |
 | cmp | lambda+nu | zero:modified | written · partial Lean | written · partial Lean | unproved |
 | cmp | lambda+nu | zero:inflated | written · partial Lean | written | unproved |
 | cmp | nu | truncate:known | written · partial Lean | written · partial Lean | written · partial Lean |
+| cmp | nu | truncate:lower-estimated | written · partial Lean | written | written · partial Lean |
+| cmp | nu | truncate:upper-estimated | written · partial Lean | written | written · partial Lean |
+| cmp | nu | truncate:both-estimated | written · partial Lean | written | written · partial Lean |
 | cmp | nu | zero:truncated | written · partial Lean | written · partial Lean | unproved |
 | cmp | nu | zero:modified | written · partial Lean | written · partial Lean | unproved |
 | cmp | nu | zero:inflated | written · partial Lean | written | unproved |
@@ -107,16 +146,15 @@ with a reviewed partial grade and no full grade.
 | geom | all free | truncate:lower-estimated | lean | written · partial Lean | lean |
 | geom | all free | truncate:upper-estimated | lean | written · partial Lean | lean |
 | geom | all free | truncate:both-estimated | lean | written · partial Lean | lean |
-| geom | all free | zero:modified | written · partial Lean | written | written · partial Lean |
-| geom | all free | zero:inflated | written · partial Lean | written · partial Lean | written · partial Lean |
+| geom | pi | zero:inflated | written · partial Lean | written · partial Lean | written · partial Lean |
 | nbinom | size | truncate:known | lean | written · partial Lean | lean |
 | nbinom | size | truncate:lower-estimated | lean | written · partial Lean | lean |
 | nbinom | size | truncate:upper-estimated | lean | written · partial Lean | lean |
 | nbinom | size | truncate:both-estimated | lean | written · partial Lean | lean |
 | nbinom | size | zero:truncated | written · partial Lean | lean | lean |
-| nbinom | size | zero:modified | written · partial Lean | written | written · partial Lean |
-| nbinom | size | zero:inflated | written · partial Lean | written · partial Lean | written |
-| nbinom | pi+size | zero:inflated | written · partial Lean | written · partial Lean | written |
+| nbinom | p0+size | zero:modified | written · partial Lean | written | written · partial Lean |
+| nbinom | size | zero:inflated | written · partial Lean | written · partial Lean | written · partial Lean |
+| nbinom | pi+size | zero:inflated | written · partial Lean | written · partial Lean | written · partial Lean |
 | pig | all free | zero:modified | written · partial Lean | written · partial Lean | unproved |
 | pig | all free | zero:inflated | written · partial Lean | written | unproved |
 | pig | mean | zero:modified | written · partial Lean | written · partial Lean | unproved |
@@ -128,6 +166,5 @@ with a reviewed partial grade and no full grade.
 | pois | all free | truncate:known | lean | written · partial Lean | lean |
 | pois | all free | truncate:lower-estimated | lean | written · partial Lean | lean |
 | pois | all free | truncate:upper-estimated | lean | written · partial Lean | lean |
-| pois | all free | zero:modified | written · partial Lean | written | written · partial Lean |
-| pois | all free | zero:inflated | written · partial Lean | written · partial Lean | written |
-| pois | pi | zero:inflated | written · partial Lean | written | written |
+| pois | all free | zero:inflated | lean | written · partial Lean | written |
+| pois | pi | zero:inflated | lean | written · partial Lean | written |
