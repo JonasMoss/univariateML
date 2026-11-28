@@ -15,7 +15,7 @@ coverage, from `atlas.csv` after the review atlas-coverage7 (TASK-498):
 | Failure | 448 | 72 |
 | Uniqueness | 380 | 140 |
 
-Of the 160 uniqueness claims, 118 are almost-everywhere statements ("unique
+Of the 140 uniqueness claims, 115 are almost-everywhere statements ("unique
 for almost every attaining sample with at least k levels"). Their Lean
 versions so far are conditional implications between two putative winners and
 were graded partial. They are one separate item (last below), because they need
@@ -41,7 +41,7 @@ missing Lean step.
 | 3 | positive-shape families: genbeta, gb2, betapr, fpareto, pgw, expweibull, fatigue, frechet, trgamma, invtrgamma, invburr, nsbeta, gev | 53 | TASK-493 (broad pass merged, 4 complete); TASK-495 (gev, frechet, expweibull: all 7 proved); TASK-496 (genbeta, nsbeta, running); TASK-497 (gb2, fpareto, trgamma, invtrgamma, running); TASK-499 (betapr, invburr, running) |
 | 4 | location-scale and tails: tlambda, huber, bhatt, ged, snorm, sn, std, lst, st, emg | about 45 | — |
 | 5 | skew families sstd, sged (criterion and failure) | about 52 | — |
-| 6 | almost-everywhere uniqueness, all families | 118 | — |
+| 6 | almost-everywhere uniqueness, all families | 115 | — |
 
 Step 3 showed that broad passes stall on these families: the missing piece is
 almost always escape exhaustion (upper envelopes or compact superlevel sets in the
