@@ -348,3 +348,6 @@ public import UnivariateML.Family.PGWFatigue
 public import UnivariateML.Family.PGWHeldShape
 public import UnivariateML.Family.PGWJointProfile
 public import UnivariateML.Family.PGWProfile
+public import UnivariateML.Family.BPHeld
+public import UnivariateML.Family.BPInverseBurr
+public import UnivariateML.Family.BPJoint
