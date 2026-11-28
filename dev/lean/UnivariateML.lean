@@ -276,3 +276,9 @@ public import UnivariateML.Generic.TruncEstimated
 public import UnivariateML.Family.Trunc2Known
 public import UnivariateML.Family.Trunc4Count
 public import UnivariateML.Family.Trunc4Zeta
+public import UnivariateML.Family.Zero6
+public import UnivariateML.Family.Zero6Faces
+public import UnivariateML.Family.Zero6Families
+public import UnivariateML.Family.Zero6Inflated
+public import UnivariateML.Family.Zero6Scores
+public import UnivariateML.Family.Zero6ZeroAtoms
