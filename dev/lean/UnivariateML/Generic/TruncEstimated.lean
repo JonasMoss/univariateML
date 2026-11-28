@@ -1,6 +1,9 @@
 module
 
-public import Mathlib
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Algebra.Order.Group.Indicator
+public import Mathlib.Topology.Algebra.InfiniteSum.ENNReal
+public import Mathlib.Tactic.Linarith
 
 /-! Profiling ordinary count windows under a common parent mass function.
 A window-dependent extension of the parent law requires a separate comparison. -/
