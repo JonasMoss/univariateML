@@ -39,7 +39,7 @@ enum class StopModel { None, Weibull, Pareto, InvWeibull, Power, Exp, InvExp,
   ReflectedHalfGed,
   Trgamma, InvTrgamma, ShiftedTrgamma, ShiftedInvTrgamma
   , Gamma, InvGamma, ShiftedExp, ShiftedWeibull, ShiftedInvWeibull,
-  ShiftedPareto, ShiftedPower, ShiftedLnorm, Dblpareto, ShiftedDblpareto
+  ShiftedPareto, ShiftedPower, ShiftedLnorm, Dblpareto, NbinomWindowBoundary, ShiftedDblpareto
 };
 struct FitCandidate {
   std::vector<double> coef;
@@ -134,6 +134,8 @@ inline bool valid_stop_coefficients(StopModel model,const std::vector<double>& v
     case StopModel::ReflectedHt:
     case StopModel::HalfGed:
     case StopModel::ReflectedHalfGed:return v.size()==3 && v[1]>0 && v[2]>0;
+    case StopModel::NbinomWindowBoundary:return v.size()==3 && v[0]>0 &&
+      v[1]>=0 && v[1]<v[2] && std::floor(v[1])==v[1] && std::floor(v[2])==v[2];
     case StopModel::TruncatedExp:return v.size()==3 && v[0]<v[1];
     case StopModel::Trgamma:
     case StopModel::InvTrgamma:return v.size()==3 && v[0]>0 && v[1]>0 && v[2]>0;

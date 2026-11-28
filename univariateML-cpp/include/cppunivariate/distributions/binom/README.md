@@ -486,3 +486,9 @@ size-profile derivative is strictly positive. Its score is the difference in
 expectations of the strictly convex function
 $k\mapsto\sum_{j<k}(n-j)^{-1}$. This provides a Poisson-face certificate without
 covering an integer prefix up to a size cutoff.
+
+On a window retaining exactly two adjacent counts $L,L+1$, with both
+counts observed and both parent coefficients free, every integer
+$n\ge L+1$ attains at $p=A/(n-L+A)$, where $A=(L+1)$ times the
+observed frequency ratio of $L+1$ to $L$. The fit reports this
+integer-indexed maximizer set.

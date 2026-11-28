@@ -6,7 +6,7 @@
 namespace umvl_binding {
 inline void attach_tbinom_window_set(FitResult& out, double lo, double hi, Held size, Held prob) {
   if (out.outcome.kind != cppunivariate::OutcomeKind::Estimate ||
-      out.outcome.unique || !out.outcome.uniqueness_known || out.estimates.empty()) return;
+      out.outcome.unique || !out.outcome.uniqueness_known || out.estimates.empty() || out.maximizer_set) return;
   const bool include_design = out.estimates.size() == 4;
   if (include_design && keep_infinite_window_comparison(out)) return;
 
@@ -32,7 +32,7 @@ inline void attach_tbinom_window_set(FitResult& out, double lo, double hi, Held 
     attach_count_set(out, out.outcome, set, "tbinom", {size, prob});
 }
 
-inline FitResult fit_tbinom_controlled(cppunivariate::ispan x, Held prob_arg, Held a_arg, Held b_arg, Held size_arg, double tol,int maxit,bool legacy_default=false) {
+inline FitResult fit_tbinom_controlled(cppunivariate::ispan x, Held prob_arg, Held a_arg, Held b_arg, Held size_arg, double tol,int maxit,bool legacy_default=false, bool include_bounds=true) {
   std::vector<std::string> warnings;
   const auto fail = [&](const std::string& format, const auto&... arguments) { return failure(binding_message(format, arguments...), warnings); };
   const Held prob = prob_arg;
@@ -97,7 +97,23 @@ inline FitResult fit_tbinom_controlled(cppunivariate::ispan x, Held prob_arg, He
   if(a.supplied)fixed.push_back("a");
   if(b.supplied)fixed.push_back("b");
   if(prob.supplied)fixed.push_back("prob");
-  return [&]() { FitResult out; out.warnings = warnings; out.estimates = {{"prob",r.prob},{"a",lower},{"b",upper},{"size",r.size}};  out.logLik = r.logLik; out.iterations = r.iterations; out.has_iterations = true; out.fixed = fixed; out.has_fixed = true; return out; }();
+  FitResult out;
+  out.warnings = warnings;
+  out.estimates = {{"prob",r.prob},{"a",lower},{"b",upper},{"size",r.size}};
+  out.logLik = r.logLik;
+  out.iterations = r.iterations;
+  out.has_iterations = true;
+  out.fixed = fixed;
+  out.has_fixed = true;
+  if (!include_bounds) {
+    out.estimates = {{"size",r.size},{"prob",r.prob}};
+    out.fixed.erase(std::remove_if(out.fixed.begin(),out.fixed.end(),
+        [](const auto& p){return p=="a"||p=="b";}),out.fixed.end());
+  }
+  if (r.adjacent_odds.denominator)
+    attach_maximizer_set(out, cppunivariate::tbinom_adjacent_maximizers(r, include_bounds),
+                         include_bounds ? "tbinom" : "binom", [&](const auto&) { return r.logLik; });
+  return out;
 
   }());
 }

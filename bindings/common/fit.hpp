@@ -171,6 +171,8 @@ inline void attach_maximizer_set(FitResult& out, const cppunivariate::MaximizerS
       std::array<double, 2> drivers{};
       if (relation->form == cppunivariate::RelationForm::CountRatio)
         drivers = {range.lower, range.upper};
+      else if (relation->form == cppunivariate::RelationForm::AdjacentBinomial)
+        drivers = {range.lower, range.lower + 1};
       else if (std::isfinite(range.lower) && std::isfinite(range.upper)) {
         drivers = {.5 * range.lower + .5 * range.upper,
                    .75 * range.lower + .25 * range.upper};
@@ -292,6 +294,7 @@ inline std::string stop_model(cppunivariate::StopModel model) {
     case cppunivariate::StopModel::Ht:return "ht";
     case cppunivariate::StopModel::TranslatedExp:return "unavailable:translated-exponential";
     case cppunivariate::StopModel::ReflectedExp:return "unavailable:reflected-exponential";
+    case cppunivariate::StopModel::NbinomWindowBoundary:return "unavailable:negative-binomial-window-boundary";
     case cppunivariate::StopModel::TruncatedExp:return "unavailable:truncated-exponential";
     case cppunivariate::StopModel::ReflectedHnorm:return "unavailable:reflected-half-normal";
     case cppunivariate::StopModel::ReflectedHt:return "unavailable:reflected-half-t";
@@ -326,6 +329,7 @@ inline std::vector<std::string> stop_names(const std::string& model,const std::v
   if(model=="pois")return {"lambda"};
   if(model=="binom")return {"size","prob"};
   if(model=="nbinom")return {"size","prob"};
+  if(model=="unavailable:negative-binomial-window-boundary")return {"size","min","max"};
   if(model=="geom")return {"prob"};
   if(model=="tpois")return {"lambda","a","b"};
   if(model=="ztpois")return {"lambda"};

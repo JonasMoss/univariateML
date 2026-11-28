@@ -41,7 +41,7 @@ struct Box {
   std::array<CountOrder, 4> order{};
   std::uint8_t order_size = 0;
 };
-enum class RelationForm { Product, PartOverSum, CountRatio, Semicircle };
+enum class RelationForm { Product, PartOverSum, CountRatio, Semicircle, AdjacentBinomial };
 struct Level {
   double value = 0;
   std::uint64_t numerator = 0, denominator = 0;
@@ -205,6 +205,8 @@ inline double relation_solve(const Relation& r, double x) {
                   static_cast<double>(r.level.numerator));
     return x * ((1 - level) / level);
   }
+  if (r.form == RelationForm::AdjacentBinomial)
+    return level / ((x - r.anchors[0]) + level);
   if (r.form == RelationForm::CountRatio) {
     if (x < 0 || x > maxset_count || !std::isfinite(x) || std::trunc(x) != x ||
         !r.level.numerator || !r.level.denominator) return std::numeric_limits<double>::quiet_NaN();
@@ -275,7 +277,7 @@ inline MaxsetStatus normalize(Relation& r, std::size_t dimension) {
     r.level = {};
     return relation_intersects(r) ? MaxsetStatus::Ok : MaxsetStatus::Empty;
   }
-  r.anchors = {};
+  if (r.form != RelationForm::AdjacentBinomial) r.anchors = {};
   if (r.level.denominator) {
     if (r.level.rounded) return MaxsetStatus::Invalid;
     const auto divisor = std::gcd(r.level.numerator, r.level.denominator);
@@ -304,6 +306,16 @@ inline MaxsetStatus normalize(Relation& r, std::size_t dimension) {
         r.axes[r.driver] = interval(static_cast<double>(lo * n), static_cast<double>(hi * n), true, true, true);
         r.axes[r.dependent] = interval(static_cast<double>(lo * d), static_cast<double>(hi * d), true, true, true);
       }
+      break;
+    case RelationForm::AdjacentBinomial:
+      if (!x.integer || y.integer || !std::isfinite(r.anchors[0]) ||
+          r.anchors[0] < 0 || std::floor(r.anchors[0]) != r.anchors[0] ||
+          x.range.lower <= r.anchors[0] || y.range.lower < 0 || y.range.upper > 1 ||
+          (y.range.lower == 0 && y.range.lower_closed) ||
+          (y.range.upper == 1 && y.range.upper_closed) ||
+          !r.level.numerator || !r.level.denominator)
+        return MaxsetStatus::Invalid;
+      r.anchors[1] = 0;
       break;
     case RelationForm::PartOverSum:
       if (x.integer || y.integer || x.range.lower < 0 || y.range.lower < 0 ||
@@ -600,6 +612,11 @@ struct MaximizerSet {
             auto inverse = selected;
             std::swap(inverse.level.numerator, inverse.level.denominator);
             x = other = relation_solve(inverse, y);
+          } else if (selected.form == RelationForm::AdjacentBinomial) {
+            const double size = std::round(selected.anchors[0] +
+                relation_level(selected) * ((1 - y) / y));
+            if (relation_solve(selected, size) != y) continue;
+            x = other = size;
           } else if (selected.form == RelationForm::PartOverSum) {
             const double level = relation_level(selected);
             x = other = y * (level / (1 - level));
@@ -616,6 +633,7 @@ struct MaximizerSet {
               point.estimate.values[i] = selected.axes[i].range.lower;
             point.estimate.values[selected.driver] = driver;
             if (selected.form != RelationForm::CountRatio &&
+                selected.form != RelationForm::AdjacentBinomial &&
                 !(selected.form == RelationForm::Semicircle && x == other)) {
               Enclosure enclosure{point.estimate, point.estimate};
               enclosure.lower.values[selected.driver] = std::nextafter(driver, -maxset_inf);
