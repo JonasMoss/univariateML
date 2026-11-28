@@ -256,3 +256,8 @@ observation and a held endpoint, stop numerically rather than inventing
 multiplicities or endpoint factors. Free power witnesses keep the raw
 sample maximum; reciprocal Pareto witnesses keep the raw minimum, including
 when the corresponding reciprocal endpoint overflows.
+
+For large gamma shape, density and cumulative probability use the
+centered argument $b\log(x/s)-\log(a)$ while the original binary64 ratio
+operands are still available. Quantile inversion retains the centered
+displacement until the physical scale is applied.

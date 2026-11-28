@@ -1,0 +1,4 @@
+lst mask=1 certified=1
+lst mask=2 certified=1
+std mask=1 certified=1
+std mask=2 certified=0

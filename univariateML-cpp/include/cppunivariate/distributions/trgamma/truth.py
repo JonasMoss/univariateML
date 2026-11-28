@@ -15,3 +15,5 @@ extreme_parameter_sets = [{'shape1': 1e-08, 'shape2': 100000000.0}]
 
 # Coupled power-limit overflow with an overflow-safe product coordinate.
 extreme_parameter_sets.append({'shape1': 1e-309, 'shape2': 1e+308, 'scale': 1.0})
+
+extreme_parameter_sets.append({'shape1': 1e30, 'shape2': 2.0, 'scale': 1.0})
