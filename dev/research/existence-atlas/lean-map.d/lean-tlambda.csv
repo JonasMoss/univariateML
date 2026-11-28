@@ -3,12 +3,12 @@ tlambda,lambda+sigma,UnivariateML.TLHeldScale.nonpositive_quantile_surjective,de
 tlambda,lambda+sigma,UnivariateML.TLHeldScale.weight_continuousOn,dev/lean/UnivariateML/Family/TLHeldScale.lean,92,At fixed shape the probability weight is continuous on the closed unit interval.,(l : ℝ) : ContinuousOn (weight l) (Icc 0 1),,,,
 tlambda,lambda+sigma,UnivariateML.TLHeldScale.compact_location_superlevel,dev/lean/UnivariateML/Family/TLHeldScale.lean,255,Every positive superlevel is compact with shape and scale held.,"{n : ℕ} (i : Fin n) (x : Fin n → ℝ) {l s c : ℝ}
     (hs : 0 < s) (hc : 0 < c) :
-    IsCompact (graph x l s ∩ {q | c ≤ graphLikelihood l s q})","criterion, failure",,,
+    IsCompact (graph x l s ∩ {q | c ≤ graphLikelihood l s q})","criterion, failure",,,"{""criterion"":""partial"",""failure"":""partial""}"
 tlambda,lambda+sigma,UnivariateML.TLHeldScale.held_shape_scale_criterion,dev/lean/UnivariateML/Family/TLHeldScale.lean,298,"At nonpositive shape attainment is automatic, and at positive shape it is equivalent to exact support compatibility.","{n : ℕ} (x : Fin n → ℝ) {l s : ℝ}
     (hs : 0 < s) (i j : Fin n) (hi : ∀ k, x i ≤ x k) (hj : ∀ k, x k ≤ x j) :
     (∃ q ∈ graph x l s, 0 < graphLikelihood l s q ∧
       IsMaxOn (graphLikelihood l s) (graph x l s) q) ↔
-    if l ≤ 0 then True else if l < 1 then x j-x i < 2*(s/l) else x j-x i ≤ 2*(s/l)",criterion,,,
+    if l ≤ 0 then True else if l < 1 then x j-x i < 2*(s/l) else x j-x i ≤ 2*(s/l)",criterion,,,"{""criterion"":""full""}"
 tlambda,lambda+sigma,UnivariateML.TLHeldScale.held_shape_scale_failure,dev/lean/UnivariateML/Family/TLHeldScale.lean,313,"Infinite location has zero envelope, and absence of a positive-likelihood fit is exactly support incompatibility.","{n : ℕ} (x : Fin n → ℝ) {l s : ℝ}
     (hs : 0 < s) (i j : Fin n) (hi : ∀ k, x i ≤ x k) (hj : ∀ k, x k ≤ x j) :
     (∀ c > 0, ∃ M : ℝ, ∀ q ∈ graph x l s, M < |q.1| → graphLikelihood l s q < c) ∧
@@ -16,33 +16,33 @@ tlambda,lambda+sigma,UnivariateML.TLHeldScale.held_shape_scale_failure,dev/lean/
       IsMaxOn (graphLikelihood l s) (graph x l s) q) ↔
       (¬ ∃ q ∈ graph x l s, 0 < graphLikelihood l s q)) ∧
     ((¬ ∃ q ∈ graph x l s, 0 < graphLikelihood l s q) ↔
-      0 < l ∧ (if l < 1 then 2*(s/l) ≤ x j-x i else 2*(s/l) < x j-x i))",failure,,,
+      0 < l ∧ (if l < 1 then 2*(s/l) ≤ x j-x i else 2*(s/l) < x j-x i))",failure,,,"{""path:2"":""full"",""limit:2"":""partial"",""failure"":""full""}"
 tlambda,sigma,UnivariateML.TLHeldScale.fitted_scale_superlevel,dev/lean/UnivariateML/Family/TLHeldScale.lean,538,"The fitted held-scale graph has compact positive superlevels, including when shape and support contacts move jointly.","{n : ℕ} (x : Fin n → ℝ) (i : Fin n) {s c : ℝ}
     (hs : 0 < s) (hc : 0 < c) :
-    IsCompact (fittedGraph x s ∩ {q | c ≤ fittedLikelihood s q})","criterion, failure",,,
+    IsCompact (fittedGraph x s ∩ {q | c ≤ fittedLikelihood s q})","criterion, failure",,,"{""criterion"":""partial"",""failure"":""partial""}"
 tlambda,sigma,UnivariateML.TLHeldScale.fitted_scale_criterion,dev/lean/UnivariateML/Family/TLHeldScale.lean,560,Every finite nonempty sample has a positive maximum at an eligible finite shape and location.,"{n : ℕ} (x : Fin n → ℝ) (hn : 0 < n) {s : ℝ}
     (hs : 0 < s) :
     ∃ q ∈ fittedGraph x s, 0 < fittedLikelihood s q ∧
-      IsMaxOn (fittedLikelihood s) (fittedGraph x s) q",criterion,,,
+      IsMaxOn (fittedLikelihood s) (fittedGraph x s) q",criterion,,,"{""criterion"":""full""}"
 tlambda,sigma,UnivariateML.TLHeldScale.fitted_scale_failure,dev/lean/UnivariateML/Family/TLHeldScale.lean,584,"Infinite location has zero envelope, and both shape endpoints and closed support contacts belong to the finite graph.","{n : ℕ} (x : Fin n → ℝ) (hn : 0 < n) {s : ℝ}
     (hs : 0 < s) :
     (∀ c > 0, ∃ M : ℝ, ∀ q ∈ fittedGraph x s, M < |q.2.1| → fittedLikelihood s q < c) ∧
     (∀ m : ℝ, ∃ p : Fin n → ℝ, (-1,m,p) ∈ fittedGraph x s ∧
       0 < fittedLikelihood s (-1,m,p)) ∧
     (∀ l ∈ Ioc (0 : ℝ) 1, ∀ m : ℝ,
-      (∃! p : Fin n → ℝ, (l,m,p) ∈ fittedGraph x s) ↔ ∀ j, |x j-m| ≤ s/l)",failure,,,
+      (∃! p : Fin n → ℝ, (l,m,p) ∈ fittedGraph x s) ↔ ∀ j, |x j-m| ≤ s/l)",failure,,,"{""failure"":""full""}"
 tlambda,lambda+mu,UnivariateML.TLHeldLocation.negative_held_location_criterion,dev/lean/UnivariateML/Family/TLHeldLocation.lean,205,"At a negative held shape, scale attainment is equivalent to a positive collapse exponent.","{n : ℕ} (x : Fin n → ℝ) (m : ℝ) (hn : 0 < n)
     {a : ℝ} (ha : 0 < a) :
     (∃ s > 0, ∃ p : Fin n → ℝ, (m,p) ∈ graph x (-a) s ∧ 0 < graphLikelihood (-a) s (m,p) ∧
       ∀ t > 0, ∀ q : Fin n → ℝ, (m,q) ∈ graph x (-a) t →
         graphLikelihood (-a) t (m,q) ≤ graphLikelihood (-a) s (m,p)) ↔
-    0 < ((n : ℝ)-multiplicity x m)/a - multiplicity x m",criterion,,,
+    0 < ((n : ℝ)-multiplicity x m)/a - multiplicity x m",criterion,,,"{""criterion"":""partial""}"
 tlambda,lambda+mu,UnivariateML.TLHeldLocation.held_shape_location_criterion,dev/lean/UnivariateML/Family/TLHeldLocation.lean,304,"The joined scale attainment criterion covers negative, logistic, and positive held shape.","{n : ℕ} (x : Fin n → ℝ) (m l : ℝ) (hn : 0 < n) :
     (∃ s > 0, ∃ p : Fin n → ℝ, (m,p) ∈ graph x l s ∧ 0 < graphLikelihood l s (m,p) ∧
       ∀ t > 0, ∀ q : Fin n → ℝ, (m,q) ∈ graph x l t →
         graphLikelihood l t (m,q) ≤ graphLikelihood l s (m,p)) ↔
     if l < 0 then 0 < ((n : ℝ)-multiplicity x m)/(-l) - multiplicity x m else
-      ∃ i, x i ≠ m",criterion,,,
+      ∃ i, x i ≠ m",criterion,,,"{""criterion"":""full""}"
 tlambda,lambda+mu,UnivariateML.TLHeldLocation.held_shape_location_failure,dev/lean/UnivariateML/Family/TLHeldLocation.lean,419,"Infinite scale has zero envelope and the joined zero-scale classification gives zero, infinity, or the precise unattained critical value.","{n : ℕ} (x : Fin n → ℝ) (m l : ℝ) (hn : 0 < n) :
     (∀ c > 0, ∃ R : ℝ, ∀ s > R, ∀ p : Fin n → ℝ, (m,p) ∈ graph x l s →
       graphLikelihood l s (m,p) < c) ∧
@@ -58,7 +58,7 @@ tlambda,lambda+mu,UnivariateML.TLHeldLocation.held_shape_location_failure,dev/le
           ∃ p : ℝ → Fin n → ℝ, (∀ s > 0, (m,p s) ∈ graph x l s) ∧
             Tendsto (fun s ↦ graphLikelihood l s (m,p s)) (𝓝[>] 0) (𝓝 B))
     else
-      ((∃ i, x i ≠ m) → Vanishes x m l) ∧ ((∀ i, x i = m) → Diverges x m l))",failure,,,
+      ((∃ i, x i ≠ m) → Vanishes x m l) ∧ ((∀ i, x i = m) → Diverges x m l))",failure,,,"{""path:1"":""partial"",""limit:1"":""partial"",""failure"":""full""}"
 tlambda,lambda+mu,UnivariateML.TLCollapse.negative_tail_normalized,dev/lean/UnivariateML/Family/TLCollapse.lean,112,The negative-shape tail factor converges to its strict finite-scale bound after normalization.,"{a d : ℝ} (ha : 0 < a) (hd : d ≠ 0)
     (p : ℝ → ℝ) (hp : ∀ s > 0, p s ∈ Ioo 0 1 ∧ Q (-a) (p s) = d/s) :
     (∀ s > 0, weight (-a) (p s) / s^((a+1)/a) < 1/(a*|d|)^((a+1)/a)) ∧
@@ -71,7 +71,7 @@ tlambda,lambda+mu,UnivariateML.TLCollapse.fixed_location_negative_trace,dev/lean
     let B := ∏ j, if x j = m then weight (-a) (1/2) else
       1/(a*|x j-m|)^((a+1)/a)
     (∀ s > 0, (∃ j, x j ≠ m) → graphLikelihood (-a) s (m,p s)/s^e < B) ∧
-    Tendsto (fun s ↦ graphLikelihood (-a) s (m,p s)/s^e) (𝓝[>] 0) (𝓝 B)",failure,,,
+    Tendsto (fun s ↦ graphLikelihood (-a) s (m,p s)/s^e) (𝓝[>] 0) (𝓝 B)",failure,,,"{""path:1"":""partial"",""failure"":""partial""}"
 tlambda,lambda+mu,UnivariateML.TLCollapse.critical_held_location_supremum,dev/lean/UnivariateML/Family/TLCollapse.lean,276,At the critical exponent the collapse coefficient is the supremum and every positive scale is strictly below it.,"{n : ℕ} (x : Fin n → ℝ) (m : ℝ) (hn : 0 < n)
     {a : ℝ} (ha : 0 < a)
     (he : ((n : ℝ)-multiplicity x m)/a - multiplicity x m = 0) :
@@ -79,26 +79,26 @@ tlambda,lambda+mu,UnivariateML.TLCollapse.critical_held_location_supremum,dev/le
       1/(a*|x j-m|)^((a+1)/a)
     let D : Set (ℝ × (Fin n → ℝ)) := {q | 0 < q.1 ∧ (m,q.2) ∈ graph x (-a) q.1}
     let L : ℝ × (Fin n → ℝ) → ℝ := fun q ↦ graphLikelihood (-a) q.1 (m,q.2)
-    sSup (L '' D) = B ∧ ∀ q ∈ D, L q < B",failure,,,
+    sSup (L '' D) = B ∧ ∀ q ∈ D, L q < B",failure,,,"{""limit:1"":""partial"",""criterion"":""partial"",""failure"":""partial""}"
 tlambda,lambda+mu,UnivariateML.TLCollapse.negative_exponent_unbounded,dev/lean/UnivariateML/Family/TLCollapse.lean,330,A negative exponent gives arbitrary likelihood at arbitrarily small positive scales.,"{n : ℕ} (x : Fin n → ℝ) (m : ℝ) {a : ℝ}
     (ha : 0 < a) (he : ((n : ℝ) - multiplicity x m)/a - multiplicity x m < 0) :
     ∀ B : ℝ, ∀ δ > (0 : ℝ), ∃ s ∈ Ioo (0 : ℝ) δ, ∃ p : Fin n → ℝ,
-      (m,p) ∈ graph x (-a) s ∧ B < graphLikelihood (-a) s (m,p)","criterion, failure",,,
+      (m,p) ∈ graph x (-a) s ∧ B < graphLikelihood (-a) s (m,p)","criterion, failure",,,"{""path:1"":""partial"",""criterion"":""partial"",""failure"":""partial""}"
 tlambda,all free,UnivariateML.TLCollapse.majority_unbounded,dev/lean/UnivariateML/Family/TLCollapse.lean,423,A strict majority atom gives unrestricted growth at arbitrarily small scale already at fitted shape minus one.,"{n : ℕ} (x : Fin n → ℝ) (m : ℝ)
     (h : (n : ℝ) < 2 * multiplicity x m) :
     ∀ B : ℝ, ∀ δ > (0 : ℝ), ∃ s ∈ Ioo (0 : ℝ) δ, ∃ p : Fin n → ℝ,
-      (m,p) ∈ graph x (-1) s ∧ B < graphLikelihood (-1) s (m,p)","criterion, failure",,,
+      (m,p) ∈ graph x (-1) s ∧ B < graphLikelihood (-1) s (m,p)","criterion, failure",,,"{""criterion"":""partial"",""failure"":""partial""}"
 tlambda,mu,UnivariateML.TLCollapse.held_location_tie_corner,dev/lean/UnivariateML/Family/TLCollapse.lean,433,A tie at held location gives infinite envelope at the joint infinite-negative-shape and zero-scale corner.,"{n : ℕ} (x : Fin n → ℝ) (m : ℝ)
     (i : Fin n) (hi : x i = m) :
     ∀ A B : ℝ, ∀ δ > (0 : ℝ), ∃ a > A, 0 < a ∧
       ∃ s ∈ Ioo (0 : ℝ) δ, ∃ p : Fin n → ℝ,
-        (m,p) ∈ graph x (-a) s ∧ B < graphLikelihood (-a) s (m,p)","criterion, failure",,,
+        (m,p) ∈ graph x (-a) s ∧ B < graphLikelihood (-a) s (m,p)","criterion, failure",,,"{""criterion"":""partial"",""failure"":""partial""}"
 tlambda,mu,UnivariateML.TLCollapse.held_location_critical_joint_collapse,dev/lean/UnivariateML/Family/TLCollapse.lean,455,Approaching a finite critical shape from more negative shapes gives infinite joint envelope at zero scale.,"{n : ℕ} (x : Fin n → ℝ) (m : ℝ) {a₀ : ℝ}
     (h₀ : 0 < a₀) (hk : 0 < multiplicity x m)
     (he : ((n : ℝ)-multiplicity x m)/a₀ - multiplicity x m = 0) :
     ∀ B : ℝ, ∀ δ > (0 : ℝ), ∃ a ∈ Ioo a₀ (a₀+δ),
       ∃ s ∈ Ioo (0 : ℝ) δ, ∃ p : Fin n → ℝ,
-        (m,p) ∈ graph x (-a) s ∧ B < graphLikelihood (-a) s (m,p)",failure,,,
+        (m,p) ∈ graph x (-a) s ∧ B < graphLikelihood (-a) s (m,p)",failure,,,"{""criterion"":""partial"",""failure"":""partial""}"
 tlambda,all free,UnivariateML.TLUnrestricted.unrestricted_unbounded,dev/lean/UnivariateML/Family/TLUnrestricted.lean,56,With unrestricted shape every nonempty sample gives unbounded likelihood through positive shapes.,"{n : ℕ} (x : Fin n → ℝ) (i : Fin n) :
     ∀ B : ℝ, ∃ l > 1, ∃ s > 0, ∃ p : Fin n → ℝ,
-      (x i,p) ∈ heldScaleGraph x l s ∧ B < graphLikelihood l s (x i,p)",failure,,,
+      (x i,p) ∈ heldScaleGraph x l s ∧ B < graphLikelihood l s (x i,p)",failure,,,"{""failure"":""partial""}"

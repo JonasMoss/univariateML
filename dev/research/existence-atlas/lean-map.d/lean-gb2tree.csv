@@ -21,14 +21,14 @@ trgamma,all free,UnivariateML.GBTTrGamma.power_profile_atTop,dev/lean/Univariate
       UnivariateML.Gamma.jensenGap (TransformedGamma.powerSample x p)) :
     Tendsto (fun p ↦ scaleProfile x (k p) p) atTop
       (𝓝 (log (log (x j) - UnivariateML.Gamma.avgLog x)⁻¹ -
-        UnivariateML.Gamma.avgLog x - 1))",,,"Failure, power exterior",
+        UnivariateML.Gamma.avgLog x - 1))",,,"Failure, power exterior","{""failure"":""partial""}"
 trgamma,all free,UnivariateML.GBTTrGamma.power_exterior,dev/lean/UnivariateML/Family/GBTTrGamma.lean,272,Every sufficiently large power has a uniform upper envelope at the fitted power value plus arbitrary slack.,"(hn : 0 < n) {x : Fin n → ℝ} (hx : ∀ i, 0 < x i)
     (hne : ∃ i j, x i ≠ x j) (j : Fin n) (hj : ∀ i, log (x i) ≤ log (x j))
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ p : ℝ in atTop, ∀ k > 0, ∀ a > 0,
       TransformedGamma.logLik x k p a <
         log (log (x j) - UnivariateML.Gamma.avgLog x)⁻¹ -
-          UnivariateML.Gamma.avgLog x - 1 + ε",,,"Failure, power exterior",
+          UnivariateML.Gamma.avgLog x - 1 + ε",,,"Failure, power exterior","{""failure"":""partial""}"
 trgamma,all free,UnivariateML.GBTTrGamma.gap_div_power_sq_at_zero,dev/lean/UnivariateML/Family/GBTTrGamma.lean,318,The squared-power-normalized Jensen gap tends to half the log variance.,"(hn : 0 < n) {x : Fin n → ℝ}
     (hx : ∀ i, 0 < x i) (hne : ∃ i j, x i ≠ x j) :
     Tendsto (fun t : ℝ ↦
@@ -40,7 +40,7 @@ trgamma,all free,UnivariateML.GBTTrGamma.lognormal_exterior,dev/lean/UnivariateM
     let V := UnivariateML.Gamma.avg (fun i ↦ (log (x i) - UnivariateML.Gamma.avgLog x)^2)
     ∀ᶠ t : ℝ in 𝓝[>] 0, ∀ k > 0, ∀ a > 0,
       TransformedGamma.logLik x k t a <
-        -log (2 * π) / 2 - log V / 2 - 1 / 2 - UnivariateML.Gamma.avgLog x + ε",,,"Failure, lognormal exterior",
+        -log (2 * π) / 2 - log V / 2 - 1 / 2 - UnivariateML.Gamma.avgLog x + ε",,,"Failure, lognormal exterior","{""failure"":""partial""}"
 trgamma,all free,UnivariateML.GBTTrGamma.attains_of_face_witness,dev/lean/UnivariateML/Family/GBTTrGamma.lean,587,"A finite witness at or above both exterior heights implies a finite maximum, including equality.","(hn : 0 < n) {x : Fin n → ℝ} (hx : ∀ i, 0 < x i)
     (hne : ∃ i j, x i ≠ x j) (j : Fin n) (hj : ∀ i, log (x i) ≤ log (x j)) :
     let V := UnivariateML.Gamma.avg (fun i ↦ (log (x i) - UnivariateML.Gamma.avgLog x)^2)
@@ -49,7 +49,7 @@ trgamma,all free,UnivariateML.GBTTrGamma.attains_of_face_witness,dev/lean/Univar
       UnivariateML.Gamma.avgLog x - 1
     (∃ k > 0, ∃ t > 0, ∃ a > 0, max N P ≤ TransformedGamma.logLik x k t a) →
       ∃ k > 0, ∃ t > 0, ∃ a > 0, ∀ k' > 0, ∀ t' > 0, ∀ a' > 0,
-        TransformedGamma.logLik x k' t' a' ≤ TransformedGamma.logLik x k t a",,,"Criterion, sufficiency",
+        TransformedGamma.logLik x k' t' a' ≤ TransformedGamma.logLik x k t a",,,"Criterion, sufficiency","{""criterion"":""partial""}"
 trgamma,all free,UnivariateML.GBTTrGamma.attainment_witness_criterion,dev/lean/UnivariateML/Family/GBTTrGamma.lean,657,"The feasible-witness comparison is an equivalence on nonconstants, and the likelihood is unbounded on constants.","(hn : 0 < n) {x : Fin n → ℝ}
     (hx : ∀ i, 0 < x i) (j : Fin n) (hj : ∀ i, log (x i) ≤ log (x j)) :
     let V := UnivariateML.Gamma.avg (fun i ↦ (log (x i) - UnivariateML.Gamma.avgLog x)^2)
@@ -61,19 +61,19 @@ trgamma,all free,UnivariateML.GBTTrGamma.attainment_witness_criterion,dev/lean/U
           TransformedGamma.logLik x k' t' a' ≤ TransformedGamma.logLik x k t a) ↔
         ∃ k > 0, ∃ t > 0, ∃ a > 0, max N P ≤ TransformedGamma.logLik x k t a)) ∧
     ((∀ i j, x i = x j) →
-      ∀ C : ℝ, ∃ k > 0, ∃ t > 0, ∃ a > 0, C < TransformedGamma.logLik x k t a)",,,"Criterion, finite feasibility rather than finite stationary enumeration",
+      ∀ C : ℝ, ∃ k > 0, ∃ t > 0, ∃ a > 0, C < TransformedGamma.logLik x k t a)",,,"Criterion, finite feasibility rather than finite stationary enumeration","{""criterion"":""partial""}"
 invtrgamma,all free,UnivariateML.GBTInvTrGamma.pareto_exterior,dev/lean/UnivariateML/Family/GBTInvTrGamma.lean,23,Reciprocity turns the large-power bound into the fitted Pareto upper envelope at the sample minimum.,"{n : ℕ} (hn : 0 < n) {x : Fin n → ℝ} (hx : ∀ i, 0 < x i)
     (hne : ∃ i j, x i ≠ x j) (j : Fin n) (hj : ∀ i, x j ≤ x i)
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ p : ℝ in atTop, ∀ k > 0, ∀ a > 0,
       InverseTransformedGamma.logLik x k p a <
-        log (Gamma.avgLog x - log (x j))⁻¹ - Gamma.avgLog x - 1 + ε",,,"Failure, Pareto exterior",
+        log (Gamma.avgLog x - log (x j))⁻¹ - Gamma.avgLog x - 1 + ε",,,"Failure, Pareto exterior","{""failure"":""partial""}"
 invtrgamma,all free,UnivariateML.GBTInvTrGamma.lognormal_exterior,dev/lean/UnivariateML/Family/GBTInvTrGamma.lean,53,Reciprocity transports the uniform small-power bound using the same log variance and the original-data Jacobian.,"{n : ℕ} (hn : 0 < n) {x : Fin n → ℝ} (hx : ∀ i, 0 < x i)
     (hne : ∃ i j, x i ≠ x j) {ε : ℝ} (hε : 0 < ε) :
     let V := Gamma.avg (fun i ↦ (log (x i) - Gamma.avgLog x)^2)
     ∀ᶠ t : ℝ in 𝓝[>] 0, ∀ k > 0, ∀ a > 0,
       InverseTransformedGamma.logLik x k t a <
-        -log (2 * π) / 2 - log V / 2 - 1 / 2 - Gamma.avgLog x + ε",,,"Failure, lognormal exterior",
+        -log (2 * π) / 2 - log V / 2 - 1 / 2 - Gamma.avgLog x + ε",,,"Failure, lognormal exterior","{""failure"":""partial""}"
 invtrgamma,all free,UnivariateML.GBTInvTrGamma.attainment_witness_criterion,dev/lean/UnivariateML/Family/GBTInvTrGamma.lean,85,The witness comparison and constant branch transport to the inverse model with the correct two face heights.,"{n : ℕ} (hn : 0 < n) {x : Fin n → ℝ}
     (hx : ∀ i, 0 < x i) (j : Fin n) (hj : ∀ i, x j ≤ x i) :
     let V := Gamma.avg (fun i ↦ (log (x i) - Gamma.avgLog x)^2)
@@ -85,7 +85,7 @@ invtrgamma,all free,UnivariateML.GBTInvTrGamma.attainment_witness_criterion,dev/
             InverseTransformedGamma.logLik x k t a) ↔
         ∃ k > 0, ∃ t > 0, ∃ a > 0, max N P ≤ InverseTransformedGamma.logLik x k t a)) ∧
     ((∀ i j, x i = x j) →
-      ∀ C : ℝ, ∃ k > 0, ∃ t > 0, ∃ a > 0, C < InverseTransformedGamma.logLik x k t a)",,,"Criterion, finite feasibility rather than finite stationary enumeration",
+      ∀ C : ℝ, ∃ k > 0, ∃ t > 0, ∃ a > 0, C < InverseTransformedGamma.logLik x k t a)",,,"Criterion, finite feasibility rather than finite stationary enumeration","{""criterion"":""partial""}"
 gb2,all free,UnivariateML.GBTLogConcave.peak_mul_distance_le,dev/lean/UnivariateML/Generic/GBTLogConcave.lean,21,A normalized log-concave density bounds peak times distance by an affine function of the pointwise log loss.,"{f : ℝ → ℝ} {m y : ℝ}
     (hconc : ConcaveOn ℝ univ f) (hm : f y ≤ f m)
     (hi : Integrable (fun z ↦ exp (f z)) volume)
@@ -107,7 +107,7 @@ gb2,all free,UnivariateML.GBTGB2.log_sample_superlevel,dev/lean/UnivariateML/Fam
       c ≤ (∑ i, logDensity v a p q (y i)) / n →
       let m := v + log (p / q) / a
       exp c ≤ exp (logDensity v a p q m) ∧
-        exp (logDensity v a p q m) ≤ B ∧ |m| ≤ M",,,"Failure, joint peak and mode",
+        exp (logDensity v a p q m) ≤ B ∧ |m| ≤ M",,,"Failure, joint peak and mode","{""failure"":""partial""}"
 gb2,all free,UnivariateML.GBTGB2.logLik_log_chart,dev/lean/UnivariateML/Family/GBTGB2.lean,209,The original GB2 objective differs from the log-sample objective by the additive log Jacobian.,"{n : ℕ} {x : Fin n → ℝ} (hx : ∀ i, 0 < x i)
     {s : ℝ} (hs : 0 < s) (a p q : ℝ) :
     Shape2GB2.logLik x s a (p, q) + ∑ i, log (x i) =
@@ -117,31 +117,31 @@ gb2,all free,UnivariateML.GBTGB2.peak_rate_bound,dev/lean/UnivariateML/Family/GB
 gb2,all free,UnivariateML.GBTGB2.superlevel_tail_rates,dev/lean/UnivariateML/Family/GBTGB2.lean,284,Both rates are bounded below by the exponentiated mean log-likelihood level. At either fixed beta shape this forces power away from zero.,"{n : ℕ} (hn : 0 < n) (y : Fin n → ℝ)
     {v a p q c : ℝ} (ha : 0 < a) (hp : 0 < p) (hq : 0 < q)
     (hlevel : c ≤ (∑ i, logDensity v a p q (y i)) / n) :
-    exp c ≤ a * p ∧ exp c ≤ a * q",,,"Failure, all-free and held-shape rate bounds",
+    exp c ≤ a * p ∧ exp c ≤ a * q",,,"Failure, all-free and held-shape rate bounds","{""failure"":""partial""}"
 gb2,shape3,UnivariateML.GBTGB2.pareto_cutoff_path,dev/lean/UnivariateML/Family/GBTGB2.lean,318,"With lower shape held, moving the scale below the limiting cutoff realizes the whole Pareto endpoint density at all ties.","{n : ℕ} (y : Fin n → ℝ) {p μ D : ℝ}
     (hp : 0 < p) (hD : 0 < D) (hy : ∀ i, μ ≤ y i) :
     Tendsto (fun a : ℝ ↦
       ∑ i, logDensity (μ - log a / a) a p (D / a) (y i)) atTop
-      (𝓝 (∑ i, (log D - D * (y i - μ))))",,,"Failure, Pareto face reachability",
+      (𝓝 (∑ i, (log D - D * (y i - μ))))",,,"Failure, Pareto face reachability","{""failure"":""partial""}"
 gb2,shape1,UnivariateML.GBTGB2.power_cutoff_path,dev/lean/UnivariateML/Family/GBTGB2.lean,392,Reflection realizes the whole upper-cutoff power density at all ties with upper shape held.,"{n : ℕ} (y : Fin n → ℝ) {q μ A : ℝ}
     (hq : 0 < q) (hA : 0 < A) (hy : ∀ i, y i ≤ μ) :
     Tendsto (fun a : ℝ ↦
       ∑ i, logDensity (μ + log a / a) a (A / a) q (y i)) atTop
-      (𝓝 (∑ i, (log A - A * (μ - y i))))",,,"Failure, power face reachability",
+      (𝓝 (∑ i, (log A - A * (μ - y i))))",,,"Failure, power face reachability","{""failure"":""partial""}"
 gb2,shape3,UnivariateML.GBTGB2.held_lower_gamma_trace,dev/lean/UnivariateML/Family/GBTGB2.lean,406,"With lower shape fixed and upper shape diverging, positive limiting power and a finite limiting mode give the transformed-gamma trace.","{ι : Type*} {l : Filter ι} {n : ℕ}
     (y : Fin n → ℝ) {p a₀ m₀ : ℝ} (hp : 0 < p) (ha₀ : 0 < a₀)
     {a q m : ι → ℝ} (ha : Tendsto a l (𝓝 a₀))
     (hq : Tendsto q l atTop) (hm : Tendsto m l (𝓝 m₀)) :
     Tendsto (fun j ↦ ∑ i, logDensity (m j - log (p / q j) / a j) (a j) p (q j) (y i)) l
       (𝓝 (∑ i, (log a₀ + p * log p - log (Real.Gamma p) +
-        p * a₀ * (y i - m₀) - p * exp (a₀ * (y i - m₀)))))",,,"Failure, moving gamma trace",
+        p * a₀ * (y i - m₀) - p * exp (a₀ * (y i - m₀)))))",,,"Failure, moving gamma trace","{""failure"":""partial""}"
 gb2,shape1,UnivariateML.GBTGB2.held_upper_gamma_trace,dev/lean/UnivariateML/Family/GBTGB2.lean,494,The reflected moving limit gives the inverse transformed-gamma trace with upper shape held.,"{ι : Type*} {l : Filter ι} {n : ℕ}
     (y : Fin n → ℝ) {q a₀ m₀ : ℝ} (hq : 0 < q) (ha₀ : 0 < a₀)
     {a p m : ι → ℝ} (ha : Tendsto a l (𝓝 a₀))
     (hp : Tendsto p l atTop) (hm : Tendsto m l (𝓝 m₀)) :
     Tendsto (fun j ↦ ∑ i, logDensity (m j - log (p j / q) / a j) (a j) (p j) q (y i)) l
       (𝓝 (∑ i, (log a₀ + q * log q - log (Real.Gamma q) +
-        q * a₀ * (m₀ - y i) - q * exp (a₀ * (m₀ - y i)))))",,,"Failure, moving inverse-gamma trace",
+        q * a₀ * (m₀ - y i) - q * exp (a₀ * (m₀ - y i)))))",,,"Failure, moving inverse-gamma trace","{""failure"":""partial""}"
 fpareto,min,UnivariateML.GBTFellerPareto.logLik_positive_excess,dev/lean/UnivariateML/Family/GBTFellerPareto.lean,22,Translating to positive excesses preserves the entire objective in all three requested hold masks.,"{n : ℕ} {x : Fin n → ℝ} {μ s : ℝ}
     (hx : ∀ i, μ < x i) (hs : 0 < s) (b : ℝ) (sh : ℝ × ℝ) :
     ShapeFacesFellerPareto.logLikelihood x μ b s sh =
@@ -151,14 +151,14 @@ fpareto,min+shape3,UnivariateML.GBTFellerPareto.pareto_excess_path,dev/lean/Univ
     (hm : ∀ i, m ≤ log (x i - μ)) :
     Tendsto (fun a : ℝ ↦ ShapeFacesFellerPareto.logLikelihood x μ a
       (exp (m - log a / a)) (p, D / a)) atTop
-      (𝓝 ((∑ i, (log D - D * (log (x i - μ) - m))) - ∑ i, log (x i - μ)))",,,"Failure, Pareto path",
+      (𝓝 ((∑ i, (log D - D * (log (x i - μ) - m))) - ∑ i, log (x i - μ)))",,,"Failure, Pareto path","{""failure"":""partial""}"
 fpareto,min+shape1,UnivariateML.GBTFellerPareto.power_excess_path,dev/lean/UnivariateML/Family/GBTFellerPareto.lean,54,The held-upper-shape power path transports with the original-excess Jacobian and all tied contacts.,"{n : ℕ} {x : Fin n → ℝ} {μ q A m : ℝ}
     (hx : ∀ i, μ < x i) (hq : 0 < q) (hA : 0 < A)
     (hm : ∀ i, log (x i - μ) ≤ m) :
     Tendsto (fun a : ℝ ↦ ShapeFacesFellerPareto.logLikelihood x μ a
       (exp (m + log a / a)) (A / a, q)) atTop
-      (𝓝 ((∑ i, (log A - A * (m - log (x i - μ)))) - ∑ i, log (x i - μ)))",,,"Failure, power path",
+      (𝓝 ((∑ i, (log A - A * (m - log (x i - μ)))) - ∑ i, log (x i - μ)))",,,"Failure, power path","{""failure"":""partial""}"
 fpareto,min,UnivariateML.GBTFellerPareto.constant_excess_concentration,dev/lean/UnivariateML/Family/GBTFellerPareto.lean,72,The likelihood diverges at a constant positive excess as power grows with both shapes already fixed.,"{n : ℕ} (hn : 0 < n) {μ x : ℝ} (hx : μ < x)
     (sh : ℝ × ℝ) :
     Tendsto (fun a : ℝ ↦ ShapeFacesFellerPareto.logLikelihood (fun _ : Fin n ↦ x)
-      μ a (x - μ) sh) atTop atTop",,,"Failure and criterion, constant branch in all three masks",
+      μ a (x - μ) sh) atTop atTop",,,"Failure and criterion, constant branch in all three masks","{""criterion"":""partial"",""failure"":""partial""}"
