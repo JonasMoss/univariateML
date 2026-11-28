@@ -7,19 +7,24 @@ uniqueness) backed by a reviewed, full Lean proof. Modifier claims
 ## Where the base atlas stands
 
 Every one of the 1,560 base claims has a reviewed written proof. Full Lean
-coverage, from `atlas.csv` after the 2026-11-28 merges:
+coverage, from `atlas.csv` after the review atlas-coverage7 (TASK-498):
 
 | Question | Full Lean | Written only |
 | --- | ---: | ---: |
-| Criterion | 437 | 83 |
-| Failure | 416 | 104 |
-| Uniqueness | 360 | 160 |
+| Criterion | 455 | 65 |
+| Failure | 448 | 72 |
+| Uniqueness | 380 | 140 |
 
 Of the 160 uniqueness claims, 118 are almost-everywhere statements ("unique
 for almost every attaining sample with at least k levels"). Their Lean
 versions so far are conditional implications between two putative winners and
 were graded partial. They are one separate item (last below), because they need
 generic-position machinery rather than per-family case work.
+
+Families with both passes done (steps 1 and 2, and gev, frechet, expweibull) leave
+25 main claims on written proofs; the closing record with the missing Lean step
+for each is in the
+[atlas-coverage7 report](../research/evaluations/2026-11-28-atlas-coverage7-report.md#closing-record-for-families-with-both-passes).
 
 ## Order of work
 
@@ -33,7 +38,7 @@ missing Lean step.
 | --- | --- | ---: | --- |
 | 1 | hyper, nhyper, gpd, triang, pareto2, pareto3, lomax, invpareto, binom, dgamma, skellam | 31 | TASK-489 (first pass merged, about half complete); TASK-491 (second pass merged; done: 5 claims stay written-only) |
 | 2 | bbinom, cmb, bnbinom, cmp, pig, nbinom | 46 | TASK-490 (first pass merged, 19 complete); TASK-494 (second pass merged; done: 12 claims stay written-only) |
-| 3 | positive-shape families: genbeta, gb2, betapr, fpareto, pgw, expweibull, fatigue, frechet, trgamma, invtrgamma, invburr, nsbeta, gev | 53 | TASK-493 (broad pass merged, 4 complete); TASK-495 (gev, frechet, expweibull: all 7 proved); TASK-496 (genbeta, nsbeta, running); TASK-497 (gb2, fpareto, trgamma, invtrgamma, running) |
+| 3 | positive-shape families: genbeta, gb2, betapr, fpareto, pgw, expweibull, fatigue, frechet, trgamma, invtrgamma, invburr, nsbeta, gev | 53 | TASK-493 (broad pass merged, 4 complete); TASK-495 (gev, frechet, expweibull: all 7 proved); TASK-496 (genbeta, nsbeta, running); TASK-497 (gb2, fpareto, trgamma, invtrgamma, running); TASK-499 (betapr, invburr, running) |
 | 4 | location-scale and tails: tlambda, huber, bhatt, ged, snorm, sn, std, lst, st, emg | about 45 | — |
 | 5 | skew families sstd, sged (criterion and failure) | about 52 | — |
 | 6 | almost-everywhere uniqueness, all families | 118 | — |
