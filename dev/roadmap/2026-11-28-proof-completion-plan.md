@@ -30,10 +30,15 @@ Targets exclude almost-everywhere uniqueness.
 | --- | --- | ---: | --- |
 | 1 | hyper, nhyper, gpd, triang, pareto2, pareto3, lomax, invpareto, binom, dgamma, skellam | 31 | TASK-489 (first pass merged, about half complete); TASK-491 (second pass, running) |
 | 2 | bbinom, cmb, bnbinom, cmp, pig, nbinom | 46 | TASK-490 (first pass merged, 19 complete); TASK-494 (second pass, running) |
-| 3 | positive-shape families: genbeta, gb2, betapr, fpareto, pgw, expweibull, fatigue, frechet, trgamma, invtrgamma, invburr, nsbeta, gev | 53 | TASK-493 (running) |
+| 3 | positive-shape families: genbeta, gb2, betapr, fpareto, pgw, expweibull, fatigue, frechet, trgamma, invtrgamma, invburr, nsbeta, gev | 53 | TASK-493 (broad pass merged, 4 complete); TASK-495 (gev, frechet, expweibull, running) |
 | 4 | location-scale and tails: tlambda, huber, bhatt, ged, snorm, sn, std, lst, st, emg | about 45 | — |
 | 5 | skew families sstd, sged (criterion and failure) | about 52 | — |
 | 6 | almost-everywhere uniqueness, all families | 118 | — |
+
+Step 3 showed that broad passes stall on these families: the missing piece is
+almost always escape exhaustion (upper envelopes or compact superlevel sets in the
+joint parameter chart), a separate analytic proof per family. From step 3 on, jobs
+take one to three related families at a time.
 
 Counts in steps 3 to 5 are from the 2026-11-28 atlas and will move as earlier
 steps land.
