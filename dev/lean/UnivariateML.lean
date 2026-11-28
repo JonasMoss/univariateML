@@ -294,3 +294,10 @@ public import UnivariateML.Family.Base7ParetoIII
 public import UnivariateML.Family.Base7ParetoIIMin
 public import UnivariateML.Family.Base7Skellam
 public import UnivariateML.Family.Base7Triangular
+public import UnivariateML.Family.Trunc5CMB
+public import UnivariateML.Family.Trunc5CMBChart
+public import UnivariateML.Family.Trunc5CMBOdds
+public import UnivariateML.Family.Trunc5CMP
+public import UnivariateML.Family.Trunc5CMPFaces
+public import UnivariateML.Family.Trunc5CMPRay
+public import UnivariateML.Family.Trunc5Estimated
