@@ -264,3 +264,6 @@ public import UnivariateML.Family.AE4SSTD
 public import UnivariateML.Family.AE4TukeyLambda
 public import UnivariateML.Generic.AE4Analytic
 public import UnivariateML.Generic.AE4Gaussian
+public import UnivariateML.Generic.Truncation
+public import UnivariateML.Family.TruncCount
+public import UnivariateML.Family.TruncZero
