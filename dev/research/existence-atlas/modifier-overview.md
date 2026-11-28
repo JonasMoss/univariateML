@@ -9,9 +9,9 @@ complete or one-sided. The remaining regimes for each question are open.
 | Modifier | Eligible | Implemented | Criterion complete / one-sided | Failure complete / one-sided | Uniqueness complete / one-sided |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | truncate:known | 520 | 15 | 417 / 2 | 353 / 59 | 212 / 10 |
-| truncate:lower-estimated | 520 | 15 | 203 / 2 | 200 / 5 | 106 / 9 |
-| truncate:upper-estimated | 520 | 15 | 204 / 1 | 201 / 4 | 105 / 9 |
-| truncate:both-estimated | 520 | 15 | 203 / 2 | 200 / 5 | 106 / 8 |
+| truncate:lower-estimated | 520 | 15 | 249 / 2 | 245 / 6 | 126 / 9 |
+| truncate:upper-estimated | 520 | 15 | 250 / 1 | 246 / 5 | 125 / 9 |
+| truncate:both-estimated | 520 | 15 | 249 / 2 | 245 / 6 | 126 / 8 |
 | zero:truncated | 52 | 12 | 46 / 0 | 40 / 6 | 7 / 5 |
 | zero:modified | 104 | 28 | 54 / 0 | 48 / 6 | 12 / 4 |
 | zero:inflated | 104 | 24 | 50 / 0 | 46 / 4 | 6 / 5 |
