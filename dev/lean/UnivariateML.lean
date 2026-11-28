@@ -282,3 +282,15 @@ public import UnivariateML.Family.Zero6Families
 public import UnivariateML.Family.Zero6Inflated
 public import UnivariateML.Family.Zero6Scores
 public import UnivariateML.Family.Zero6ZeroAtoms
+public import UnivariateML.Family.Base7Binomial
+public import UnivariateML.Family.Base7DGamma
+public import UnivariateML.Family.Base7GPD
+public import UnivariateML.Family.Base7Hyper
+public import UnivariateML.Family.Base7InversePareto
+public import UnivariateML.Family.Base7Lomax
+public import UnivariateML.Family.Base7NHyper
+public import UnivariateML.Family.Base7ParetoII
+public import UnivariateML.Family.Base7ParetoIII
+public import UnivariateML.Family.Base7ParetoIIMin
+public import UnivariateML.Family.Base7Skellam
+public import UnivariateML.Family.Base7Triangular
