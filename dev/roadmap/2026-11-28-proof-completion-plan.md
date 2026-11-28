@@ -39,9 +39,14 @@ missing Lean step.
 | 1 | hyper, nhyper, gpd, triang, pareto2, pareto3, lomax, invpareto, binom, dgamma, skellam | 31 | TASK-489 (first pass merged, about half complete); TASK-491 (second pass merged; done: 5 claims stay written-only) |
 | 2 | bbinom, cmb, bnbinom, cmp, pig, nbinom | 46 | TASK-490 (first pass merged, 19 complete); TASK-494 (second pass merged; done: 12 claims stay written-only) |
 | 3 | positive-shape families: genbeta, gb2, betapr, fpareto, pgw, expweibull, fatigue, frechet, trgamma, invtrgamma, invburr, nsbeta, gev | 53 | TASK-493 (broad pass merged, 4 complete); TASK-495 (gev, frechet, expweibull: all 7 proved); TASK-496 (genbeta, nsbeta: 5 of 15 closed); TASK-497 (gb2, fpareto, trgamma, invtrgamma: building blocks only, no claim closed); TASK-499 (betapr, invburr, running); TASK-500 (pgw, fatigue, running) |
-| 4 | location-scale and tails: tlambda, huber, bhatt, ged, snorm, sn, std, lst, st, emg | about 45 | — |
-| 5 | skew families sstd, sged (criterion and failure) | about 52 | — |
+| 4 | tlambda; huber, bhatt, emg (deep passes only) | 30 | TASK-501 (tlambda, running); lean-robust (huber, bhatt, emg, next) |
+| 5 | std, lst, st, sstd, sged, snorm, sn, ged | — | done: both passes already ran (lean-locscale, lean-skewls, lean-twopiece, lean-student, then lean-twopiece2, lean-student2, lean-ged); their written-only claims stand |
 | 6 | almost-everywhere uniqueness, all families | 115 | — |
+
+Steps 4 and 5 were reduced on 2026-11-28: the families in step 5 have already had a
+broad round and a dedicated second round, so under the bounded-effort rule their
+remaining claims rest on the written proofs. The step-4 families had only broad
+rounds and get one narrow deep pass each.
 
 Step 3 showed that broad passes stall on these families: the missing piece is
 almost always escape exhaustion (upper envelopes or compact superlevel sets in the
