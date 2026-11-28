@@ -329,3 +329,8 @@ public import UnivariateML.Family.Base8bBBinom
 public import UnivariateML.Family.Base8bBNBinom
 public import UnivariateML.Family.Base8bCMB
 public import UnivariateML.Generic.Base8bGammaRatio
+public import UnivariateML.Family.GBEndpointTrace
+public import UnivariateML.Family.GBHeldPower
+public import UnivariateML.Family.GBHeldScaleShape1
+public import UnivariateML.Family.GBNonstandardBeta
+public import UnivariateML.Generic.GBBetaCurvature
