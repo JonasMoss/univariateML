@@ -28,9 +28,9 @@ Targets exclude almost-everywhere uniqueness.
 
 | Step | Families | Claims | Card |
 | --- | --- | ---: | --- |
-| 1 | hyper, nhyper, gpd, triang, pareto2, pareto3, lomax, invpareto, binom, dgamma, skellam | 31 | TASK-489 (running) |
+| 1 | hyper, nhyper, gpd, triang, pareto2, pareto3, lomax, invpareto, binom, dgamma, skellam | 31 | TASK-489 (first pass merged, about half complete); TASK-491 (second pass, running) |
 | 2 | bbinom, cmb, bnbinom, cmp, pig, nbinom | 46 | TASK-490 (running) |
-| 3 | positive-shape families: genbeta, gb2, betapr, fpareto, pgw, expweibull, fatigue, frechet, trgamma, invtrgamma, invburr, nsbeta, gev | about 45 | — |
+| 3 | positive-shape families: genbeta, gb2, betapr, fpareto, pgw, expweibull, fatigue, frechet, trgamma, invtrgamma, invburr, nsbeta, gev | 53 | TASK-493 (running) |
 | 4 | location-scale and tails: tlambda, huber, bhatt, ged, snorm, sn, std, lst, st, emg | about 45 | — |
 | 5 | skew families sstd, sged (criterion and failure) | about 52 | — |
 | 6 | almost-everywhere uniqueness, all families | 118 | — |
@@ -40,7 +40,9 @@ steps land.
 
 ## Modifier atlas (parked)
 
-Written proofs cover most truncation criteria (about 417 of 520 per truncation
-modifier). Lean covers a few dozen claims. Still to finish before parking:
-lean-trunc5 (TASK-487, CMB/CMP windows, running) and one coverage review for
-the lean-zero6 and lean-trunc5 fragments.
+Parked on 2026-11-28 after lean-trunc5 (TASK-487), lean-zero6 (TASK-488) and
+their review atlas-modcov4 (TASK-492). Full / partial-only Lean claims across the
+seven modifiers: criterion 34 / 120, failure 9 / 62, uniqueness 34 / 49. Written
+proofs cover about 417 of 520 criteria per truncation modifier. What remains
+open, by modifier and family group, is the closing table of the
+[atlas-modcov4 report](../research/evaluations/2026-11-28-atlas-modcov4-report.md#open-lean-coverage-by-modifier-and-family-group).
