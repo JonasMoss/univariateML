@@ -56,3 +56,23 @@ An absent claim is `unproved` with direction `open`.
 
 To validate a candidate file without changing the saved inputs or outputs,
 run `python3 dev/tools/existence_atlas.py --check-modifier-proofs PATH`.
+
+## Modifier Lean coverage
+
+The [Lean map fragments](modifier-lean-map.d/) use the base Lean-map
+columns with `modifier` inserted after `regime`. Use the modifier keys above.
+For a concrete regime, `coverage` is a JSON object keyed by question or
+`case:<name>`, for example `{"criterion": "partial"}`. A family-specific
+`generic` regime prefixes each key with the held mask, for example
+`{"all free/criterion": "partial"}`.
+
+Review the declaration against the written claim in the exact family,
+mask and modifier before assigning a grade. Use `full` when the statement
+proves the whole written claim, and `partial` for a narrower result.
+Leave helper coverage blank. The generator validates the theorem, source
+line and recorded Lean signature against the source, and checks that
+each graded key has a corresponding proof row. A full grade promotes
+the written claim to `lean` and supplies its theorem names as evidence.
+Partial evidence is recorded in the `*_lean_partial` fields or the
+`lean_partial` field of a named case. The overview counts full and
+partial-only evidence for the three main questions.

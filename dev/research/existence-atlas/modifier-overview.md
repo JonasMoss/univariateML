@@ -15,3 +15,38 @@ complete or one-sided. The remaining regimes for each question are open.
 | zero:truncated | 52 | 12 | 46 / 0 | 40 / 6 | 7 / 5 |
 | zero:modified | 104 | 28 | 54 / 0 | 48 / 6 | 12 / 4 |
 | zero:inflated | 104 | 24 | 50 / 0 | 46 / 4 | 6 / 5 |
+
+Lean-backed claims are counted per question. Partial Lean counts claims
+with a reviewed partial grade and no full grade.
+
+| Modifier | Criterion Lean / partial Lean | Failure Lean / partial Lean | Uniqueness Lean / partial Lean |
+| --- | ---: | ---: | ---: |
+| truncate:known | 0 / 4 | 0 / 4 | 0 / 4 |
+| truncate:lower-estimated | 0 / 0 | 0 / 0 | 0 / 0 |
+| truncate:upper-estimated | 0 / 0 | 0 / 0 | 0 / 0 |
+| truncate:both-estimated | 0 / 0 | 0 / 0 | 0 / 0 |
+| zero:truncated | 1 / 3 | 3 / 1 | 3 / 1 |
+| zero:modified | 0 / 4 | 0 / 0 | 0 / 4 |
+| zero:inflated | 0 / 8 | 2 / 4 | 0 / 2 |
+
+| Family | Held | Modifier | Criterion | Failure | Uniqueness |
+| --- | --- | --- | --- | --- | --- |
+| binom | size | truncate:known | written · partial Lean | written · partial Lean | written · partial Lean |
+| binom | size | zero:truncated | written · partial Lean | written · partial Lean | written · partial Lean |
+| binom | size | zero:modified | written · partial Lean | written | written · partial Lean |
+| binom | size | zero:inflated | written · partial Lean | lean | written · partial Lean |
+| binom | pi+size | zero:inflated | written · partial Lean | lean | written |
+| cmb | nu+prob | zero:inflated | written · partial Lean | written | unproved |
+| geom | all free | truncate:known | written · partial Lean | written · partial Lean | written · partial Lean |
+| geom | all free | zero:truncated | written · partial Lean | lean | lean |
+| geom | all free | zero:modified | written · partial Lean | written | written · partial Lean |
+| geom | all free | zero:inflated | written · partial Lean | written · partial Lean | written · partial Lean |
+| nbinom | size | truncate:known | written · partial Lean | written · partial Lean | written · partial Lean |
+| nbinom | size | zero:truncated | written · partial Lean | lean | lean |
+| nbinom | size | zero:modified | written · partial Lean | written | written · partial Lean |
+| nbinom | size | zero:inflated | written · partial Lean | written · partial Lean | written |
+| nbinom | pi+size | zero:inflated | written · partial Lean | written · partial Lean | written |
+| pois | all free | truncate:known | written · partial Lean | written · partial Lean | written · partial Lean |
+| pois | all free | zero:modified | written · partial Lean | written | written · partial Lean |
+| pois | all free | zero:inflated | written · partial Lean | written · partial Lean | written |
+| pois | pi | zero:inflated | written · partial Lean | written | written |

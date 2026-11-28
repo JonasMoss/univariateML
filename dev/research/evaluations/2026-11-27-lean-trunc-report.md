@@ -1,6 +1,6 @@
 # TASK-451 · Truncated exponential families and zero modifiers in Lean
 
-The finite-window attainment theorem, the three lower-only count criteria, the zero-modification reduction, the fixed-carrier inflation boundary certificate, and the CMB counterexample are checked in Lean. The family applications and their exact scopes are recorded in the [modifier Lean map](2026-11-27-lean-trunc-data/lean-map.csv). It contains 68 links to reviewed written claims. The `scope` column carries the claim key. Each `coverage` cell is blank.
+The finite-window attainment theorem, the three lower-only count criteria, the zero-modification reduction, the fixed-carrier inflation boundary certificate, and the CMB counterexample are checked in Lean. The family applications and their exact scopes are recorded in the [modifier Lean map](../existence-atlas/modifier-lean-map.d/lean-trunc.csv). It contains 68 links to reviewed written claims. The `scope` column carries the claim key. The coverage cells were blank when this report was written.
 
 ## Results and effort by target
 
