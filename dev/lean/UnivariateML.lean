@@ -315,3 +315,13 @@ public import UnivariateML.Family.Base9PGW
 public import UnivariateML.Family.EVExpWeibull
 public import UnivariateML.Family.EVFrechet
 public import UnivariateML.Family.EVGEV
+public import UnivariateML.Family.Base7bBinomial
+public import UnivariateML.Family.Base7bDGamma
+public import UnivariateML.Family.Base7bGPD
+public import UnivariateML.Family.Base7bHyper
+public import UnivariateML.Family.Base7bHyperBinary
+public import UnivariateML.Family.Base7bHyperResidue
+public import UnivariateML.Family.Base7bNHyper
+public import UnivariateML.Family.Base7bNHyperResidue
+public import UnivariateML.Family.Base7bSkellam
+public import UnivariateML.Family.Base7bTriangular
