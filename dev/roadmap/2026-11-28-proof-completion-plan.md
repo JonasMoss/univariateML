@@ -7,24 +7,28 @@ uniqueness) backed by a reviewed, full Lean proof. Modifier claims
 ## Where the base atlas stands
 
 Every one of the 1,560 base claims has a reviewed written proof. Full Lean
-coverage, from `atlas.csv` after the review atlas-coverage7 (TASK-498):
+coverage, from `atlas.csv` after the review atlas-coverage9 (TASK-505):
 
-| Question | Full Lean | Written only |
-| --- | ---: | ---: |
-| Criterion | 455 | 65 |
-| Failure | 448 | 72 |
-| Uniqueness | 380 | 140 |
+| Question | Full Lean | Written only | of which almost-everywhere |
+| --- | ---: | ---: | ---: |
+| Criterion | 468 | 52 | 0 |
+| Failure | 466 | 54 | 0 |
+| Uniqueness | 386 | 134 | 115 |
 
-Of the 140 uniqueness claims, 115 are almost-everywhere statements ("unique
-for almost every attaining sample with at least k levels"). Their Lean
-versions so far are conditional implications between two putative winners and
-were graded partial. They are one separate item (last below), because they need
-generic-position machinery rather than per-family case work.
+Steps 1 to 5 are closed: the 125 written-only claims outside almost-everywhere
+uniqueness rest on their reviewed written proofs, and the missing Lean step for
+each is recorded in the closing tables of the reviews
+[atlas-coverage7](../research/evaluations/2026-11-28-atlas-coverage7-report.md#closing-record-for-families-with-both-passes),
+[atlas-coverage8](../research/evaluations/2026-11-28-atlas-coverage8-report.md#closing-record-for-families-with-both-passes)
+and [atlas-coverage9](../research/evaluations/2026-11-28-atlas-coverage9-report.md),
+and for step-5 families in the earlier reviews of their rounds.
 
-Families with both passes done (steps 1 and 2, and gev, frechet, expweibull) leave
-25 main claims on written proofs; the closing record with the missing Lean step
-for each is in the
-[atlas-coverage7 report](../research/evaluations/2026-11-28-atlas-coverage7-report.md#closing-record-for-families-with-both-passes).
+Step 6 (almost-everywhere uniqueness): lean-ae5 (TASK-504) proved the shared
+fixed-count null-tie theorem (`Generic/AE5Weighted.lean`), with face and contact
+competitors taken as off-null separation hypotheses, and three pilot families.
+Its [classification](../research/evaluations/2026-11-28-lean-ae5-report.md#atlas-inventory)
+sorts the 115 claims into seven proof routes with the family inputs each still
+needs.
 
 ## Order of work
 
@@ -41,7 +45,7 @@ missing Lean step.
 | 3 | positive-shape families: genbeta, gb2, betapr, fpareto, pgw, expweibull, fatigue, frechet, trgamma, invtrgamma, invburr, nsbeta, gev | 53 | TASK-493 (broad pass merged, 4 complete); TASK-495 (gev, frechet, expweibull: all 7 proved); TASK-496 (genbeta, nsbeta: 5 of 15 closed); TASK-497 (gb2, fpareto, trgamma, invtrgamma: building blocks only, no claim closed); TASK-499 (betapr, invburr: all targets, invburr via certificate hypotheses); TASK-500 (pgw, fatigue: all 6 proved) |
 | 4 | tlambda; huber, bhatt, emg (deep passes only) | 30 | TASK-501 (tlambda: 6 of 13 closed); TASK-502 (huber, bhatt, emg: all 17 targets addressed) |
 | 5 | std, lst, st, sstd, sged, snorm, sn, ged | — | done: both passes already ran (lean-locscale, lean-skewls, lean-twopiece, lean-student, then lean-twopiece2, lean-student2, lean-ged); their written-only claims stand |
-| 6 | almost-everywhere uniqueness, all families | 115 | TASK-504 (classification, shared theorem, pilot; running) |
+| 6 | almost-everywhere uniqueness, all families | 115 | TASK-504 (classification, shared theorem, pilot lomax/invpareto/pareto2; rows awaiting review) |
 
 Steps 4 and 5 were reduced on 2026-11-28: the families in step 5 have already had a
 broad round and a dedicated second round, so under the bounded-effort rule their
@@ -52,9 +56,6 @@ Step 3 showed that broad passes stall on these families: the missing piece is
 almost always escape exhaustion (upper envelopes or compact superlevel sets in the
 joint parameter chart), a separate analytic proof per family. From step 3 on, jobs
 take one to three related families at a time.
-
-Counts in steps 3 to 5 are from the 2026-11-28 atlas and will move as earlier
-steps land.
 
 ## Modifier atlas (parked)
 
