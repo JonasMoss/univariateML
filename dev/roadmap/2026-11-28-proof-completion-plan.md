@@ -24,7 +24,10 @@ generic-position machinery rather than per-family case work.
 ## Order of work
 
 Each step is one Codex Lean job followed by one independent coverage review.
-Targets exclude almost-everywhere uniqueness.
+Targets exclude almost-everywhere uniqueness. Lean effort per family is bounded
+(decision of 2026-11-28): one broad pass, then at most one deep pass. Claims still
+open after that rest on their reviewed written proof; the job report records the
+missing Lean step.
 
 | Step | Families | Claims | Card |
 | --- | --- | ---: | --- |

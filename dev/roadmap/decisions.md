@@ -6,6 +6,17 @@ entry stays, marked superseded. Design detail lives in the linked roadmap
 entries, reports and code; this file is the index of what was chosen.
 Active work lives on the board (`~/boards/univariateML`), not here.
 
+## 2026-11-28
+
+- **Lean effort per family is bounded; written proofs stand where it stalls (Jonas)**. Every base existence-atlas
+  claim has a reviewed written proof. Lean formalization of the remaining claims runs as one broad pass per family
+  group and then at most one deep pass per family. Claims still open after the deep pass rest on their reviewed
+  written proof, and the job report records the missing Lean step. Almost-everywhere uniqueness is one separate item
+  at the end. The modifier atlas (truncation, zero modifiers) is parked. Why: the step-3 broad pass proved 4 of 53
+  positive-shape claims; the missing piece is almost always a family-specific escape-exhaustion proof (upper
+  envelopes near every face of a three- or four-parameter chart). Plan and status:
+  [proof completion plan](2026-11-28-proof-completion-plan.md).
+
 ## 2026-11-25
 
 - **Certified value, unproved cardinality: `unique = NA` (Jonas)**. A fit whose global maximum value is certified
