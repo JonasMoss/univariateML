@@ -325,3 +325,7 @@ public import UnivariateML.Family.Base7bNHyper
 public import UnivariateML.Family.Base7bNHyperResidue
 public import UnivariateML.Family.Base7bSkellam
 public import UnivariateML.Family.Base7bTriangular
+public import UnivariateML.Family.Base8bBBinom
+public import UnivariateML.Family.Base8bBNBinom
+public import UnivariateML.Family.Base8bCMB
+public import UnivariateML.Generic.Base8bGammaRatio
