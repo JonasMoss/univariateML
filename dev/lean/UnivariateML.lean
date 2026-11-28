@@ -301,3 +301,10 @@ public import UnivariateML.Family.Trunc5CMP
 public import UnivariateML.Family.Trunc5CMPFaces
 public import UnivariateML.Family.Trunc5CMPRay
 public import UnivariateML.Family.Trunc5Estimated
+public import UnivariateML.Family.Base8BBinom
+public import UnivariateML.Family.Base8BNBinom
+public import UnivariateML.Family.Base8CMB
+public import UnivariateML.Family.Base8CMBHeldProbability
+public import UnivariateML.Family.Base8CMP
+public import UnivariateML.Family.Base8NBinom
+public import UnivariateML.Family.Base8PIG
