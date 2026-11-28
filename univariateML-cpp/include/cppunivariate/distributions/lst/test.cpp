@@ -103,7 +103,8 @@ TEST_CASE("lst: every held golden subset preserves coefficients and likelihood")
   for(int mask=1;mask<8;++mask) {
     CAPTURE(mask);
     const auto r=cppunivariate::lst_mle(mltest::as_span(g.data),1e-8,1000,((mask & 1) ? g.estimates.at("mu") : nan),((mask & 2) ? g.estimates.at("sigma") : nan),((mask & 4) ? g.estimates.at("df") : nan));
-    if(mask==1||mask==2)CHECK_FALSE(r.certified);
+    // TASK-385: both joint holds (location, scale) certify.
+    if(mask==1||mask==2)CHECK(r.certified);
     if(mask & 1)CHECK(r.mu==g.estimates.at("mu"));
     if(mask & 2)CHECK(r.sigma==g.estimates.at("sigma"));
     if(mask & 4)CHECK(r.df==g.estimates.at("df"));

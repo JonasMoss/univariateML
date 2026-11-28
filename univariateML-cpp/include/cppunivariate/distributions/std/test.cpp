@@ -172,7 +172,9 @@ TEST_CASE("std: every held golden subset preserves coefficients and likelihood")
   for(int mask=1;mask<8;++mask) {
     CAPTURE(mask);
     const auto r=cppunivariate::student_t_mle(mltest::as_span(g.data),1e-8,1000,((mask & 1) ? g.estimates.at("mean") : nan),((mask & 2) ? g.estimates.at("sd") : nan),((mask & 4) ? g.estimates.at("nu") : nan));
-    if(mask==1||mask==2)CHECK_FALSE(r.certified);
+    // TASK-385: the held-mean route certifies; held sd stays uncertified.
+    if(mask==1)CHECK(r.certified);
+    if(mask==2)CHECK_FALSE(r.certified);
     if(mask & 1)CHECK(r.mu==g.estimates.at("mean"));
     if(mask & 2)CHECK(r.sigma==g.estimates.at("sd"));
     if(mask & 4)CHECK(r.nu==g.estimates.at("nu"));
