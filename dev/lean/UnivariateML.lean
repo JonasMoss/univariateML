@@ -312,3 +312,6 @@ public import UnivariateML.Family.Base9GEV
 public import UnivariateML.Family.Base9GenBeta
 public import UnivariateML.Family.Base9NonstandardBeta
 public import UnivariateML.Family.Base9PGW
+public import UnivariateML.Family.EVExpWeibull
+public import UnivariateML.Family.EVFrechet
+public import UnivariateML.Family.EVGEV
