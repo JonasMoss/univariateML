@@ -500,7 +500,7 @@ reason in [the exceptions list](proof-status-exceptions.csv).
 | hyper | N | lean (iff) | lean (exact) | lean (one-sided) |
 | hyper | k | lean (iff) | lean (exact) | lean (one-sided) |
 | hyper | m | lean (iff) | lean (exact) | lean (one-sided) |
-| invburr | all free | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
+| invburr | all free | written (iff) · partial Lean | lean (exact) | written (one-sided) · partial Lean |
 | invburr | shape2 | lean (iff) | lean (exact) | written (one-sided) · partial Lean |
 | invparalogis | all free | lean (iff) | lean (exact) | lean (one-sided) |
 | invparalogis | scale | lean (iff) | lean (exact) | lean (one-sided) |
