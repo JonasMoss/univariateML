@@ -7,6 +7,7 @@
 #include "../../core/work_budget.hpp"
 #include "../../core/face_compare.hpp"
 #include "../../core/precision.hpp"
+#include "../../special/three_word.hpp"
 #include "../trgamma/mle.hpp"
 #include "../burr/mle.hpp"
 #include "../invburr/mle.hpp"
@@ -81,8 +82,14 @@ inline Gb2Result narrow_skew_face(span x, double threshold, double a,
   const double shape=trgamma_detail::gamma_shape(gap,out.iterations,maxit);
   const double log_shape=std::log(shape);
   const double log_mean=std::log(excess)+width*mean;
-  const double log_scale=log_mean+(inverse?-1:1)*(gap-log_shape)/a;
-  const double scale=std::exp(log_scale);
+  // Round the held-power face scale after reconstructing it. At very
+  // large shape, rounding log(scale) first can lose several scale ulps
+  // and make the emitted coefficients miss the reported likelihood.
+  namespace wide = special::three_word;
+  const auto precise_mean=wide::add(wide::logarithm({excess}),wide::multiply({width},{mean}));
+  const auto adjustment=wide::divide(wide::add(wide::logarithm({shape}),{-gap}),{a});
+  const auto precise_log_scale=wide::add(precise_mean,inverse ? adjustment : wide::negative(adjustment));
+  const double scale=wide::exponential(precise_log_scale).high;
   const double ll=n*(std::log(a)-log_mean+0.5*log_shape-
     trgamma_detail::kHalfLog2Pi-shape*gap-trgamma_detail::stirling_remainder(shape));
   // H(k) is decreasing and -k H'(k) >= 1/(2k), from the positive

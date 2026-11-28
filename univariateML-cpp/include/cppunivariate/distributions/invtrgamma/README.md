@@ -240,3 +240,7 @@ At a held scale $s$ and common observation $x=s$, the density is
 $b/[s\Gamma(a)e]$. A free power $b$ therefore gives divergence even when
 $a$ is held; the reciprocal delegate's concentration flag denotes this
 nonexistence, rather than invalid data.
+
+At large gamma shape, evaluation centers $b\log(s/x)-\log(a)$ using the
+original $s$ and $x$. Forming a rounded reciprocal first could lose a
+material fraction of the distribution's width.

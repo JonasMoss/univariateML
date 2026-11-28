@@ -338,3 +338,23 @@ TEST_CASE("invtrgamma: all-free face comparisons retain their numerical grade") 
   REQUIRE(p.status == cppunivariate::InvTrGammaStatus::ParetoBoundary);
   CHECK_FALSE(cppunivariate::outcome(p).certified);
 }
+
+TEST_CASE("invtrgamma: archive 001625 limit log density") {
+  const std::vector<double> x = {0x1.1cd03c7e16dbfp+0, 0x1.1cd03c7e18152p+0,
+      0x1.1cd03c7e194e4p+0, 0x1.1cd03c7e1a876p+0, 0x1.1cd03c7e1cf9bp+0};
+  // mpmath at 60 digits, with the observations and coefficients read as binary64.
+  CHECK(invtrgamma_loglik(x, 8.615406571602086e22, 0x1.faf47fa66b243p+0,
+                          424695594989.53754) ==
+        doctest::Approx(127.814307982688179).epsilon(1e-12).scale(0));
+}
+
+TEST_CASE("transformed gamma: large gamma shape resolves a rounded square") {
+  namespace d = cppunivariate::distributions;
+  const double root = 0x1.0000000000001p+500;
+  const double shape = 0x1.0000000000002p+1000;
+  // The square of root exceeds shape by 2^896 even though it rounds to shape.
+  // mpmath at 420 digits gives this rounded log density for both orientations.
+  const auto expected = doctest::Approx(-1.302346568921846e238).epsilon(1e-12).scale(0);
+  CHECK(d::dtrgamma(root, shape, 2, 1, true) == expected);
+  CHECK(d::dinvtrgamma(1, shape, 2, root, true) == expected);
+}
