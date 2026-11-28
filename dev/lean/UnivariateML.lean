@@ -274,3 +274,5 @@ public import UnivariateML.Family.Trunc3Zero
 public import UnivariateML.Family.Trunc3Zeta
 public import UnivariateML.Generic.TruncEstimated
 public import UnivariateML.Family.Trunc2Known
+public import UnivariateML.Family.Trunc4Count
+public import UnivariateML.Family.Trunc4Zeta
