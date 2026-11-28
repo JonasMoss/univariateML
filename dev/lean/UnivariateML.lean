@@ -343,3 +343,8 @@ public import UnivariateML.Family.TLCollapse
 public import UnivariateML.Family.TLHeldLocation
 public import UnivariateML.Family.TLHeldScale
 public import UnivariateML.Family.TLUnrestricted
+public import UnivariateML.Family.PGWEnvelope
+public import UnivariateML.Family.PGWFatigue
+public import UnivariateML.Family.PGWHeldShape
+public import UnivariateML.Family.PGWJointProfile
+public import UnivariateML.Family.PGWProfile
