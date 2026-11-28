@@ -267,3 +267,8 @@ public import UnivariateML.Generic.AE4Gaussian
 public import UnivariateML.Generic.Truncation
 public import UnivariateML.Family.TruncCount
 public import UnivariateML.Family.TruncZero
+public import UnivariateML.Family.Trunc3CMB
+public import UnivariateML.Family.Trunc3CMP
+public import UnivariateML.Family.Trunc3CMPRay
+public import UnivariateML.Family.Trunc3Zero
+public import UnivariateML.Family.Trunc3Zeta
