@@ -28,6 +28,9 @@ ZERO_MODIFIERS = tuple(f'zero:{value}' for value in ('truncated', 'modified', 'i
 ZERO_ATOMS = {'zero:modified': 'p0', 'zero:inflated': 'pi'}
 MODIFIER_PROOF_FIELDS = ('family', 'held', 'modifier', 'question', 'claim', 'direction',
                          'status', 'evidence', 'frontier', 'origin')
+MODIFIER_LEAN_FIELDS = ('family', 'regime', 'modifier', 'theorem', 'file', 'line',
+                        'statement', 'hypotheses_and_conclusion', 'scope', 'proof_marker',
+                        'dossier_scope_note', 'coverage')
 MODIFIER_DIRECTIONS = {'iff', 'exact', 'one-sided', 'open'}
 MODIFIER_STATUSES = {'written', 'cited', 'unproved'}
 PROVED = {'lean', 'written', 'cited'}
@@ -476,15 +479,115 @@ def read_modifier_proofs(path, regimes):
     return reviewed, issues
 
 
-def modifier_atlas(regimes, reviewed):
+def modifier_lean_source(row, sources):
+    path = (ROOT / row['file']).resolve()
+    lean_root = ROOT / 'dev/lean'
+    if (Path(row['file']).is_absolute() or not path.is_relative_to(lean_root)
+            or path.suffix != '.lean' or not path.is_file()):
+        raise ValueError(f"missing Lean source {row['file']!r}")
+    if path not in sources:
+        lines = path.read_text(encoding='utf-8').splitlines()
+        scopes = []
+        namespaces = []
+        for line in lines:
+            namespaces.append('.'.join(filter(None, scopes)))
+            if match := re.fullmatch(r'namespace\s+([\w.]+)', line):
+                scopes.append(match[1])
+            elif re.search(r'(?:^|\s)section(?:\s+\w+)?$', line):
+                scopes.append('')
+            elif scopes and re.fullmatch(r'end(?:\s+[\w.]+)?', line):
+                scopes.pop()
+        sources[path] = lines, namespaces
+    lines, namespaces = sources[path]
+    index = int(row['line']) - 1
+    namespace, _, name = row['theorem'].rpartition('.')
+    if not 0 <= index < len(lines) or namespaces[index] != namespace:
+        raise ValueError(f"wrong source location for {row['theorem']}")
+    if not re.match(rf'^\s*(?:theorem|lemma)\s+{re.escape(name)}(?=\s|[:({{])', lines[index]):
+        raise ValueError(f"wrong declaration at {row['file']}:{row['line']}")
+    signature = ' '.join(row['hypotheses_and_conclusion'].split())
+    declaration = ' '.join(' '.join(lines[index:]).split())
+    if (not row['statement'].strip() or not signature
+            or not re.match(rf'^(?:theorem|lemma) {re.escape(name)} '
+                            rf'{re.escape(signature)}\s+:=', declaration)):
+        raise ValueError(f"statement does not match {row['theorem']}")
+
+
+def modifier_lean_coverage(regimes, reviewed):
+    keys = {(row['family'], row['held'], row['modifier']) for row in regimes}
+    families = {(family, modifier) for family, _, modifier in keys}
+    aliases = {(row['family'], row['alias'].casefold()): row['held']
+               for row in read_csv('lean-regime-aliases.csv')}
+    canonical = {'joint': 'all free', 'all free': 'all free', 'generic': 'generic'}
+    coverage = defaultdict(lambda: defaultdict(set))
+    sources = {}
+    issues = []
+    for path in sorted((ATLAS / 'modifier-lean-map.d').glob('*.csv')):
+        with path.open(newline='', encoding='utf-8') as stream:
+            reader = csv.DictReader(stream, strict=True)
+            try:
+                if tuple(reader.fieldnames or ()) != MODIFIER_LEAN_FIELDS:
+                    issues.append(f'{path.relative_to(ROOT)}: unexpected modifier Lean map header')
+                    continue
+                for row in reader:
+                    location = f'{path.relative_to(ROOT)}:{reader.line_num}'
+                    try:
+                        if None in row or None in row.values():
+                            raise ValueError('wrong number of fields')
+                        family, regime, modifier = (row[field] for field in MODIFIER_LEAN_FIELDS[:3])
+                        regime = regime.strip()
+                        label = regime.casefold()
+                        regime = aliases.get((family, label), canonical.get(label, regime))
+                        if ((family, regime, modifier) not in keys
+                                and not (regime == 'generic' and (
+                                    (family, modifier) in families or family == 'generic'
+                                    and modifier in TRUNCATE_MODIFIERS + ZERO_MODIFIERS))):
+                            raise ValueError(f'no modifier regime for {family} / {regime} / {modifier}')
+                        grades = json.loads(row['coverage'] or '{}')
+                        if not isinstance(grades, dict):
+                            raise ValueError('coverage must be a JSON object')
+                        if row['proof_marker']:
+                            if grades:
+                                raise ValueError('proof markers cannot carry reviewed coverage')
+                            continue
+                        modifier_lean_source(row, sources)
+                        for target, grade in grades.items():
+                            held, separator, question = target.partition('/')
+                            if regime == 'generic' and separator:
+                                held = held or 'all free'
+                            elif regime != 'generic' and not separator:
+                                held, question = regime, target
+                            else:
+                                raise ValueError(f'invalid scope for Lean claim {target}')
+                            if grade not in ('full', 'partial'):
+                                raise ValueError(f'invalid Lean coverage for {target}')
+                            key = family, held, modifier
+                            proof = reviewed.get(key, {}).get(question)
+                            if proof is None:
+                                raise ValueError(f'no reviewed modifier claim for {target}')
+                            if grade == 'full' and proof['status'] != 'written':
+                                raise ValueError(f'full Lean coverage needs a written claim for {target}')
+                            coverage[(*key, question)][grade].add(row['theorem'])
+                    except ValueError as error:
+                        issues.append(f'{location}: {error}')
+            except csv.Error as error:
+                issues.append(f'{path.relative_to(ROOT)}:{reader.line_num}: {error}')
+    return coverage, issues
+
+
+def modifier_atlas(regimes, reviewed, coverage):
     for regime in regimes:
-        proofs = reviewed.get(tuple(regime[field] for field in MODIFIER_PROOF_FIELDS[:3]), {})
+        key = tuple(regime[field] for field in MODIFIER_PROOF_FIELDS[:3])
+        proofs = reviewed.get(key, {})
         row = dict(regime)
         for question in QUESTIONS:
             proof = proofs.get(question, dict(claim='', direction='open', status='unproved',
                                               evidence='', frontier='', origin=''))
+            proof = with_lean(proof, coverage.get((*key, question), {}))
+            proof.setdefault('lean_partial', '')
             row.update({f'{question}_{field}': value for field, value in proof.items()})
-        row['proved_cases'] = encode({question.removeprefix('case:'): proof
+        row['proved_cases'] = encode({question.removeprefix('case:'):
+                                      with_lean(proof, coverage.get((*key, question), {}))
                                       for question, proof in proofs.items()
                                       if question.startswith('case:')})
         yield row
@@ -510,6 +613,37 @@ def modifier_overview(rows):
             complete = sum(direction in {'iff', 'exact'} for direction in proved)
             cells.append(f"{complete} / {proved.count('one-sided')}")
         lines.append('| ' + ' | '.join(cells) + ' |')
+    lines.extend([
+        '', 'Lean-backed claims are counted per question. Partial Lean counts claims',
+        'with a reviewed partial grade and no full grade.', '',
+        '| Modifier | Criterion Lean / partial Lean | Failure Lean / partial Lean | '
+        'Uniqueness Lean / partial Lean |',
+        '| --- | ---: | ---: | ---: |',
+    ])
+    for modifier in TRUNCATE_MODIFIERS + ZERO_MODIFIERS:
+        subset = [row for row in rows if row['modifier'] == modifier]
+        cells = [modifier]
+        for question in QUESTIONS:
+            full = sum(row[f'{question}_status'] == 'lean' for row in subset)
+            partial = sum(bool(row[f'{question}_lean_partial'])
+                          and row[f'{question}_status'] != 'lean' for row in subset)
+            cells.append(f'{full} / {partial}')
+        lines.append('| ' + ' | '.join(cells) + ' |')
+    partial_rows = [row for row in rows if any(
+        row[f'{question}_lean_partial'] and row[f'{question}_status'] != 'lean'
+        for question in QUESTIONS)]
+    if partial_rows:
+        lines.extend([
+            '', '| Family | Held | Modifier | Criterion | Failure | Uniqueness |',
+            '| --- | --- | --- | --- | --- | --- |',
+        ])
+        for row in partial_rows:
+            cells = [row['family'], row['held'], row['modifier']]
+            for question in QUESTIONS:
+                status = row[f'{question}_status']
+                suffix = ' · partial Lean' if row[f'{question}_lean_partial'] and status != 'lean' else ''
+                cells.append(status + suffix)
+            lines.append('| ' + ' | '.join(cells) + ' |')
     return '\n'.join(lines) + '\n'
 
 
@@ -644,13 +778,15 @@ def main():
     regimes = list(modifier_regimes(rows))
     proof_path = args.check_modifier_proofs or ATLAS / 'modifier-proofs.csv'
     reviewed, issues = read_modifier_proofs(proof_path, regimes)
+    if not issues and not args.check_modifier_proofs:
+        coverage, issues = modifier_lean_coverage(regimes, reviewed)
     if issues:
         for issue in issues:
             print(issue)
         return 1
     if args.check_modifier_proofs:
         return 0
-    modified = list(modifier_atlas(regimes, reviewed))
+    modified = list(modifier_atlas(regimes, reviewed, coverage))
     summary = modifier_overview(modified)
     if args.check:
         if read_csv('modifier-atlas.csv') != modified:
