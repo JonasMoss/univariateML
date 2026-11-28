@@ -308,3 +308,7 @@ public import UnivariateML.Family.Base8CMBHeldProbability
 public import UnivariateML.Family.Base8CMP
 public import UnivariateML.Family.Base8NBinom
 public import UnivariateML.Family.Base8PIG
+public import UnivariateML.Family.Base9GEV
+public import UnivariateML.Family.Base9GenBeta
+public import UnivariateML.Family.Base9NonstandardBeta
+public import UnivariateML.Family.Base9PGW
